@@ -17,7 +17,7 @@
 ## Concepts
 
 - [[experience-governance]] — 区分正式经验、假设和来源证据，并约束更新流程。
-- [[homogeneous-32gpu-baseline]] — 32 卡同构场景的 `PP=1, TP=8, DP=4, MBN=1` 第一候选。
+- [[homogeneous-32gpu-baseline]] — 32 卡同构场景的 score 最优第一候选；推导已补强，真实 Evaluation 仍缺失。
 - [[parallel-strategy-parameters]] — PP、TP、DP、MBN 的部署含义与硬约束。
 - [[single-slow-gpu-isolation]] — 单张半速慢卡场景的深 PP、小 TP、低 DP 隔离候选。
 - [[unverified-deployment-hypotheses]] — 两慢卡、四慢卡、速度倍率与 rank mapping 的待验证命题。

@@ -4,7 +4,7 @@ created: 2026-07-13
 updated: 2026-07-13
 type: comparison
 tags: [scoreexpert, deployment, comparison, experience, slow-gpu, pp, tp, dp, mbn]
-sources: [raw/articles/scoreexpert-experience-store-2026-07-13.md]
+sources: [raw/articles/scoreexpert-experience-store-2026-07-13.md, raw/articles/32gpu-baseline-score-strategy-analysis-2026-07-13.md]
 confidence: medium
 contested: false
 contradictions: []
@@ -27,7 +27,12 @@ contradictions: []
 | TP | 8，吃满单节点 | 2，限制慢卡同步范围 |
 | DP | 4，补齐 32 卡 | 1，避免 replica 同步拖尾 |
 | 最大风险 | DP all-reduce 与模型显存 | 深 PP stage 不均衡和 MBN 上界效应 |
+| 直接 Evaluation | 尚无；当前为 score 推导与拓扑解释 | 尚缺结构化 Evaluation |
 | 置信度 | medium | medium |
+
+## Evidence maturity
+
+同构基线新增了可复查的 score 公式、候选比较和约束说明，但仍没有真实 Evaluation；它因此继续是 active 经验的第一 Evaluation 候选，而不是已证实的硬件最优。单慢卡经验同样需要补齐结构化 Evaluation，不能仅凭现有分析比较两者的真实 latency。
 
 ## Synthesis
 
