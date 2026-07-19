@@ -12,6 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PAGE_DIRS = ("entities", "concepts", "comparisons", "queries")
 REQUIRED = {"title", "created", "updated", "type", "tags", "sources"}
+EXPERIENCE_CATEGORIES = {
+    "homogeneous-baseline",
+    "local-heterogeneity",
+    "distributed-heterogeneity",
+}
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)")
 
 
@@ -49,7 +54,7 @@ def taxonomy() -> set[str]:
 def main() -> int:
     errors: list[str] = []
     reviews: list[str] = []
-    pages = [p for d in PAGE_DIRS for p in sorted((ROOT / d).glob("*.md"))]
+    pages = [p for d in PAGE_DIRS for p in sorted((ROOT / d).rglob("*.md"))]
     by_slug = {p.stem: p for p in pages}
     allowed_tags = taxonomy()
     outbound: dict[str, set[str]] = {}
@@ -65,6 +70,25 @@ def main() -> int:
         unknown = tags - allowed_tags
         if unknown:
             errors.append(f"{rel}: unknown tags {sorted(unknown)}")
+        category = str(meta.get("experience_category", ""))
+        if "experience" in tags:
+            if category not in EXPERIENCE_CATEGORIES:
+                errors.append(
+                    f"{rel}: experience_category must be one of "
+                    f"{sorted(EXPERIENCE_CATEGORIES)}"
+                )
+            elif category not in tags:
+                errors.append(
+                    f"{rel}: experience_category '{category}' must also appear in tags"
+                )
+            expected_parent = ROOT / "concepts" / category
+            if page.parent != expected_parent:
+                errors.append(
+                    f"{rel}: experience page must be stored under "
+                    f"concepts/{category}/"
+                )
+        elif category:
+            errors.append(f"{rel}: experience_category is only valid on experience pages")
         sources = meta.get("sources", [])
         for source in sources if isinstance(sources, list) else []:
             if not (ROOT / str(source)).exists():
