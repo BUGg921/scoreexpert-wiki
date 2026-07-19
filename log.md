@@ -251,3 +251,63 @@
 - Confirmed `deployment-objective-knowledge-framework.md`, `latency-first-experience-summary.md` and every file under `outputs/experience-evolution-demo/` remain present.
 - The two review items are intentional low-confidence markers on the homogeneous baseline and single-slow-card experience; deletion did not alter evidence status.
 - Git changes remain uncommitted.
+
+## [2026-07-19] update | Align project skill with simplified experience library
+
+- Updated `.codex/skills/maintain-scoreexpert-wiki/SKILL.md` to make the authoritative knowledge path explicit: optimization-objective framework -> enabled objective summary -> concrete scenario card -> immutable raw source.
+- Updated the workflow to route imports and queries through optimization objective first, update the matching objective summary with every concrete-card change, and avoid duplicate category summaries, standalone Score pages and generic validation pages by default.
+- Added a safe cleanup contract: resolve exact keep/delete targets, preserve `raw/` and `outputs/experience-evolution-demo/` unless explicitly named, migrate unique knowledge before deletion, and remove stale link/schema/linter requirements in the same pass.
+- Updated the formal experience template with optimization objective, primary metric, guardrails and objective-summary link; updated `agents/openai.yaml` to match the revised skill behavior.
+- The bundled `quick_validate.py` could not start because `PyYAML` is unavailable; equivalent Ruby/YAML validation and repository lint are used instead. Git changes remain uncommitted.
+
+## [2026-07-19] lint | Updated project-local skill
+
+- Skill validation passed with Ruby/YAML: frontmatter contains only `name` and `description`, the folder name matches, all seven referenced resources exist, and `agents/openai.yaml` has valid interface fields and a skill-explicit default prompt.
+- Wiki result: `Pages: 7 | Errors: 0 | Review items: 2`; `git diff --check` passed.
+- The two review items remain intentional low-confidence markers on the homogeneous baseline and single-slow-card experience; the Skill update did not alter Wiki evidence status.
+- Git changes remain uncommitted.
+
+## [2026-07-19] update | Re-summarize four concrete latency experience cards
+
+- Rewrote the four existing concrete files in place: homogeneous 32-GPU baseline, single-slow-card local isolation, two-slow-card distributed balance and four-slow-card symmetric replicas. No fifth experience file or duplicate category summary was created.
+- Standardized each card around optimization objective and category, scenario definition, source-explicit experience, executable deployment summary, heterogeneity mechanism, first candidate and counterfactuals, score/topology/Evaluation boundaries, observability, failure conditions and fallback.
+- Preserved source-specific conclusions and quantitative boundaries: `TP:DP=2:1` remains a constrained 32-card instance, `MBN=64` remains a search-boundary candidate, and the two-/four-slow-card score still cannot observe slow-card count or placement.
+- Preserved evidence states: homogeneous and single-slow remain `unverified`/low confidence; two- and four-slow remain `partially_supported`/medium confidence. Raw sources and evolution snapshots were not modified.
+- Updated the latency-first overview backlink to keep the ScoreExpert entity reachable. Git changes remain uncommitted.
+
+## [2026-07-19] lint | Four re-summarized concrete experience cards
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Final card lengths are 102, 109, 108 and 108 lines, all below the 200-line review threshold.
+- Semantic review confirmed all four cards contain optimization objective, scene category, source-explicit conclusions, deployment summary, observable metrics, counterfactual candidates, evidence separation and fallback boundaries.
+- The two review items are intentional low-confidence markers on the score-only homogeneous and single-slow-card experiences; no evidence status was promoted.
+- Git changes remain uncommitted.
+
+## [2026-07-19] update | Rewrite parallel strategies as deployment experience
+
+- Replaced parameter-list-style strategy summaries in all four latency-first cards with dimensioned deployment experience: `TP`, `TP/PP` or `TP/DP`, `DP`, and `PP/MBN` as supported by each scenario.
+- Each dimension now states a reusable selection rule, interaction or switch condition before the concrete `PP/TP/DP/MBN` tuple; current tuples remain constrained scenario instances rather than the experience itself.
+- Updated the latency-first overview and index to use the same rule-first format.
+- Updated `SCHEMA.md`, the project-local Skill and its formal-card template so future “parallel strategy” sections cannot be satisfied by a parameter tuple alone.
+- Evidence states were unchanged: homogeneous and single-slow remain low-confidence/unverified; two- and four-slow remain medium-confidence/partially-supported. Raw sources and evolution snapshots were not modified.
+
+## [2026-07-19] lint | Dimensioned parallel-strategy experience
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Semantic check confirmed every concrete card contains a “parallel-strategy deployment experience” section, dimension-specific rules, and a separate current-scenario instance.
+- The two review items are the intentional low-confidence states of the homogeneous and single-slow cards; no evidence status was promoted.
+- Git changes remain uncommitted.
+
+## [2026-07-19] update | Rewrite card count as resource-scale experience
+
+- Replaced static card-count descriptions with resource-scale deployment experience in all four concrete cards: full-resource trigger, reduced-resource counterfactual, topology/parallelism reconstruction and current `active_gpu` instance.
+- Added a heterogeneity-specific boundary: if reducing cards changes slow-card locality or replica symmetry, reclassify the scenario instead of attributing the result only to card count.
+- Updated the latency-first overview, deployment-objective framework, index, `SCHEMA.md`, project-local Skill and template to enforce the rule-first resource format for future cards.
+- Current 32-card values remain scenario instances; no source, evidence status or raw/evolution artifact was changed.
+
+## [2026-07-19] lint | Resource-scale deployment experience
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Confirmed all four cards separate resource-scale rules from current 32-card instances and label added reduced-card/topology reasoning as Wiki validation rules where the source lacks direct Evaluation.
+- The deployment-objective framework remains at the 200-line threshold without triggering a size review.
+- The two remaining review items are the intentional low-confidence homogeneous and single-slow-card states; Git changes remain uncommitted.

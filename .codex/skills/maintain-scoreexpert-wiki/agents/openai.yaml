@@ -1,4 +1,4 @@
 interface:
   display_name: "维护 ScoreExpert 部署 Wiki"
-  short_description: "维护部署经验 Wiki 的来源、互链、查询和健康检查"
-  default_prompt: "使用 $maintain-scoreexpert-wiki 导入新的部署经验来源，并安全更新 Wiki。"
+  short_description: "按优化目标维护来源可追溯的 ScoreExpert 部署经验"
+  default_prompt: "使用 $maintain-scoreexpert-wiki 按优化目标导入或更新部署经验，并保持来源、证据和 Wiki 结构一致。"

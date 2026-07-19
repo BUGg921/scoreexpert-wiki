@@ -20,16 +20,16 @@
 
 ### 同构基线
 
-- [[homogeneous-32gpu-score-candidate]] — 标准 32 卡：严格匹配 v10 score 时以 `PP=1,TP=8,DP=4,MBN=1` 开始验证，不把 `2:1` 外推为通用规律。
+- [[homogeneous-32gpu-score-candidate]] — 标准 32 卡：总结满卡条件、少卡反事实和拓扑重建，再按并行维度解释 `1/8/4/1` 当前实例。
 
 ### 局部异构
 
-- [[single-slow-gpu-isolation]] — 单慢卡：以 `PP=16,TP=2,DP=1,MBN=64` 测试局部隔离；64 是搜索上界候选。
+- [[single-slow-gpu-isolation]] — 单慢卡：比较满卡隔离与放弃部分算力，再总结小 TP、TP/PP、DP 和 PP/MBN 联动；`16/2/1/64` 仅为当前实例。
 
 ### 分布式异构
 
-- [[two-slow-gpu-distributed-balance]] — 两张慢卡跨亲和组：以无 PP、节点内 `TP=8`、节点间 `DP=4` 测试从隔离到均衡的切换。
-- [[four-slow-gpu-symmetric-replicas]] — 四张慢卡一节点一张：构造四个慢卡结构一致的 DP replica，优先降低 replica skew。
+- [[two-slow-gpu-distributed-balance]] — 两张慢卡跨亲和组：先约束减卡后的场景重分类，再按并行维度总结从隔离到副本均衡的经验。
+- [[four-slow-gpu-symmetric-replicas]] — 四张慢卡一节点一张：先保持资源规模下的对称拓扑，再按并行维度总结映射与 replica skew 经验。
 
 ## Comparisons
 

@@ -61,6 +61,13 @@ experience_category: homogeneous-baseline | local-heterogeneity | distributed-he
 - 主分类：同构基线 | 局部异构 | 分布式异构
 - 分类依据：<说明异构是否存在，以及是局部还是跨区域分布>
 
+## 优化目标
+
+- 主目标：延迟优先 | 稳定优先
+- 主指标：<平均/P50/P95/P99 latency，或方差/失败率/超时/恢复指标>
+- 护栏：<throughput、显存、OOM、稳定性或最低性能要求>
+- 目标总览：[[<optimization-priority>-experience-summary]]
+
 ## 来源明确经验
 
 > 仅当来源存在明确经验结论时使用，不要求固定标题。按来源顺序忠实提取实际存在的 N 条，N 不设上限或下限，不在本节加入 Wiki 自行推导。
@@ -82,9 +89,35 @@ experience_category: homogeneous-baseline | local-heterogeneity | distributed-he
 
 ## 部署经验总结
 
-### 核心定量规则
-- <可迁移的比例、阈值、上下界或不等式>
-- <当前场景下对应的具体参数实例>
+### 资源规模部署经验
+
+- **满卡条件**：<何时新增算力收益预计大于通信、同步或异构成本>
+- **少卡对照**：<至少一个满足显存、整除和拓扑约束的反事实候选>
+- **拓扑重建**：<减卡后如何重新形成完整 TP group、DP replica 或 PP stage>
+- **当前实例**：<总卡数、active_gpu、节点规模；明确实例不是通用规则>
+
+### 并行策略部署经验
+
+> 只保留来源或证据支持的维度，不为填模板补造。先写可迁移规则，最后再写当前实例。
+
+#### TP
+- <TP group 的边界、选择规则、作用与失效条件>
+
+#### TP/PP
+- <TP 与 PP 的联动关系、权衡和切换条件>
+
+#### DP
+- <replica 数量、映射、等待或均衡规则>
+
+#### PP/MBN
+- <流水线深度与 microbatch 的联动规则>
+
+### 当前场景实例与召回规则
+
+```text
+当前实例：PP=<n>, TP=<n>, DP=<n>, MBN=<n>
+可迁移规则：<不能被实例替代的比例、阈值或条件化规则>
+```
 
 ### 触发条件
 - 写明可以召回本经验的拓扑、异构、模型或 score 条件。
@@ -128,13 +161,15 @@ experience_category: homogeneous-baseline | local-heterogeneity | distributed-he
 
 ## 按优化目标组织的知识入口
 
+优化目标框架页只定义分类格式；每个已启用目标维护一张总览，直接链接具体经验卡。
+
 ```markdown
-# 延迟优先型 | 稳定优先型
+# <优化目标>部署经验总览
 
 ## 同构基线知识
 ### 场景定义
-### 卡的数量与拓扑
-### 并行策略（PP、TP、DP、MBN）
+### 资源规模部署经验（满卡条件、少卡对照、拓扑重建、当前实例）
+### 并行策略部署经验（按 TP、TP/PP、DP、PP/MBN 等来源支持的维度）
 ### 场景案例
 
 ## 局部异构处理知识
@@ -153,6 +188,8 @@ experience_category: homogeneous-baseline | local-heterogeneity | distributed-he
 ```
 
 延迟优先的案例必须声明 latency 口径和护栏；稳定优先的案例必须声明方差、尾延迟、失败/OOM/超时或恢复指标和性能下限。每个案例继续补齐证据状态、验收阈值、失效边界与回退动作。优化目标总览直接引用具体经验卡，不再插入重复的分类总览页；缺少目标对应 Evaluation 时明确写“知识缺口”。
+
+当前没有独立且不可替代内容时，不创建 `<experience_category>-knowledge-summary.md`、独立 Score 决策页或通用验证页；把这些内容写入目标总览或具体经验卡。
 
 ## 查询结论页面
 

@@ -1,6 +1,6 @@
 ---
 name: maintain-scoreexpert-wiki
-description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本地文件、URL、报告、场景或 Evaluation 来源，创建或更新部署经验页面，回答并沉淀部署查询，处理冲突和经验替代关系，审计 frontmatter、标签、wikilinks、索引、日志与来源哈希，归档过期页面，或在用户明确要求时用 Git 提交已经验证的 Wiki 变更。
+description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本地文件、URL、报告、场景或 Evaluation 来源，按“延迟优先/稳定优先 → 同构基线/局部异构/分布式异构”组织目标总览和具体经验卡，回答部署查询，精简重复页面，处理冲突与经验替代，审计 frontmatter、标签、wikilinks、索引、日志和来源哈希，归档过期页面，或在用户明确要求时提交已验证的 Wiki 变更。
 ---
 
 # 维护 ScoreExpert 部署经验 Wiki
@@ -10,6 +10,22 @@ description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本
 维护一个持续积累、来源可追溯、结论有边界的 ScoreExpert 部署经验 Wiki。把原始来源、综合知识和结构规则分层保存；不要每次从原始材料重新推导全部知识。
 
 从包含 `SCHEMA.md`、`index.md` 和 `log.md` 的项目根目录执行命令。若当前目录不确定，先运行 `git rev-parse --show-toplevel` 并切换到返回目录。
+
+## 当前知识结构
+
+使用两层正式知识结构，不插入重复的分类汇总层：
+
+```text
+concepts/deployment-objective-knowledge-framework.md
+└── concepts/<optimization-priority>-experience-summary.md
+    └── concepts/<experience_category>/<scenario-card>.md
+        └── raw/<source-snapshot>.md
+```
+
+- 优化目标只使用延迟优先、稳定优先；以 `index.md` 中当前启用的目标总览为准，不预建空总览。
+- 场景分类只使用同构基线、局部异构、分布式异构；具体经验卡继续用 `experience_category` 声明唯一主分类。
+- Score 推导、验证指标、对照候选和回退规则优先写入具体经验卡及目标总览；没有独立且不可替代的新增价值时，不创建分类总览、独立 Score 页或通用验证页。
+- `raw/` 保存不可变来源，`outputs/experience-evolution-demo/` 保存审核演化；精简知识页时默认保留二者，除非用户明确点名删除。
 
 ## 每次任务先定向
 
@@ -29,7 +45,7 @@ description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本
 - 回答部署问题或沉淀新分析：读取 [工作流](references/workflows.md) 的“查询与沉淀”。
 - 检查 Wiki 健康状态：读取 [工作流](references/workflows.md) 的“Lint 与审核”。
 - 处理冲突、经验覆盖或合并：读取 [工作流](references/workflows.md) 的“冲突与状态迁移”。
-- 归档完全被替代的页面：读取 [工作流](references/workflows.md) 的“归档”。
+- 精简、删除或归档页面：读取 [工作流](references/workflows.md) 的“精简、删除与归档”。
 - 用户明确要求提交、建分支或推送时：读取 [工作流](references/workflows.md) 的“Git 维护”。
 
 ## 不可违反的知识边界
@@ -40,13 +56,15 @@ description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本
 - 来源若已有“经验总结”“结论”“建议”或“最佳实践”等显式结论，先按原顺序和原语义提取为“来源明确经验”，再做结构化改写。不得用重新推导替代、降级或淹没来源结论；Wiki 新增推理必须另行标注，不能写成来源原话。
 - 不预设经验数量、标题或排版。按来源选择“显式提取、分散归纳、无结论推导”模式；一条或多条都可以，以独立的触发条件和部署动作为经验粒度，不为填模板强拆或凑数。
 - 正式写入前必须经过候选审查：先保存筛选前候选，再按“来源、触发条件、部署动作、非 score 机制、预期观测、失效边界、新增价值、证据状态”逐条判定。纯 score 解释只进入证据层；空泛、重复、过度外推或不可执行内容不得进入经验层。
-- 每张部署经验必须按 `SCHEMA.md` 选择一个 `experience_category`。当前只允许同构基线、局部异构、分布式异构三类；Score 证据和验证计划不冒充第四类经验，尚无内容的分类不提前创建。
+- 每张部署经验必须按 `SCHEMA.md` 选择一个 `experience_category`。当前只允许同构基线、局部异构、分布式异构三类；Score 证据和验证方法写入对应经验卡或目标总览，不冒充第四类经验。
 - 组织或回答经验库时先选择优化目标入口：延迟优先或稳定优先；再进入同构基线、局部异构或分布式异构。优化目标不替代 `experience_category`，同一经验也不能因换入口而复制或无证据升级。
 - 延迟优先必须明确 latency 口径和吞吐/显存/稳定性护栏；稳定优先必须明确方差、尾延迟、OOM/失败率、超时或恢复指标和性能下限。缺少目标对应 Evaluation 时写成知识缺口或验证入口，不生成部署结论。
 - 部署经验文件必须保存在 `concepts/<experience_category>/`；优化目标总览与其他支撑知识保留在 `concepts/` 根目录。移动页面时保持 slug 不变并运行递归 lint，确保 wikilink、索引和来源引用仍有效。
 - 当前使用“优化目标总览 → 具体经验卡”的两层知识结构，不再为每个 `experience_category` 维护重复的分类总览。新增或修订具体经验时，同步更新对应优化目标总览；总览不把 `unverified` 或 `partially_supported` 内容升级为正式经验。
 - 需要展示知识库演化时，按输入批次保存阶段快照，至少包含“本批输入 → 筛选前 → 判定与理由 → 筛选后 → 相比上一阶段的增删改”。不得只展示最终库而丢失中间过程。
 - 把来源强调的比例、阈值、上下界、不等式和参数关系保留为可召回的定量经验，例如 `TP:DP≈2:1`。不得只保留具体实例 `TP=8,DP=4`，也不得把定量规则弱化成“较平衡”“较大”等模糊表述。
+- “并行策略”必须按来源支持的维度总结部署经验，例如分成 `TP`、`TP/PP`、`DP`、`PP/MBN`，分别写清选择规则与切换条件；最后再列当前参数实例，不能用一个 PP/TP/DP/MBN 元组代替经验总结。
+- “卡的数量”必须总结为资源规模部署经验：写清满卡触发条件、少卡反事实、减卡后的拓扑与并行组合重建、当前 `active_gpu` 实例。异构类别因减卡而变化时必须重新分类，不能把性能变化只解释成卡数效应。
 - 把 `unverified`、`partially_supported`、`mixed` 等假设留在验证层，不要改写成正式经验。
 - 即使假设达到 `supported`，也只允许生成更新提案；仍需人工审核、dry-run 和显式写入。
 - 分开陈述 score 证据、拓扑推理和真实 Evaluation 证据。缺少 Evaluation 时直接写明，不要补造。
@@ -54,7 +72,7 @@ description: 维护项目内 ScoreExpert GPU 部署经验 Wiki。用于导入本
 - 把 `MBN=64` 等搜索空间边界值写成边界候选，不要写成物理必然最优。
 - 每个知识页至少保留两个出站 `[[wikilinks]]`，并检查相关旧页面是否需要反向链接。
 - 只使用 `SCHEMA.md` 已登记标签。需要新标签时先更新 schema。
-- 每次新增或更新知识页时同步维护 `index.md`，并向 `log.md` 追加记录。
+- 每次新增或更新具体经验卡时同步维护对应优化目标总览、`index.md` 和 `log.md`；删除页面时同步清理所有入链和已废弃的强制规则。
 - 若一次导入将修改 10 个及以上已有页面，先向用户确认范围。
 
 ## 使用项目能力
