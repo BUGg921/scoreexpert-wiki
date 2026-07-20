@@ -423,3 +423,55 @@
 - Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
 - Confirmed the current scene definitions contain no “derived from case”, “current case size” or “category threshold” meta wording.
 - Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
+
+## [2026-07-20] update | Restore scenario cases as the fourth section
+
+- Corrected local and distributed heterogeneity knowledge to “scene definition → heterogeneity impact → parallel strategy → scenario cases”.
+- Kept isolation, balance and symmetry countermeasures inside parallel strategy, but moved concrete cases and admission status back into a separate fourth section.
+- Updated the latency overview, complete latency/stability framework, schema, README, index, project Skill, workflow and objective-summary template.
+- Concrete experience cards, active status, confidence and deployment outputs were unchanged.
+
+## [2026-07-20] lint | Four-section heterogeneity knowledge
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed local and distributed heterogeneity both use four ordered sections in the latency overview and the latency/stability framework: scene definition, heterogeneity impact, parallel strategy and scenario cases.
+- Confirmed countermeasures remain inside parallel strategy while concrete cases occupy a separate fourth section; Skill frontmatter and agent YAML parse successfully.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | Remove admission status from scenario cases
+
+- Removed repeated admission status, owner-review dates and source-completeness notes from all latency-first scenario-case summaries and from the complete framework.
+- Kept each case focused on scenario conditions, the concrete strategy instance and the link to its unique experience card.
+- Updated schema, index, project Skill, workflow and objective-summary template so admission status remains only in concrete experience cards.
+- No concrete experience status, confidence, strategy or source was changed.
+
+## [2026-07-20] lint | Scenario cases without admission status
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the latency overview and complete framework contain no admission-status or owner-review lines inside scenario cases.
+- Confirmed source markers remain attached to case descriptions and admission metadata remains available in the linked concrete cards; Skill frontmatter and agent YAML parse successfully.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | Remove strategy acceptance bullets
+
+- Removed the “countermeasure acceptance” bullets from the local-heterogeneity and distributed-heterogeneity parallel strategies in the latency-first overview.
+- Parallel strategy now contains only reusable deployment countermeasures and PP/TP/DP/MBN selection rules; no concrete experience card or deployment output changed.
+
+## [2026-07-20] lint | Parallel strategies without acceptance items
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed no “strategy acceptance” or “countermeasure acceptance” item remains in the formal knowledge pages or project Skill.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | Merge overall countermeasures into parallel dimensions
+
+- Removed standalone overall-countermeasure bullets from local and distributed heterogeneity strategies.
+- Merged isolation into TP, TP/PP, DP and PP/MBN rules; merged balance and symmetry primarily into DP while retaining their TP, TP/PP and PP/MBN implications.
+- Applied the same dimension-first wording to the latency overview, complete latency/stability framework, schema, README, index, project Skill, workflow and template.
+- Scenario cases and concrete deployment cards were unchanged.
+
+## [2026-07-20] lint | Dimension-integrated countermeasures
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed no standalone overall, isolation or balance/symmetry countermeasure bullet remains in the latency overview or complete framework.
+- Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.

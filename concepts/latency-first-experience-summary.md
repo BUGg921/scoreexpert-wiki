@@ -48,8 +48,7 @@ contradictions: []
 
 ### (4) 场景案例
 
-- **案例：标准 32 卡同构基线**：[[homogeneous-32gpu-score-candidate]] 在 32 张正常卡、4 个 8 卡节点的约束下，以满卡、节点内 TP、无 PP 和低 MBN 构造第一轮基线；当前实例为 `PP=1,TP=8,DP=4,MBN=1`，同时对照少卡、浅 PP 和其他 TP/DP 组合。
-- **准入状态**：`active`。知识库所有者于 2026-07-20 确认为成熟经验；来源附件未包含原始 latency、throughput、通信时间和显存结果。^[raw/articles/scoring-strategy-analysis-2026-07-14.md]
+- **案例：标准 32 卡同构基线**：[[homogeneous-32gpu-score-candidate]] 在 32 张正常卡、4 个 8 卡节点的约束下，以满卡、节点内 TP、无 PP 和低 MBN 构造第一轮基线；当前实例为 `PP=1,TP=8,DP=4,MBN=1`，同时对照少卡、浅 PP 和其他 TP/DP 组合。^[raw/articles/scoring-strategy-analysis-2026-07-14.md]
 
 ## 3. 局部异构处理知识
 
@@ -67,14 +66,14 @@ contradictions: []
 
 ### (3) 并行策略
 
-- **总体对策：隔离**：把异常限制在尽可能小且可执行的同步组或 stage 中，并按预测 stage time 给慢卡 stage 少分层或少分计算。
-- **TP**：缩小 TP group 可以限制慢卡同步污染，但必须与更大 TP 的通信和流水线代价对照。
-- **TP/PP**：降低 TP 往往需要更深 PP；只有同时减少慢卡 stage 的层数或计算量才构成有效隔离。
-- **DP**：避免形成纯快 replica 等待含慢卡 replica；是否使用单 replica 由资源规模和异构分布共同决定。
-- **PP/MBN**：PP 加深后扫描足够的 MBN 以降低 bubble，同时检查端到端时延、显存和调度开销。
-- **对策验收**：对照不隔离、浅 PP 和不同 MBN，检查隔离收益是否大于 bubble、激活传输和调度成本。
-- **场景案例：单慢卡局部隔离**：[[single-slow-gpu-isolation]] 在 32 卡中存在一张约半速慢卡时，用小 TP、单 replica、深 PP 和 stage 重平衡限制局部污染；当前实例为 `PP=16,TP=2,DP=1,MBN=64`，其中 64 只是搜索上界候选。
-- **准入状态**：`active`。知识库所有者于 2026-07-20 确认为成熟经验；来源附件未包含原始 latency、stage time、group time 和可执行 layer mapping。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
+- **TP**：使用较小的 TP group，把慢卡造成的同步等待限制在较小范围内，避免影响扩散到更多正常卡。
+- **TP/PP**：降低 TP 后使用更深的 PP 承接剩余并行度，并把慢卡限制在少数 stage；同时减少慢卡 stage 的层数或计算量，使各 stage 的预计执行时间接近。
+- **DP**：避免形成纯快 replica 等待含慢卡 replica；异构无法在多个 replica 间均衡时，优先减少 DP 数量或使用单 replica。
+- **PP/MBN**：PP 加深后增大 MBN，降低 pipeline bubble；MBN 的选择同时受显存和调度开销约束。
+
+### (4) 场景案例
+
+- **案例：单慢卡局部隔离**：[[single-slow-gpu-isolation]] 在 32 卡中存在一张约半速慢卡时，用小 TP、单 replica、深 PP 和 stage 重平衡限制局部污染；当前实例为 `PP=16,TP=2,DP=1,MBN=64`，其中 64 只是搜索上界候选。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
 
 ## 4. 分布式异构处理知识
 
@@ -93,15 +92,15 @@ contradictions: []
 
 ### (3) 并行策略
 
-- **总体对策：均衡与对称**：不对称分布按预测执行时间重新映射；近似对称分布保持各 replica 的慢卡结构和预计耗时接近。
-- **TP**：把 TP group 限制在快速拓扑域内，同时测量含慢卡 group 的实际时间。
-- **TP/PP**：慢卡跨区域后，比较浅 PP/无 PP 与深 PP 隔离，避免多个慢 stage 串联放大瓶颈。
-- **DP**：不对称分布重点减少快慢 replica skew；近似对称分布重点保持各 replica 的结构或预测耗时接近。慢卡速度不一致时按预测执行时间均衡，不能只按数量平均分配。
-- **PP/MBN**：无流水线时从最小可行 MBN 起步；因显存增加 PP 后重新扫描 MBN。
-- **对策验收**：同时报告端到端 latency、各 replica time、最大等待比例和 skew。
-- **场景案例一：两慢卡非对称均衡**：[[two-slow-gpu-distributed-balance]] 在两张慢卡跨亲和组时，从逐点 PP 隔离切换到节点内 TP、节点间 DP，并测量快慢 replica skew；当前实例为 `PP=1,TP=8,DP=4,MBN=1`。
-- **场景案例二：四慢卡对称副本**：[[four-slow-gpu-symmetric-replicas]] 在四张速度接近的慢卡一节点一张时，让每个 DP replica 具有相同慢卡结构；当前实例同为 `PP=1,TP=8,DP=4,MBN=1`，但机制和触发条件不同。
-- **准入状态**：两页均为 `active`，知识库所有者于 2026-07-20 确认为成熟经验；来源报告当前策略最优，但附件未包含原始 latency、慢卡 ID/倍率、完整候选表和重复波动。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md] ^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
+- **TP**：将 TP group 限制在节点内或高速拓扑域内，避免高频 TP 通信跨越较慢链路；每个 TP group 的慢卡结构应尽可能可控。
+- **TP/PP**：慢卡跨多个区域分布时，深 PP 容易形成多个慢 stage，因此优先使用浅 PP 或无 PP；因显存必须增加 PP 时，按各 stage 的预计执行时间重新分配计算量。
+- **DP**：对于不对称分布，按预计执行时间重新映射慢卡，减少快 replica 等待慢 replica；对于近似对称分布，保持各 replica 的慢卡数量、速度和位置尽可能一致。慢卡速度不同时按预计执行时间均衡，不能只按数量平均分配。
+- **PP/MBN**：无 PP 时使用较小 MBN；因显存约束增加 PP 后，再根据流水线深度增大 MBN，减少 pipeline bubble。
+
+### (4) 场景案例
+
+- **案例一：两慢卡非对称均衡**：[[two-slow-gpu-distributed-balance]] 在两张慢卡跨亲和组时，从逐点 PP 隔离切换到节点内 TP、节点间 DP，并测量快慢 replica skew；当前实例为 `PP=1,TP=8,DP=4,MBN=1`。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md] ^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
+- **案例二：四慢卡对称副本**：[[four-slow-gpu-symmetric-replicas]] 在四张速度接近的慢卡一节点一张时，让每个 DP replica 具有相同慢卡结构；当前实例同为 `PP=1,TP=8,DP=4,MBN=1`，但机制和触发条件不同。^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
 
 ## 5. 跨场景延迟决策规则
 

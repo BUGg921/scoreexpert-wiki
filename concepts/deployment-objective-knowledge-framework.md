@@ -57,7 +57,6 @@ contradictions: []
 #### (4) 场景案例
 
 - 当前案例：[[homogeneous-32gpu-score-candidate]]。
-- 当前状态：`active`；匹配 32 卡同构硬条件时直接输出成熟基线策略。
 
 ### 2.2 局部异构处理知识
 #### (1) 场景定义
@@ -73,12 +72,14 @@ contradictions: []
 
 #### (3) 并行策略
 
-- **隔离对策**：利用较小 TP group 缩小同步污染范围。
-- 利用 PP 将慢卡限制在少数 stage，并按预测执行时间减少慢卡 stage 的层数或计算量。
-- 如果只增加 PP 而不做 stage 重平衡，不得称为有效隔离。
-- 完整记录 `PP`、`TP`、`DP`、`MBN` 和慢卡 rank 映射，并至少保留一个不做隔离的同构/浅 PP 对照。
-- 场景案例：[[single-slow-gpu-isolation]]。
-- 当前状态：`active`；匹配单慢卡和可控映射条件时直接输出深 PP 隔离策略。
+- **TP**：使用较小 TP group，把慢卡造成的同步等待限制在较小范围内。
+- **TP/PP**：降低 TP 后使用更深 PP，并把慢卡限制在少数 stage；同时减少慢卡 stage 的层数或计算量。
+- **DP**：避免形成纯快 replica 等待含慢卡 replica；无法均衡时优先减少 DP 数量或使用单 replica。
+- **PP/MBN**：PP 加深后增大 MBN，降低 pipeline bubble，同时受显存和调度开销约束。
+
+#### (4) 场景案例
+
+- 当前案例：[[single-slow-gpu-isolation]]。
 
 ### 2.3 分布式异构处理知识
 #### (1) 场景定义
@@ -94,13 +95,15 @@ contradictions: []
 
 #### (3) 并行策略
 
-- **均衡与对称对策**：按预测执行时间均衡各 replica，而不是只按慢卡数量平均分配。
-- 尽量让各 replica 的慢卡结构和预计耗时接近，减少快组等待慢组。
-- 同时验收绝对 latency 和 replica skew；两者不可互相替代。
-- 记录 `PP`、`TP`、`DP`、`MBN`，以及每个 replica/group 中慢卡的数量、速度和位置。
-- 场景案例，非对称分布：[[two-slow-gpu-distributed-balance]]。
+- **TP**：将 TP group 限制在节点内或高速拓扑域内，避免高频通信跨越较慢链路。
+- **TP/PP**：慢卡跨多个区域时优先使用浅 PP 或无 PP；因显存增加 PP 时按 stage 预计执行时间重新分配计算量。
+- **DP**：不对称分布按预计执行时间重新映射慢卡；近似对称分布保持各 replica 的慢卡数量、速度和位置尽可能一致。
+- **PP/MBN**：无 PP 时使用较小 MBN；增加 PP 后根据流水线深度增大 MBN。
+
+#### (4) 场景案例
+
+- 非对称分布：[[two-slow-gpu-distributed-balance]]。
 - 对称分布：[[four-slow-gpu-symmetric-replicas]]。
-- 当前状态均为 `active`；分别按非对称和对称分布的硬条件直接输出成熟策略。
 
 ## 3. 稳定优先型
 
@@ -140,10 +143,13 @@ contradictions: []
 
 #### (3) 并行策略
 
-- **隔离对策**：利用 PP 和可控映射限制局部异常影响，但必须验证慢 stage 是否造成更大的尾延迟波动。
-- 隔离候选失败时回退到浅 PP、剔除慢卡或重新分组方案。
-- 记录 `PP`、`TP`、`DP`、`MBN`、慢卡映射和可回退候选。
-- 场景对照：[[single-slow-gpu-isolation]] 目前不提供稳定优先结论。
+- **TP/PP**：利用较小 TP、PP 和可控映射限制局部异常影响，并按预测耗时重平衡慢卡 stage。
+- **DP**：避免局部异常在 replica 间形成持续等待差异或扩大失败传播范围。
+- **PP/MBN**：记录流水线深度、MBN、慢卡映射和可回退候选；异常无法隔离时回退到浅 PP、剔除慢卡或重新分组方案。
+
+#### (4) 场景案例
+
+- [[single-slow-gpu-isolation]] 目前不提供稳定优先结论。
 - 知识缺口：缺少多次运行方差、超时、失败率和恢复结果。
 
 ### 3.3 分布式异构处理知识
@@ -160,10 +166,13 @@ contradictions: []
 
 #### (3) 并行策略
 
-- **均衡与对称对策**：按预测耗时和波动共同均衡 replica，使各组结构尽可能对称。
-- 减少快组等待慢组，同时检查所有组一起变慢但更“整齐”的伪稳定情形。
-- 记录 `PP`、`TP`、`DP`、`MBN` 以及每个 group/replica 的预测耗时与实测方差。
-- 场景对照：[[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 可作为稳定性对照场景。
+- **TP/PP**：避免多个慢 stage 使瓶颈位置持续变化；增加 PP 时按预测耗时与波动重新分配计算量。
+- **DP**：按预测耗时和波动共同均衡 replica，使各组结构尽可能对称并减少快组等待慢组。
+- **PP/MBN**：记录流水线深度、MBN 以及每个 group/replica 的预测耗时与实测方差。
+
+#### (4) 场景案例
+
+- [[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 可作为稳定性对照场景。
 - 知识缺口：现有 Evaluation 没有报告重复运行方差、P99、超时和故障恢复，不能升级为稳定优先经验。
 
 ## 4. 每个场景案例的准入与推理字段
