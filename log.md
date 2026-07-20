@@ -526,3 +526,15 @@
 - Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
 - Confirmed the latency-first summary now ends with cross-scenario decision rules, while retaining links to the complete framework and ScoreExpert domain entry.
 - Git changes remain uncommitted.
+
+## [2026-07-20] delete | Remove redundant latency-wide summary section
+
+- Removed “1. 延迟优先总体经验” and its six summary bullets because their deployment content is already expanded in the three scenario-knowledge sections.
+- Retained one sentence below the page title defining latency-first and its throughput, memory, OOM and runtime-variation constraints.
+- Renumbered the remaining sections from 1 through 4 and updated the README and index descriptions; no scenario rule, scenario case or concrete experience card was removed.
+
+## [2026-07-20] lint | Latency overview without summary section
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed “延迟优先总体经验” and “总体经验可以概括为” no longer appear in the latency-first overview; the remaining knowledge sections are numbered consecutively from 1 through 4.
+- Git changes remain uncommitted.

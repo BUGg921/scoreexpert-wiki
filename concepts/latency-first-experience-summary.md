@@ -12,20 +12,9 @@ contradictions: []
 
 # 延迟优先型部署经验总览
 
-## 1. 延迟优先总体经验
+在 [[scoreexpert]] 部署经验库中，延迟优先以端到端 latency 为主要优化目标，同时约束 throughput、显存、OOM 和运行波动。
 
-延迟优先的目标是降低明确口径的端到端 latency，同时守住 throughput、显存、OOM 和运行波动等护栏。部署时先判断异构能否局部化，再决定使用同构基线、局部隔离还是分布式均衡；命中 `active` 经验及其边界时直接推理部署策略，真实 Evaluation 不再是每次部署的必经步骤。
-
-总体经验可以概括为：
-
-1. **资源规模先做反事实**：满卡和少卡都是候选。新增算力只有在收益大于通信、同步与异构成本时才值得保留；减卡后必须重建完整并行拓扑。
-2. **并行策略按机制组合**：分别分析 TP 同步范围、PP stage 瓶颈、DP replica 等待和 PP/MBN bubble，不用一个参数元组代替经验。
-3. **局部异常优先隔离**：异常能够限制在少量 group 或 stage 时，缩小污染范围并重平衡慢 stage，避免影响扩散。
-4. **分布式异常优先均衡**：异常跨区域后，逐点隔离价值下降，应减少快组等待慢组，并同时检查绝对 latency 与 replica skew。
-5. **实例只在案例中复用**：卡数、慢卡位置和 `PP/TP/DP/MBN` 必须绑定具体场景；总体经验只保存选择规则、机制和切换条件。
-6. **验证成本在入库时支付**：来源、历史 Evaluation、仿真或人工审核负责把经验升级为 `active`；后续匹配场景直接复用，只有未命中、越界或冲突时才重新验证。
-
-## 2. 同构基线知识
+## 1. 同构基线知识
 
 ### (1) 场景定义
 
@@ -50,7 +39,7 @@ contradictions: []
 
 - **案例：标准 32 卡同构基线**：[[homogeneous-32gpu-score-candidate]] 在 32 张正常卡、4 个 8 卡节点的约束下，以满卡、节点内 TP、无 PP 和低 MBN 构造第一轮基线；当前实例为 `PP=1,TP=8,DP=4,MBN=1`，同时对照少卡、浅 PP 和其他 TP/DP 组合。^[raw/articles/scoring-strategy-analysis-2026-07-14.md]
 
-## 3. 局部异构处理知识
+## 2. 局部异构处理知识
 
 ### (1) 场景定义
 
@@ -75,7 +64,7 @@ contradictions: []
 
 - **案例：单慢卡局部隔离**：[[single-slow-gpu-isolation]] 在 32 卡中存在一张约半速慢卡时，用小 TP、单 replica、深 PP 和 stage 重平衡限制局部污染；当前实例为 `PP=16,TP=2,DP=1,MBN=64`，其中 64 只是搜索上界候选。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
 
-## 4. 分布式异构处理知识
+## 3. 分布式异构处理知识
 
 ### (1) 场景定义
 
@@ -102,7 +91,7 @@ contradictions: []
 - **案例一：两慢卡非对称均衡**：[[two-slow-gpu-distributed-balance]] 在两张慢卡跨亲和组时，从逐点 PP 隔离切换到节点内 TP、节点间 DP，并测量快慢 replica skew；当前实例为 `PP=1,TP=8,DP=4,MBN=1`。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md] ^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
 - **案例二：四慢卡对称副本**：[[four-slow-gpu-symmetric-replicas]] 在四张速度接近的慢卡一节点一张时，让每个 DP replica 具有相同慢卡结构；当前实例同为 `PP=1,TP=8,DP=4,MBN=1`，但机制和触发条件不同。^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
 
-## 5. 跨场景延迟决策规则
+## 4. 跨场景延迟决策规则
 
 ```text
 无慢卡
@@ -118,4 +107,4 @@ contradictions: []
 → 构造慢卡结构或预测耗时对称的 DP replica
 ```
 
-切换依据是慢卡影响能否局部化，不是只按慢卡数量机械选择参数。模型显存、慢卡位置和倍率、rank mapping 或搜索空间改变时，应回到 [[deployment-objective-knowledge-framework]] 重新选择候选；领域入口与知识状态见 [[scoreexpert]]。
+切换依据是慢卡影响能否局部化，不是只按慢卡数量机械选择参数。模型显存、慢卡位置和倍率、rank mapping 或搜索空间改变时，应回到 [[deployment-objective-knowledge-framework]] 重新选择候选。

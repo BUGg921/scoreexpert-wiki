@@ -56,7 +56,7 @@ python3 scripts/lint_wiki.py
 ```text
 concepts/
 ├── deployment-objective-knowledge-framework.md  # 完整部署经验总库
-├── latency-first-experience-summary.md           # 延迟优先总体经验
+├── latency-first-experience-summary.md           # 延迟优先三类场景经验与跨场景决策
 ├── homogeneous-baseline/
 │   └── homogeneous-32gpu-score-candidate.md
 ├── local-heterogeneity/
