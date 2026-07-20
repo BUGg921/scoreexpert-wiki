@@ -44,7 +44,4 @@ PP=1, TP=8, DP=4, MBN=1
 - **DP**：四个节点内 TP group 组成 `DP=4`，让每个 replica 具有相同慢卡数量、速度分布和预测耗时。
 - **PP/MBN**：`PP=1` 时不需要填充 pipeline，因此使用 `MBN=1`；增加 PP 后必须重新选择 MBN。
 
-### 失效条件与回退
 
-- 运行中 `PP=1` OOM：使用满足显存约束的最小 PP，并按预测 stage time 重新分层。
-- replica skew 超过业务护栏：检查慢卡实际速度，按预测执行时间重新均衡各 replica。

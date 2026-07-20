@@ -44,7 +44,3 @@ PP=1, TP=8, DP=4, MBN=1
 - **DP**：使用 `DP=4` 扩展到四个节点；DP 不会自动消除快慢副本等待，运行时需监控 replica skew。
 - **PP/MBN**：`PP=1` 消除 pipeline bubble，因此使用 `MBN=1`；增加 PP 后必须重新选择 MBN。
 
-### 失效条件与回退
-
-- 运行中 `PP=1` OOM：回退到满足显存约束的最小 PP，并重新组合 TP/DP/MBN。
-- replica skew 超过业务护栏：按预测执行时间重新映射慢卡；仍无法收敛时重新组合并行参数。
