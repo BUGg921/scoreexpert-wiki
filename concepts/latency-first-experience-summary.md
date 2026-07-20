@@ -1,73 +1,68 @@
 ---
 title: 延迟优先型部署经验总览
 created: 2026-07-18
-updated: 2026-07-19
+updated: 2026-07-20
 type: summary
 tags: [scoreexpert, deployment, decision-guide, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence]
 sources: [raw/articles/scoring-strategy-analysis-2026-07-14.md, raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md, raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
-confidence: medium
+confidence: high
 contested: false
 contradictions: []
 ---
 
 # 延迟优先型部署经验总览
 
-## 1. 当前经验范围
+## 1. 延迟优先总体经验
 
-当前四张部署经验卡全部归入**延迟优先型**：目标是根据同构或慢卡分布选择第一轮并行策略，以减少流水线 bubble、同步等待、慢卡污染范围或 replica skew，并最终用端到端 latency 验证。它们不是稳定优先经验；现有来源没有重复运行方差、失败率、超时或恢复数据。
+延迟优先的目标是降低明确口径的端到端 latency，同时守住 throughput、显存、OOM 和运行波动等护栏。部署时先判断异构能否局部化，再决定使用同构基线、局部隔离还是分布式均衡；命中 `active` 经验及其边界时直接推理部署策略，真实 Evaluation 不再是每次部署的必经步骤。
 
-当前经验链为：
+总体经验可以概括为：
 
-```text
-同构 32 卡
-→ 单张局部慢卡
-→ 两张跨区域慢卡
-→ 四张均匀分布慢卡
-```
-
-四张卡形成“同构基线 → 局部隔离 → 分布式均衡 → 分布式对称”的策略切换链。现有证据仍需区分：同构和单慢卡为 `unverified`，两慢卡和四慢卡为 `partially_supported`；当前没有 `active` 正式经验。
+1. **资源规模先做反事实**：满卡和少卡都是候选。新增算力只有在收益大于通信、同步与异构成本时才值得保留；减卡后必须重建完整并行拓扑。
+2. **并行策略按机制组合**：分别分析 TP 同步范围、PP stage 瓶颈、DP replica 等待和 PP/MBN bubble，不用一个参数元组代替经验。
+3. **局部异常优先隔离**：异常能够限制在少量 group 或 stage 时，缩小污染范围并重平衡慢 stage，避免影响扩散。
+4. **分布式异常优先均衡**：异常跨区域后，逐点隔离价值下降，应减少快组等待慢组，并同时检查绝对 latency 与 replica skew。
+5. **实例只在案例中复用**：卡数、慢卡位置和 `PP/TP/DP/MBN` 必须绑定具体场景；总体经验只保存选择规则、机制和切换条件。
+6. **验证成本在入库时支付**：来源、历史 Evaluation、仿真或人工审核负责把经验升级为 `active`；后续匹配场景直接复用，只有未命中、越界或冲突时才重新验证。
 
 ## 2. 同构基线知识
 
 ### (1) 场景定义
 
-- 32 张正常 GPU，4 个节点，每节点 8 卡，每两个节点构成一个 16 卡亲和组。
-- 无已知慢卡或设备异构，目标是建立延迟 Evaluation 的正常对照。
+- 无已知慢卡、故障卡或显著设备异构。
+- 目标是在当前模型、batch、网络和 rank mapping 约束下建立正常延迟对照。
 
 ### (2) 资源规模部署经验
 
-- **满卡条件**：只有当前 score 的 idle 损失假设成立，并且真实 Evaluation 证明新增算力收益大于通信成本时，才保留满卡方案。
+- **满卡条件**：命中的正式经验明确覆盖当前资源和拓扑，并表明新增算力收益大于通信成本时，直接采用满卡方案；未命中正式经验时才保留满卡/少卡验证分支。
 - **少卡对照**：至少测试一个满足显存、并行整除和拓扑约束的少卡候选，寻找通信收益超过算力损失的反转边界。
 - **拓扑重建**：减卡不是随意删除 rank；需要重新形成完整 TP group、DP replica 或 PP stage，并重新搜索并行参数。
-- **当前实例**：可用 32 张正常卡，第一候选使用全部 32 卡；32 是当前场景实例，不是通用最优卡数。
 
 ### (3) 并行策略
 
-- **TP**：在 `TP≤8` 时先保持 TP group 在单节点内；较大 TP 必须与通信成本一起验证。
-- **TP/DP**：当前离散空间先测接近平衡且略偏 TP 的组合；`TP:DP=2:1` 只是 32 卡实例。
-- **PP**：显存允许时从 `PP=1` 起步消除 bubble；OOM 时改用可行的最小 PP。
-- **PP/MBN**：`PP=1` 时从 `MBN=1` 起步；PP 增大后重新扫描 MBN。
-- **当前实例**：`PP=1,TP=8,DP=4,MBN=1`。
+- **TP**：优先把高频 TP 通信限制在最快的拓扑域内；增大 TP 必须与同步和通信成本一起验证。
+- **TP/DP**：在拓扑允许时比较接近平衡与偏 TP/偏 DP 的候选，不把某个比例跨资源规模直接复用。
+- **PP**：显存允许时优先比较无流水线方案；OOM 时改用可行的最小 PP。
+- **PP/MBN**：无流水线时从最小可行 MBN 起步；PP 增大后重新扫描 MBN。
 
 ### (4) 场景案例
 
-- [[homogeneous-32gpu-score-candidate]]：作为第一轮延迟验证基线，同时对照 `TP=4,DP=8`、浅 PP 和少卡候选。
-- 状态：`unverified`。来源没有真实 latency、throughput、通信时间和显存结果。^[raw/articles/scoring-strategy-analysis-2026-07-14.md]
+- **案例：标准 32 卡同构基线**：[[homogeneous-32gpu-score-candidate]] 在 32 张正常卡、4 个 8 卡节点的约束下，以满卡、节点内 TP、无 PP 和低 MBN 构造第一轮基线；当前实例为 `PP=1,TP=8,DP=4,MBN=1`，同时对照少卡、浅 PP 和其他 TP/DP 组合。
+- **准入状态**：`active`。知识库所有者于 2026-07-20 确认为成熟经验；来源附件未包含原始 latency、throughput、通信时间和显存结果。^[raw/articles/scoring-strategy-analysis-2026-07-14.md]
 
 ## 3. 局部异构处理知识
 
 ### (1) 场景定义
 
-- 32 卡中只有一张约半速慢卡，异常仍能限制在一个局部区域。
-- 能识别慢卡 rank，并控制它所在的 TP group 和 PP stage。
+- 异常集中在一个可识别的局部区域，能够控制其所在的 TP group、PP stage 或计算映射。
+- 局部性的判断依据是影响能否被限制，而不是机械地只看慢卡数量。
 
 ### (2) 并行策略
 
-- **TP**：用小 TP 缩小慢卡同步污染，但需与较大 TP 对照通信与流水线代价。
-- **TP/PP**：降低 TP 会要求更深的 PP；只有同时重平衡慢卡 stage 才构成有效隔离。
-- **DP**：局部单慢卡从 `DP=1` 起步，避免快慢 replica 同步等待。
-- **PP/MBN**：深 PP 用较大 MBN 降低 bubble；`MBN=64` 是搜索上界实例，必须同时测试 16 和 32。
-- **当前实例**：`PP=16,TP=2,DP=1,MBN=64`。
+- **TP**：缩小 TP group 可以限制慢卡同步污染，但必须与更大 TP 的通信和流水线代价对照。
+- **TP/PP**：降低 TP 往往需要更深 PP；只有同时减少慢卡 stage 的层数或计算量才构成有效隔离。
+- **DP**：避免形成纯快 replica 等待含慢卡 replica；是否使用单 replica 由资源规模和异构分布共同决定。
+- **PP/MBN**：PP 加深后扫描足够的 MBN 以降低 bubble，同时检查端到端时延、显存和调度开销。
 
 ### (3) 局部异构的影响
 
@@ -77,62 +72,60 @@ contradictions: []
 
 ### (4) 对策：隔离
 
-1. 将慢卡放入 2 卡 TP group。
-2. 使用 `PP=16,DP=1` 限制同步污染和副本等待。
-3. 按预测 stage time 给慢卡 stage 少分层或少分计算。
-4. 对照无 PP、浅 PP 和不同 MBN，检查隔离收益是否大于 bubble、激活传输和调度成本。
+1. 把异常限制在尽可能小且可执行的同步组或 stage 中。
+2. 按预测 stage time 给慢卡 stage 少分层或少分计算。
+3. 对照不隔离、浅 PP 和不同 MBN，检查隔离收益是否大于 bubble、激活传输和调度成本。
 
 ### (5) 场景案例
 
-- [[single-slow-gpu-isolation]]：以 `16/2/1/64` 构造局部慢卡隔离实验。
-- 状态：`unverified`。两套 score 给出相同候选，但缺少 latency、stage time、group time 和可执行 layer mapping。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
+- **案例：单慢卡局部隔离**：[[single-slow-gpu-isolation]] 在 32 卡中存在一张约半速慢卡时，用小 TP、单 replica、深 PP 和 stage 重平衡限制局部污染；当前实例为 `PP=16,TP=2,DP=1,MBN=64`，其中 64 只是搜索上界候选。
+- **准入状态**：`active`。知识库所有者于 2026-07-20 确认为成熟经验；来源附件未包含原始 latency、stage time、group time 和可执行 layer mapping。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
 
 ## 4. 分布式异构处理知识
 
 ### (1) 场景定义
 
 - 慢卡跨节点、亲和组或 DP replica 分布，已经不能视为单个局部坏点。
-- 当前有两种形态：两张慢卡造成副本不对称；四张慢卡一节点一张形成副本对称。
+- 需要继续区分副本结构不对称和结构近似对称两种形态。
 
 ### (2) 并行策略
 
-- **TP**：每节点构造一个 `TP=8` group，避免高频 TP 通信跨节点。
-- **TP/PP**：慢卡跨区域后，优先比较无 PP 的节点内 TP 与深 PP 隔离，避免多个慢 stage。
-- **DP**：四节点组成 `DP=4`；两慢卡场景测快慢 replica skew，四慢卡场景保持 replica 结构或预测耗时对称。
-- **PP/MBN**：`PP=1` 时从 `MBN=1` 起步；因显存增加 PP 后重新扫描 MBN。
-- **当前实例**：`PP=1,TP=8,DP=4,MBN=1`。
+- **TP**：把 TP group 限制在快速拓扑域内，同时测量含慢卡 group 的实际时间。
+- **TP/PP**：慢卡跨区域后，比较浅 PP/无 PP 与深 PP 隔离，避免多个慢 stage 串联放大瓶颈。
+- **DP**：不对称分布重点测快慢 replica skew；近似对称分布重点保持各 replica 的结构或预测耗时接近。
+- **PP/MBN**：无流水线时从最小可行 MBN 起步；因显存增加 PP 后重新扫描 MBN。
 
 ### (3) 分布式异构的影响
 
 - 多个慢 stage 会削弱深 PP 对单个局部坏点的隔离价值。
-- 两张慢卡分布在两个节点时，会形成两个慢 replica 和两个快 replica，快组等待慢组。
-- 四张慢卡一节点一张时，所有 replica 都会变慢，但结构接近，可降低 replica skew。
+- 不对称分布会形成慢 replica 和快 replica，快组等待慢组。
+- 近似对称分布会让所有 replica 一起变慢，但结构接近时可降低 replica skew。
 - `replica 更均衡` 不等于绝对 latency 更低，两项必须同时验收。
 
 ### (4) 对策：均衡与对称
 
-1. 两张慢卡时，优先比较无 PP、节点内 TP、节点间 DP，测量快慢 replica skew。
-2. 四张慢卡且速度接近时，让每个 DP replica 都含一张慢卡，保持结构对称。
+1. 不对称分布按预测执行时间重新映射，减少快 replica 等待慢 replica。
+2. 近似对称分布保持各 replica 的慢卡结构和预计耗时接近。
 3. 慢卡速度不一致时按预测执行时间均衡，不能只按数量平均分配。
 4. 同时报告端到端 latency、各 replica time、最大等待比例和 skew。
 
 ### (5) 场景案例
 
-- [[two-slow-gpu-distributed-balance]]：两张慢卡跨亲和组，使用 `1/8/4/1` 从局部隔离切换为无流水线均衡。
-- [[four-slow-gpu-symmetric-replicas]]：四张慢卡一节点一张，使用 `1/8/4/1` 构造四个慢卡结构一致的副本。
-- 两页状态均为 `partially_supported`：来源报告当前候选为 Evaluation 最优，但缺少原始 latency、慢卡 ID/倍率、完整候选表和重复波动。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md] ^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
+- **案例一：两慢卡非对称均衡**：[[two-slow-gpu-distributed-balance]] 在两张慢卡跨亲和组时，从逐点 PP 隔离切换到节点内 TP、节点间 DP，并测量快慢 replica skew；当前实例为 `PP=1,TP=8,DP=4,MBN=1`。
+- **案例二：四慢卡对称副本**：[[four-slow-gpu-symmetric-replicas]] 在四张速度接近的慢卡一节点一张时，让每个 DP replica 具有相同慢卡结构；当前实例同为 `PP=1,TP=8,DP=4,MBN=1`，但机制和触发条件不同。
+- **准入状态**：两页均为 `active`，知识库所有者于 2026-07-20 确认为成熟经验；来源报告当前策略最优，但附件未包含原始 latency、慢卡 ID/倍率、完整候选表和重复波动。^[raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md] ^[raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
 
 ## 5. 跨场景延迟决策规则
 
 ```text
 无慢卡
-→ 用 1/8/4/1 建立同构延迟基线
+→ 建立同构资源规模与并行策略基线
 
-单张慢卡且能控制 rank/stage
-→ 测试 16/2/1/64 的局部隔离
+异常能够限制在局部 group/stage
+→ 缩小污染范围并重平衡慢 stage
 
 慢卡跨多个区域分散
-→ 隔离收益下降，测试 1/8/4/1 的节点内 TP + 节点间 DP
+→ 隔离收益下降，转向按预测耗时均衡 replica
 
 慢卡均匀覆盖所有节点
 → 构造慢卡结构或预测耗时对称的 DP replica
@@ -140,21 +133,34 @@ contradictions: []
 
 切换依据是慢卡影响能否局部化，不是只按慢卡数量机械选择参数。模型显存、慢卡位置和倍率、rank mapping 或搜索空间改变时，应回到 [[deployment-objective-knowledge-framework]] 重新选择候选。
 
-## 6. 延迟验收与共同失效边界
+## 6. 经验准入、直接推理与回退
 
-所有经验都必须在运行前定义 latency 口径和最小有效改善阈值 `δ`，至少同时报告：
+### 经验准入
+
+经验进入 `active` 前必须定义 latency 口径和最小有效改善阈值 `δ`，并通过可追溯来源、历史 Evaluation、仿真或人工审核补齐：
 
 - 端到端平均、P50、P95 或 P99 latency；选择其中一个作为主指标。
 - throughput、peak memory、OOM 和稳定性护栏。
 - TP group time、PP stage time 或 DP replica time 中与当前机制对应的指标。
 - 重复运行波动，确认差异超过测量噪声。
 
-共同失效条件：
+### 在线直接推理
+
+新场景的优化目标、资源拓扑、异构分布、模型约束、映射能力和经验量化边界全部匹配 `active` 卡时，直接返回：
+
+- 主部署策略及 `PP/TP/DP/MBN`。
+- rank/group/stage 映射和资源使用方式。
+- 命中的经验、置信度、适用边界与回退策略。
+
+这一路径不要求重新运行真实 Evaluation。
+
+### 回退与补库条件
 
 - `PP=1` 或目标候选 OOM。
 - 慢卡位置、速度倍率或拓扑不匹配。
 - 反事实候选的真实 latency 更低。
-- `MBN=64` 只表现为搜索边界解，并增加端到端时延或显存。
+- MBN 只表现为搜索边界解，并增加端到端时延或显存。
 - 对称映射降低 skew，但绝对 latency 超过业务上限。
+- 没有命中 `active` 经验、关键场景字段缺失、经验相互冲突或参数推导超出已登记量化范围。
 
-在原始指标和阈值补齐前，这四张卡必须继续按本节的延迟验收规则和各自经验页中的最小对照集合验证，不能作为无需对照的默认部署建议。整体知识格式见 [[deployment-objective-knowledge-framework]]，领域状态与召回入口见 [[scoreexpert]]。
+触发回退时才生成仿真、Evaluation 或人工审核任务，并把结果用于补库。当前四张场景卡均已由知识库所有者审核为 `active`；新场景命中任一卡的硬条件和量化边界时，直接输出其部署策略，不再重复支付 Evaluation 成本。完整经验库框架见 [[deployment-objective-knowledge-framework]]，领域状态与召回入口见 [[scoreexpert]]。

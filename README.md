@@ -2,6 +2,8 @@
 
 这是一个使用 Markdown 与 `[[wikilinks]]` 维护的 ScoreExpert GPU 部署经验库。它把不可变原始来源、综合知识页和维护规则分开保存，可直接使用 Obsidian、VS Code 或普通文本编辑器阅读。
 
+核心目标是把历史验证成本沉淀为可复用经验：新场景命中 `active` 经验及其适用边界时，直接推理部署策略，不要求为每次部署重新运行真实 Evaluation。Evaluation、仿真或人工审核主要用于经验准入、越界补库和冲突处理。
+
 ## 快速开始
 
 - 从 [index.md](index.md) 查看当前经验目录；初始化状态下目录为空。
@@ -37,7 +39,7 @@ python3 scripts/lint_wiki.py
 1. 一级入口：**延迟优先型、稳定优先型**。
 2. 二级场景：**同构基线、局部异构、分布式异构**。
 
-完整字段与当前证据覆盖见 [按优化目标组织的部署经验框架](concepts/deployment-objective-knowledge-framework.md)。当前稳定优先分支缺少直接 Evaluation，只保留格式、对照场景和验证缺口，不生成默认部署结论。
+完整字段与当前证据覆盖见 [ScoreExpert 部署经验总库](concepts/deployment-objective-knowledge-framework.md)。总库永久保留延迟优先和稳定优先的完整框架；当前稳定优先分支缺少直接 Evaluation，只保留结构、对照场景和验证缺口，不生成默认部署结论。
 
 三类二级场景分别是：
 
@@ -45,12 +47,12 @@ python3 scripts/lint_wiki.py
 2. **局部异构**：异常集中在单个局部区域时的污染限制与隔离。
 3. **分布式异构**：异常跨节点、亲和组或副本分布时的均衡与对称映射。
 
-每张经验页都使用 `experience_category` 和对应标签声明唯一场景分类；延迟/稳定是查询、指标和验收入口，不要求复制经验页。当前采用“优化目标总览 → 具体经验卡”的两层结构，不再保留重复的分类总览、独立 Score 决策链和通用验证计划。
+每张经验页都使用 `experience_category` 和对应标签声明唯一场景分类；延迟/稳定是查询、指标和验收入口，不要求复制经验页。当前采用“总经验库 → 优化目标总体经验 → 具体场景经验卡”的三层结构：总体经验只写跨实例规则，具体参数放入“场景案例”并链接唯一经验卡；不再保留重复的分类总览、独立 Score 决策链和通用验证计划。
 
 ```text
 concepts/
-├── deployment-objective-knowledge-framework.md  # 延迟/稳定一级入口
-├── latency-first-experience-summary.md           # 当前延迟优先经验总览
+├── deployment-objective-knowledge-framework.md  # 完整部署经验总库
+├── latency-first-experience-summary.md           # 延迟优先总体经验
 ├── homogeneous-baseline/
 │   └── homogeneous-32gpu-score-candidate.md
 ├── local-heterogeneity/

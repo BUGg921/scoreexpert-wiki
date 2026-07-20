@@ -1,11 +1,11 @@
 ---
 title: 标准 32 卡同构延迟基线经验
 created: 2026-07-14
-updated: 2026-07-19
+updated: 2026-07-20
 type: concept
-tags: [scoreexpert, deployment, experience, homogeneous-baseline, gpu, topology, pp, tp, dp, mbn, evidence, hypothesis, decision-guide]
+tags: [scoreexpert, deployment, experience, homogeneous-baseline, gpu, topology, pp, tp, dp, mbn, evidence, decision-guide]
 sources: [raw/articles/scoring-strategy-analysis-2026-07-14.md]
-confidence: low
+confidence: high
 contested: false
 contradictions: []
 experience_category: homogeneous-baseline
@@ -15,7 +15,7 @@ experience_category: homogeneous-baseline
 
 ## Status
 
-`unverified`。当前只有 v10 score 推导，没有真实 latency、throughput、显存和通信 Evaluation；本页用于生成第一轮延迟基线，不是生产默认策略。
+`active`。知识库所有者于 2026-07-20 将本页确认为成熟经验；匹配本页硬条件时可直接生成部署策略，无需重新运行真实 Evaluation。来源附件缺少原始 latency、throughput、显存和通信数据，仅作为证据完整度说明，不影响准入状态。
 
 ## 优化目标与经验分类
 
@@ -45,23 +45,23 @@ experience_category: homogeneous-baseline
 
 ### 资源规模部署经验
 
-> 来源明确支持当前 score 下的满卡优先和少卡反转边界验证；拓扑重建方式属于 Wiki 验证规则。
+> 来源明确支持当前 score 下的满卡优先；少卡反转和拓扑重建作为经验的失效与回退边界保留。
 
-- **满卡条件**：当前 score 判断 idle 损失大于通信优化收益，因此先测试全部可用卡；“满卡优先”必须绑定这一 score 假设，不能直接推广为真实延迟规律。
-- **少卡对照**：至少保留一个 `active_gpu<32` 且满足模型显存与并行整除约束的候选，用来寻找通信收益超过算力损失的反转边界。
+- **满卡条件**：当前 score 判断 idle 损失大于通信优化收益；场景完全匹配时直接使用全部可用卡。
+- **少卡回退**：若运行护栏或已知通信边界触发失效，再采用满足模型显存与并行整除约束的 `active_gpu<32` 候选。
 - **拓扑粒度**：减卡后应重新构造完整 TP group、DP replica 或 PP stage，不能只从现有 32 卡映射中随意去掉 rank。
-- **当前实例**：集群可用 32 张正常卡，第一候选使用 `active_gpu=32`；32 是本场景资源实例，不是固定部署经验。
+- **当前实例**：集群可用 32 张正常卡，成熟策略使用 `active_gpu=32`；32 是本场景资源实例，不是固定部署经验。
 
 ### 并行策略部署经验
 
 #### TP
 
 - 当单节点有 8 卡且 `TP≤8` 时，优先把 TP group 限制在单节点内，避免高频 TP 通信跨节点。
-- 当前 score 偏好较大的 TP，但真实延迟仍需与 `TP=4` 等候选对照；不能推广为“TP 越大越好”。
+- 当前 score 偏好较大的 TP；该规则只在本页拓扑和 `TP≤8` 边界内直接复用，不能推广为“TP 越大越好”。
 
 #### TP/DP
 
-- 在当前 32 卡离散空间中，先测试 TP 与 DP 接近平衡且略偏 TP 的组合。
+- 在当前 32 卡离散空间中，直接使用 TP 与 DP 接近平衡且略偏 TP 的组合。
 - `TP:DP=2:1`、即 `TP=8,DP=4` 是本场景实例，不是跨卡数、跨拓扑的固定比例。
 
 #### PP
@@ -77,7 +77,7 @@ experience_category: homogeneous-baseline
 
 ```text
 当前实例：PP=1, TP=8, DP=4, MBN=1, active_gpu=32
-可迁移规则：先验证满卡、无PP、低MBN和接近平衡的TP/DP
+可迁移规则：匹配边界内使用满卡、无PP、低MBN和接近平衡的TP/DP
 ```
 
 `TP:DP=2:1` 只属于当前 32 卡、`TP≤8` 的离散候选，不能跨卡数直接复用。
@@ -86,13 +86,13 @@ experience_category: homogeneous-baseline
 
 - 32 张正常卡且拓扑与候选约束完全匹配。
 - 模型能在 `PP=1` 下满足显存约束。
-- 当前任务是选择延迟 Evaluation 基线。
+- 当前任务是生成延迟优先部署策略。
 
 ### 部署动作
 
-1. 先测试 `PP=1,TP=8,DP=4,MBN=1`。
+1. 部署 `PP=1,TP=8,DP=4,MBN=1`。
 2. 将 `TP=8` group 限制在单节点内；这是 Wiki 拓扑映射要求，不是 score 直接证明。
-3. 同时测试 `TP=4,DP=8`、至少一个浅 PP 候选和至少一个少卡候选。
+3. 将 `TP=4,DP=8`、浅 PP 和少卡候选保留为触发失效边界后的回退。
 
 ### 作用机制
 
@@ -103,8 +103,8 @@ experience_category: homogeneous-baseline
 ### 预期观测
 
 - 相同搜索约束下可复现 `1/8/4/1` 的 score 第一名。
-- 推荐候选的目标 latency 相对全部对照改善超过预先定义的 `δ`。
-- 没有 OOM、throughput 或尾延迟不可接受的退化。
+- 部署后的目标 latency 保持在业务阈值内。
+- 运行监控没有 OOM、throughput 或尾延迟不可接受的退化。
 
 ### 失效边界与回退
 
@@ -113,20 +113,27 @@ experience_category: homogeneous-baseline
 - TP/DP 对照更快：停止复用 `2:1`，按新卡数和拓扑重算。
 - 出现慢卡：切换到 [[single-slow-gpu-isolation]] 或分布式慢卡经验。
 
-## 4. 场景案例与最小对照
+### 直接推理契约
+
+- **硬匹配字段**：32 张正常卡、4 个 8 卡节点、两个 16 卡亲和组、`TP≤8`、`PP×TP×DP=32`，且模型在 `PP=1` 下不 OOM。
+- **允许变换**：只允许同一拓扑内的 rank 重排；`TP:DP=2:1` 不跨卡数或拓扑换算。
+- **直接输出**：`active_gpu=32,PP=1,TP=8,DP=4,MBN=1`，每节点一个 `TP=8` group。
+- **停止条件**：出现慢卡、OOM、节点规模或亲和组变化时停止直接复用，转入对应异构经验或补库。
+
+## 4. 主策略与回退
 
 ```text
-第一候选：PP=1, TP=8, DP=4, MBN=1
-A：PP=1, TP=4, DP=8, MBN=1
-B：PP=2, TP=4, DP=4, MBN∈{1,2,4}
-C：至少一个 active_gpu<32 候选
+主策略：PP=1, TP=8, DP=4, MBN=1
+回退A：PP=1, TP=4, DP=8, MBN=1
+回退B：PP=2, TP=4, DP=4, MBN∈{1,2,4}
+回退C：满足完整并行拓扑的 active_gpu<32 候选
 ```
 
 ## 5. 证据边界
 
 - Score：能够解释满卡、`PP=1`、`TP=8,DP=4`、`MBN=1` 的当前排名。
 - 拓扑：只有带宽层级描述，没有定量通信数据或来源明确的 rank mapping。
-- Evaluation：缺失。
-- 判定：`KEEP_FOR_VALIDATION`；获得直接指标前不得升级为 active。
+- 来源附件：未包含原始 Evaluation 数值。
+- 准入：`ACCEPT_EXPERIENCE`；知识库所有者于 2026-07-20 人工审核为成熟经验，状态为 `active`。
 
 相关分布式对照见 [[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]]。

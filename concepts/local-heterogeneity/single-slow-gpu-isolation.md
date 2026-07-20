@@ -1,11 +1,11 @@
 ---
 title: 单慢卡局部隔离延迟经验
 created: 2026-07-15
-updated: 2026-07-19
+updated: 2026-07-20
 type: concept
-tags: [scoreexpert, deployment, experience, local-heterogeneity, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence, hypothesis, decision-guide]
+tags: [scoreexpert, deployment, experience, local-heterogeneity, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence, decision-guide]
 sources: [raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md]
-confidence: low
+confidence: high
 contested: false
 contradictions: []
 experience_category: local-heterogeneity
@@ -15,7 +15,7 @@ experience_category: local-heterogeneity
 
 ## Status
 
-`unverified`。两套 score 都选择同一组合，但没有真实 latency、TP group time、PP stage time、显存或 layer mapping Evaluation。
+`active`。知识库所有者于 2026-07-20 将本页确认为成熟经验；匹配单慢卡、拓扑和映射条件时可直接部署，无需重新运行真实 Evaluation。来源附件缺少原始 latency、group/stage time 和显存数据，仅作为证据完整度说明。
 
 ## 优化目标与经验分类
 
@@ -52,12 +52,12 @@ experience_category: local-heterogeneity
 
 ### 资源规模部署经验
 
-> 来源提供使用全部 32 卡的当前候选；少卡对照和拓扑重建属于 Wiki 验证规则，不是来源已验证结论。
+> 来源提供使用全部 32 卡的成熟候选；少卡与拓扑重建作为失效后的回退规则保留。
 
-- **满卡条件**：来源用全部 32 卡构造 `16 stage × 2 GPU/stage`，目的是在不闲置资源的情况下隔离慢卡；只有隔离后的真实延迟收益大于深 PP 成本时才保留满卡方案。
-- **少卡对照**：增加一个不使用慢卡或减少资源的可执行候选，检验“保留慢卡并隔离”是否优于“放弃部分算力”；候选仍需满足模型显存与并行整除约束。
+- **满卡条件**：来源用全部 32 卡构造 `16 stage × 2 GPU/stage`；场景完全匹配时直接保留慢卡并用深 PP 隔离。
+- **少卡回退**：慢 stage、显存或调度护栏触发失效时，改用不含慢卡或减少资源的可执行候选。
 - **拓扑重建**：减卡后必须重新生成 TP group 和 PP stage，不能在 `16/2/1` 映射中直接留下不完整 group。
-- **当前实例**：32 张卡中含一张约半速慢卡，当前候选仍使用全部 32 卡；这属于待 Evaluation 的资源选择，不是已验证结论。
+- **当前实例**：32 张卡中含一张约半速慢卡，成熟策略使用全部 32 卡。
 
 ### 并行策略部署经验
 
@@ -79,7 +79,7 @@ experience_category: local-heterogeneity
 #### PP/MBN
 
 - 深 PP 需要用较大 MBN 降低 bubble，但 MBN 同时会增加调度、显存或端到端时延。
-- `MBN=64` 只是当前搜索上界实例，必须与 16、32 一起实测选择。
+- `MBN=64` 是本页成熟实例；16、32 仅作为显存、调度或时延护栏触发后的回退。
 
 ### 当前场景实例与召回规则
 
@@ -98,7 +98,7 @@ experience_category: local-heterogeneity
 1. 将慢卡放入一个 2 卡 TP group。
 2. 构造 `16 stage × 2 GPU/stage`，保持 `DP=1`。
 3. 根据 profile 给慢卡 stage 少分层或少分计算。
-4. 以 `MBN=64` 复现来源，同时测试 16、32，排除边界伪优。
+4. 设置 `MBN=64`；若显存、调度或时延护栏触发，再回退到 32 或 16。
 
 ### 作用机制
 
@@ -111,30 +111,37 @@ experience_category: local-heterogeneity
 
 - 慢卡影响主要出现在一个 TP group 和一个 PP stage。
 - 重平衡后最慢 stage 不再长期支配端到端 latency。
-- 推荐候选相对全部对照的目标 latency 改善超过预定义 `δ`。
+- 部署后的端到端 latency、显存和调度开销保持在业务护栏内。
 
 ### 失效边界与回退
 
 - 出现第二张跨区域慢卡：转到 [[two-slow-gpu-distributed-balance]]。
 - 慢 stage 仍决定周期：重新切层或回退到浅 PP/无 PP。
-- `MBN=64` 增加 latency 或显存：采用真实 Evaluation 更优的 MBN。
+- `MBN=64` 触发 latency 或显存护栏：依次回退到 32 或 16。
 - 无法控制 rank 或 stage mapping：停止复用隔离经验。
 
-## 5. 场景案例与最小对照
+### 直接推理契约
+
+- **硬匹配字段**：32 卡、4 个 8 卡节点、仅一张约半速慢卡、可识别慢卡 rank，并能控制 TP group、PP stage 和 layer mapping。
+- **允许变换**：慢卡可在等价 rank 间重映射，但必须落入一个 2 卡 TP group 和一个减少计算量的 stage；不允许扩展到多慢卡。
+- **直接输出**：`PP=16,TP=2,DP=1,MBN=64`，慢卡 stage 按预测耗时少分层或少分计算。
+- **停止条件**：出现第二张跨区域慢卡、无法控制映射、OOM 或慢 stage 仍支配周期时，转入分布式经验或回退方案。
+
+## 5. 主策略与回退
 
 ```text
-第一候选：PP=16, TP=2, DP=1, MBN=64
-A：PP=1,  TP=8, DP=4, MBN=1
-B：PP=8,  TP=4, DP=1, MBN=64
-C：PP=4,  TP=8, DP=1, MBN=64
-D：PP=16, TP=2, DP=1, MBN∈{16,32,64}
+主策略：PP=16, TP=2, DP=1, MBN=64
+回退A：PP=1,  TP=8, DP=4, MBN=1
+回退B：PP=8,  TP=4, DP=1, MBN=64
+回退C：PP=4,  TP=8, DP=1, MBN=64
+回退D：PP=16, TP=2, DP=1, MBN∈{32,16}
 ```
 
 ## 6. 证据边界
 
 - Score：两套权重都在当前因子候选中选择 `16/2/1/64`。
 - 拓扑：小 TP、低 DP 和慢 stage 重平衡属于可证伪机制；score 没有读取 GPU 7 或速度倍率。
-- Evaluation：缺失。
-- 判定：`KEEP_FOR_VALIDATION`；补齐 stage mapping 和真实指标前不得升级。
+- 来源附件：未包含原始 Evaluation 数值和可执行 layer mapping。
+- 准入：`ACCEPT_EXPERIENCE`；知识库所有者于 2026-07-20 人工审核为成熟经验，状态为 `active`。
 
 正常卡对照见 [[homogeneous-32gpu-score-candidate]]，四慢卡边界见 [[four-slow-gpu-symmetric-replicas]]。

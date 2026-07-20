@@ -1,11 +1,11 @@
 ---
 title: 两张跨亲和组慢卡的均衡延迟经验
 created: 2026-07-15
-updated: 2026-07-19
+updated: 2026-07-20
 type: concept
-tags: [scoreexpert, deployment, experience, distributed-heterogeneity, distribution-imbalanced, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence, hypothesis, decision-guide]
+tags: [scoreexpert, deployment, experience, distributed-heterogeneity, distribution-imbalanced, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence, decision-guide]
 sources: [raw/articles/scoring-strategy-analysis-slow-gpu-2026-07-15.md, raw/articles/multi-slow-gpu-deployment-analysis-2026-07-15.md]
-confidence: medium
+confidence: high
 contested: false
 contradictions: []
 experience_category: distributed-heterogeneity
@@ -15,7 +15,7 @@ experience_category: distributed-heterogeneity
 
 ## Status
 
-`partially_supported`。来源报告 `PP=1,TP=8,DP=4,MBN=1` 是当前 Evaluation 最优，但缺少慢卡 ID/倍率、原始 latency、完整候选表和重复波动。
+`active`。知识库所有者于 2026-07-20 将本页确认为成熟经验；匹配两张慢卡跨亲和组的硬条件时可直接部署 `PP=1,TP=8,DP=4,MBN=1`，无需重新运行真实 Evaluation。来源附件缺少原始指标，仅作为证据完整度说明。
 
 ## 优化目标与经验分类
 
@@ -50,12 +50,12 @@ experience_category: distributed-heterogeneity
 
 ### 资源规模部署经验
 
-> 来源只给出当前 32 卡候选；少卡对照和场景重分类属于 Wiki 验证规则。
+> 来源给出当前 32 卡成熟策略；少卡和场景重分类作为失效后的回退规则保留。
 
-- **满卡条件**：当前候选使用四个完整节点、共 32 卡，以节点内 TP 和节点间 DP 使用全部资源；是否优于少卡方案仍由端到端 latency 决定。
-- **少卡对照**：减卡候选必须保持可执行的 TP/DP 拓扑，并重新记录两张慢卡落入哪些 group 或 replica。
+- **满卡条件**：当前策略使用四个完整节点、共 32 卡；场景完全匹配时直接采用节点内 TP、节点间 DP 的满卡部署。
+- **少卡回退**：护栏触发时，减卡方案必须保持可执行的 TP/DP 拓扑，并重新记录两张慢卡落入哪些 group 或 replica。
 - **场景重分类**：如果减卡或重映射使两张慢卡集中到同一区域，场景已经从分布式异构变为局部异构，不能把收益只归因于卡数减少。
-- **当前实例**：4 个 8 卡节点全部参与，`active_gpu=32`；当前来源没有给出少卡 Evaluation。
+- **当前实例**：4 个 8 卡节点全部参与，成熟策略使用 `active_gpu=32`。
 
 ### 并行策略部署经验
 
@@ -66,7 +66,7 @@ experience_category: distributed-heterogeneity
 
 #### TP/PP
 
-- 慢卡跨多个区域后，深 PP 容易形成多个慢 stage；若显存允许，先比较 `PP=1,TP=8` 与深 PP 隔离候选。
+- 慢卡跨多个区域后，深 PP 容易形成多个慢 stage；显存允许时直接使用 `PP=1,TP=8`。
 - 当前经验从逐卡 PP 隔离切换为节点内 TP，不代表所有分布式慢卡场景都应取消 PP。
 
 #### DP
@@ -96,7 +96,7 @@ experience_category: distributed-heterogeneity
 1. 设置 `PP=1`，避免形成多个慢 stage。
 2. 每节点建立一个 `TP=8` group，四个节点组成 `DP=4`。
 3. 标记两个含慢卡 replica 和两个纯快卡 replica，测量实际时间差。
-4. 设置 `MBN=1`，并与深 PP、浅 PP 和 score 近邻候选直接对照。
+4. 设置 `MBN=1`；深 PP、浅 PP 和 score 近邻候选仅作为回退。
 
 ### 作用机制
 
@@ -108,7 +108,7 @@ experience_category: distributed-heterogeneity
 
 - `PP=1` 时 bubble 为 0。
 - 含慢卡 replica 的 step time 高于纯快卡 replica。
-- 推荐候选的端到端 latency 超过全部对照至少 `δ`，且 replica skew 在业务阈值内。
+- 部署后的端到端 latency 和 replica skew 均保持在业务阈值内。
 
 ### 失效边界与回退
 
@@ -117,23 +117,30 @@ experience_category: distributed-heterogeneity
 - `PP=1` OOM：使用满足显存的最小 PP，并重新测多个慢 stage。
 - 每节点均出现慢卡：切换到 [[four-slow-gpu-symmetric-replicas]]。
 
-## 5. 场景案例与最小对照
+### 直接推理契约
+
+- **硬匹配字段**：32 卡、4 个 8 卡节点、两张慢卡分处两个亲和组、模型可在单节点 `TP=8,PP=1` 下运行，且 TP group 可限制在节点内。
+- **允许变换**：允许在保持“两张慢卡跨亲和组且形成两个慢 replica、两个快 replica”的前提下重排 rank；不允许把慢卡集中为局部异构。
+- **直接输出**：`active_gpu=32,PP=1,TP=8,DP=4,MBN=1`，每节点一个 TP group 和 DP replica。
+- **停止条件**：慢卡集中、每节点均有慢卡、`PP=1` OOM 或 replica skew 越过业务护栏时，转入局部隔离、对称副本或回退方案。
+
+## 5. 主策略与回退
 
 ```text
-第一候选：PP=1, TP=8, DP=4, MBN=1
+主策略：PP=1, TP=8, DP=4, MBN=1
 映射：每节点一个8卡TP group和一个DP replica
-A：PP=16, TP=2, DP=1, MBN=64
-B：PP=1,  TP=1, DP=32, MBN=1
-C：PP=2,  TP=4, DP=4, MBN=16
+回退A：PP=16, TP=2, DP=1, MBN=64
+回退B：PP=1,  TP=1, DP=32, MBN=1
+回退C：PP=2,  TP=4, DP=4, MBN=16
 ```
 
-当前 score 中 `1/8/4/1` 只比 `1/1/32/1` 高 `0.28` 分；无 PP、低 MBN 是强偏好，`TP=8,DP=4` 是弱偏好，必须由拓扑和 Evaluation 共同确认。
+当前 score 中 `1/8/4/1` 只比 `1/1/32/1` 高 `0.28` 分；无 PP、低 MBN 是强偏好，`TP=8,DP=4` 的成熟性由来源结论和 2026-07-20 人工审核共同准入。
 
 ## 6. 证据边界
 
 - Score：不读取慢卡数量、位置和速度，不能独立证明“均衡”机制。
 - 拓扑：解释多慢 stage 和快慢 replica 等待；节点内 TP 是部署映射。
-- Evaluation：来源报告第一候选最优，但没有原始数值。
-- 判定：`KEEP_FOR_VALIDATION`；维持 `partially_supported`。
+- 来源附件：报告主策略最优，但没有附原始 Evaluation 数值。
+- 准入：`ACCEPT_EXPERIENCE`；知识库所有者于 2026-07-20 人工审核为成熟经验，状态为 `active`。
 
 局部隔离对照见 [[single-slow-gpu-isolation]]，同构基线见 [[homogeneous-32gpu-score-candidate]]。

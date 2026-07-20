@@ -1,7 +1,7 @@
 ---
-title: 按优化目标组织的部署经验框架
+title: ScoreExpert 部署经验总库
 created: 2026-07-18
-updated: 2026-07-19
+updated: 2026-07-20
 type: summary
 tags: [scoreexpert, deployment, decision-guide, governance, evidence]
 sources: []
@@ -10,9 +10,9 @@ contested: false
 contradictions: []
 ---
 
-# 按优化目标组织的部署经验框架
+# ScoreExpert 部署经验总库
 
-## 1. 总体结构
+## 1. 总库结构与当前状态
 经验库使用二维结构：先按**优化目标**进入，再按**异构分布范围**选择场景知识。
 
 ```text
@@ -30,12 +30,12 @@ contradictions: []
 - “延迟优先 / 稳定优先”回答：**这次部署首先优化什么**。
 - “同构基线 / 局部异构 / 分布式异构”回答：**硬件异常以什么范围分布，为什么需要改变策略**。
 - 一张具体经验卡只保存一份；两个目标入口可以引用同一张卡，但必须分别写出目标、指标、验收条件和回退条件，不能复制一套结论。
-- 当前四张经验卡全部属于延迟优先型，汇总结论见 [[latency-first-experience-summary]]；稳定优先型目前没有经验卡。
+- 本文件永久保留延迟优先和稳定优先的完整三类框架；当前四张延迟优先卡均已人工审核为 `active`，稳定优先暂时没有部署经验，但其结构和知识缺口不能删除。
 
-当前三类场景的详细经验直接保存在 [[homogeneous-32gpu-score-candidate]]、[[single-slow-gpu-isolation]]、[[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 中，不再设置重复的分类总览页。
+总库采用“离线准入、在线推理”：[[homogeneous-32gpu-score-candidate]]、[[single-slow-gpu-isolation]]、[[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 等经验卡升级为 `active` 后，匹配场景直接复用策略，不强制重新 Evaluation。
 
 ## 2. 延迟优先型
-延迟优先型以端到端 latency 为主目标。必须明确是平均值、P50、P95、P99 还是单步最大值，并同时给出吞吐、显存、OOM 和稳定性护栏，不能只依据 score 排名宣称延迟更优。
+延迟优先型以端到端 latency 为主目标。经验准入时必须明确平均值、P50、P95、P99 或单步最大值及护栏；在线命中 `active` 经验的硬条件和量化边界后，直接输出策略，不要求新一轮真实 Evaluation。
 
 ### 2.1 同构基线知识
 #### (1) 场景定义
@@ -57,7 +57,7 @@ contradictions: []
 #### (4) 场景案例
 
 - 当前案例：[[homogeneous-32gpu-score-candidate]]。
-- 当前状态：`unverified`；它是 32 卡第一轮 Evaluation 基线，不是已验证的最低延迟策略。
+- 当前状态：`active`；匹配 32 卡同构硬条件时直接输出成熟基线策略。
 
 ### 2.2 局部异构处理知识
 #### (1) 场景定义
@@ -84,7 +84,7 @@ contradictions: []
 #### (5) 场景案例
 
 - 当前案例：[[single-slow-gpu-isolation]]。
-- 当前状态：`unverified`；深 PP 隔离需要 latency、stage time 和 group time 的直接 Evaluation。
+- 当前状态：`active`；匹配单慢卡和可控映射条件时直接输出深 PP 隔离策略。
 
 ### 2.3 分布式异构处理知识
 #### (1) 场景定义
@@ -111,7 +111,7 @@ contradictions: []
 
 - 非对称分布：[[two-slow-gpu-distributed-balance]]。
 - 对称分布：[[four-slow-gpu-symmetric-replicas]]。
-- 当前状态均为 `partially_supported`；来源报告了 Evaluation 胜者，但缺少原始 latency、卡号、速度倍率和重复波动。
+- 当前状态均为 `active`；分别按非对称和对称分布的硬条件直接输出成熟策略。
 
 ## 3. 稳定优先型
 
@@ -186,15 +186,15 @@ contradictions: []
 - [[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 可作为稳定性对照场景。
 - 知识缺口：现有 Evaluation 没有报告重复运行方差、P99、超时和故障恢复，不能升级为稳定优先经验。
 
-## 4. 每个场景案例的强制证据字段
+## 4. 每个场景案例的准入与推理字段
 
-上述格式定义知识入口；每张具体案例仍必须补齐：
+上述格式定义知识入口；每张具体案例必须补齐：
 
 1. 目标指标与护栏指标。
 2. 场景、卡数、拓扑、慢卡数量/位置/速度。
 3. `PP/TP/DP/MBN` 与可执行映射。
-4. 作用机制和可观测指标。
-5. 第一候选、反事实候选、验收阈值和回退动作。
-6. Score、拓扑推理、真实 Evaluation 三类证据及状态。
+4. 作用机制、适用边界和硬匹配字段。
+5. 直接输出的主策略、映射、置信度和回退动作。
+6. Score、拓扑推理、历史 Evaluation/仿真/审核等准入证据及状态。
 
-缺少直接 Evaluation 时，只能按 [[latency-first-experience-summary]] 中的验收与共同失效边界继续验证，不能成为默认部署建议。
+命中 `active` 卡且不越界时按 [[latency-first-experience-summary]] 直接推理，无需新 Evaluation；未命中、越界、冲突或只命中非 active 卡时，才进入仿真/Evaluation/人工审核补库流程。

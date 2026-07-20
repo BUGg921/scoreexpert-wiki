@@ -311,3 +311,62 @@
 - Confirmed all four cards separate resource-scale rules from current 32-card instances and label added reduced-card/topology reasoning as Wiki validation rules where the source lacks direct Evaluation.
 - The deployment-objective framework remains at the 200-line threshold without triggering a size review.
 - The two remaining review items are the intentional low-confidence homogeneous and single-slow-card states; Git changes remain uncommitted.
+
+## [2026-07-19] update | Separate overall experience from scenario instances
+
+- Reworked `latency-first-experience-summary.md` so it begins with reusable latency-first overall experience instead of “current experience scope”.
+- Removed concrete card counts, slow-card placements and PP/TP/DP/MBN tuples from general category rules; these now appear only under the matching “scenario case”, together with the linked single-scenario experience and evidence status.
+- Recast `deployment-objective-knowledge-framework.md` as the permanent ScoreExpert deployment experience library, retaining the complete latency-first and stability-first branches even though stability-first currently has no deployment experience.
+- Updated `SCHEMA.md`, README, index, project Skill, workflow, template and agent prompt to enforce the three-level structure: total library -> objective-level overall experience -> single-scenario experience card.
+- No raw source, evolution snapshot, concrete experience card or evidence status was changed.
+
+## [2026-07-19] lint | Three-level experience library
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Confirmed `latency-first-experience-summary.md` has no “current experience scope” section and all concrete card counts and parameter tuples occur only in scenario-case summaries.
+- Confirmed the total library retains complete latency-first and stability-first branches; the framework remains at 200 lines without a size review.
+- Skill frontmatter and agent YAML parsed successfully. The two remaining review items are intentional low-confidence evidence states; Git changes remain uncommitted.
+
+## [2026-07-19] update | Name scenario cases directly
+
+- Removed the redundant “single-scenario experience” labels from the latency-first overview.
+- Renamed the four entries to direct business-facing cases: standard 32-card homogeneous baseline, single-slow-card local isolation, two-slow-card asymmetric balance and four-slow-card symmetric replicas.
+- Updated the total library wording, schema, index, Skill workflow and templates so scenario cases use concrete case names such as “case” or “case one/case two”, while still linking the unique experience card.
+- No deployment rule, parameter, source or evidence status changed.
+
+## [2026-07-19] lint | Direct scenario-case names
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Confirmed the latency-first overview and total-library prose contain no “single-scenario experience” labels; all four entries use direct case names.
+- The two remaining review items are unchanged low-confidence evidence states; Git changes remain uncommitted.
+
+## [2026-07-20] update | Make direct inference the runtime objective
+
+- Clarified the knowledge base objective as “offline admission, online inference”: a new scenario that matches one `active` experience and stays within its quantitative boundaries receives a deployment strategy without running a fresh real Evaluation.
+- Added a direct-inference contract covering hard scenario fields, allowed parameter transformations, output strategy/mapping/confidence/fallback and stop conditions.
+- Defined Evaluation, simulation and human review as admission, boundary-expansion and conflict-resolution tools rather than mandatory steps for every deployment.
+- Updated README, entity page, index, total library, latency-first overview, schema, project Skill, workflow, formal-card template and agent prompt.
+- Preserved the current evidence boundary: all four cards remain `unverified` or `partially_supported`, so the current library still enters knowledge-completion mode until an experience is reviewed and promoted to `active`.
+
+## [2026-07-20] lint | Direct-inference knowledge contract
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 2`; structural checks and `git diff --check` passed.
+- Skill frontmatter and agent YAML parsed successfully; the total library remains at 200 lines without a size review.
+- Confirmed active matches use the direct-inference path, while missing, out-of-bound, conflicting or non-active matches use the knowledge-completion path.
+- The two review items remain the intentional low-confidence homogeneous and single-slow-card states; Git changes remain uncommitted.
+
+## [2026-07-20] update | Admit four mature latency experiences
+
+- Treated the knowledge-base owner's explicit statement that all four current experiences are mature as the human-review admission decision.
+- Promoted the homogeneous baseline, single-slow-card isolation, two-slow-card asymmetric balance and four-slow-card symmetric replica cards to `active` with `confidence: high`; removed their `hypothesis` tags.
+- Added a direct-inference contract to every card with hard match fields, allowed transformations, direct PP/TP/DP/MBN output and stop/fallback conditions.
+- Replaced mandatory “test first” and comparison-Evaluation wording with direct deployment plus runtime guardrails and fallback strategies.
+- Preserved missing raw metrics as source-attachment completeness notes, while recording `ACCEPT_EXPERIENCE`, the 2026-07-20 owner review and active status separately.
+- Updated the latency overview, total library, ScoreExpert entity, index, schema, Skill and workflow so experience maturity is not conflated with source attachment completeness.
+
+## [2026-07-20] lint | Four active mature experiences
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed all four cards have `confidence: high`, `active` status, `ACCEPT_EXPERIENCE` owner-review admission and a complete direct-inference contract.
+- Confirmed no current card retains `unverified`, `partially_supported`, `KEEP_FOR_VALIDATION`, “must upgrade” or mandatory comparison-Evaluation wording.
+- Git changes remain uncommitted.

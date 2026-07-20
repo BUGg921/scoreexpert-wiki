@@ -1,4 +1,4 @@
 interface:
   display_name: "维护 ScoreExpert 部署 Wiki"
-  short_description: "按优化目标维护来源可追溯的 ScoreExpert 部署经验"
-  default_prompt: "使用 $maintain-scoreexpert-wiki 按优化目标导入或更新部署经验，并保持来源、证据和 Wiki 结构一致。"
+  short_description: "分层维护来源可追溯的 ScoreExpert 部署经验总库"
+  default_prompt: "使用 $maintain-scoreexpert-wiki 按三层结构维护知识；命中 active 经验及边界时直接推理部署策略，未命中或越界时生成最小补库任务。"
