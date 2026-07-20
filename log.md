@@ -370,3 +370,56 @@
 - Confirmed all four cards have `confidence: high`, `active` status, `ACCEPT_EXPERIENCE` owner-review admission and a complete direct-inference contract.
 - Confirmed no current card retains `unverified`, `partially_supported`, `KEEP_FOR_VALIDATION`, “must upgrade” or mandatory comparison-Evaluation wording.
 - Git changes remain uncommitted.
+
+## [2026-07-20] update | Reduce scenario cards to two sections
+
+- Rewrote all four concrete scenario cards so their only top-level body sections are “1. 场景描述” and “2. 具体的并行策略”.
+- Moved maturity, topology, heterogeneity, hard-match and admission context into the scene description; kept the direct output, card-count rule, TP/PP/DP/MBN experience, actions, boundaries, fallback and admission record under the concrete parallel strategy.
+- Updated README, index, total-library framework, schema, project Skill, workflow and formal-card template to enforce the same structure for future scenario cards.
+- Preserved all four `active`, high-confidence admission decisions and direct-inference outputs; no raw source or evolution artifact was changed.
+
+## [2026-07-20] lint | Two-section scenario cards
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed each of the four concrete cards contains exactly two second-level headings and remains below the 200-line review threshold.
+- Confirmed Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
+
+## [2026-07-20] update | Nest heterogeneity countermeasures under parallel strategy
+
+- Reordered local and distributed heterogeneity knowledge as “scene definition → heterogeneity impact → parallel strategy”.
+- Moved isolation, balance and symmetry countermeasures into parallel strategy instead of keeping them as peer sections; scenario cases now appear as strategy instances.
+- Applied the same structure to the latency overview, the complete latency/stability framework, schema, README, index, project Skill, workflow and objective-summary template.
+- Concrete scenario cards, active status, confidence and direct deployment outputs were unchanged.
+
+## [2026-07-20] lint | Heterogeneity impact before strategy
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed local and distributed heterogeneity use exactly “scene definition → heterogeneity impact → parallel strategy” in the latency overview and both branches of the complete framework.
+- Confirmed there are no peer “countermeasure” or “scenario case” headings under local/distributed heterogeneity; Skill frontmatter and agent YAML parse successfully.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | Generalize category definitions from active scenarios
+
+- Rewrote homogeneous, local-heterogeneity and distributed-heterogeneity scene definitions by generalizing the four active experimental scenarios.
+- Defined homogeneous by the absence of persistent device-speed differences, local heterogeneity by whether impact can be confined to one controllable local scope, and distributed heterogeneity by whether anomalies span multiple independent topology scopes.
+- Kept 32 cards and one/two/four slow GPUs as scenario instances rather than category thresholds; preserved asymmetric and near-symmetric distributed subtypes.
+- Updated the latency overview, complete framework, schema, README, index, project Skill and template; concrete cards and deployment strategies were unchanged.
+
+## [2026-07-20] lint | Scenario-derived category definitions
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed all three definitions distinguish reusable category criteria from the current 32-card and one/two/four-slow-GPU instances.
+- Confirmed the complete framework remains below 200 lines; Skill frontmatter and agent YAML parse successfully.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | State scene definitions directly
+
+- Removed meta wording such as “derived from a case”, “current case” and “category threshold” from the three scene definitions.
+- Restored concise scene descriptions: homogeneous has no persistent device-speed difference, local heterogeneity can be confined to one controllable scope, and distributed heterogeneity spans multiple independent topology scopes.
+- Updated the latency overview, complete framework, schema, README, index, project Skill and template; cases and deployment strategies were unchanged.
+
+## [2026-07-20] lint | Direct scene-definition wording
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the current scene definitions contain no “derived from case”, “current case size” or “category threshold” meta wording.
+- Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
