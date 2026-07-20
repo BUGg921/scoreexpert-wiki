@@ -52,28 +52,32 @@ confidence: high | medium | low
 contested: false
 contradictions: []
 experience_category: homogeneous-baseline | local-heterogeneity | distributed-heterogeneity
+status: active | superseded | unverified | partially_supported | supported | refuted | mixed
+optimization_priority: latency-first | stability-first
+admitted_by: <审核主体；active 必填>
+admitted_at: YYYY-MM-DD # active 必填
 ---
 
 # 标题
 
 ## 1. 场景描述
 
-- **经验状态**：`active | candidate | archived`
-- **优化目标**：延迟优先 | 稳定优先
-- **主指标与护栏**：<延迟或稳定性指标，以及 throughput、显存、OOM 等约束>
-- **场景分类**：同构基线 | 局部异构 | 分布式异构
 - **资源拓扑**：<总卡数、每节点卡数、亲和组和可用卡范围>
 - **异构分布**：<慢卡数量、位置、速度倍率和分布；同构场景写明无慢卡>
 - **模型与映射约束**：<模型、batch、显存、搜索空间和 rank/group 映射能力>
 - **硬匹配条件**：<允许直接召回本经验的目标、拓扑、异构和模型条件>
-- **准入依据**：<来源结论、Evaluation、仿真或人工审核记录>
-- **目标总览**：[[<optimization-priority>-experience-summary]]
+- **不适用条件**：<会停止匹配本经验的场景变化，并链接应切换的经验卡>
 
 ## 2. 具体的并行策略
 
-### 直接输出
+### 部署策略
 
-`active_gpu=?, PP=?, TP=?, DP=?, MBN=?`
+```text
+active_gpu=?
+PP=?, TP=?, DP=?, MBN=?
+映射：<rank、TP group、DP replica 或 PP stage 映射>
+执行：<把参数和映射落地的关键动作>
+```
 
 ### 部署经验
 
@@ -83,24 +87,14 @@ experience_category: homogeneous-baseline | local-heterogeneity | distributed-he
 - **DP**：<replica 数量、映射、等待或均衡规则>
 - **PP/MBN**：<流水线深度与 microbatch 的联动规则>
 
-### 部署动作
+### 失效条件与回退
 
-1. <使用命令式语句写出参数选择。>
-2. <写出 rank、TP group、DP replica 或 PP stage 的映射。>
+- **运行时失效条件**：<OOM、通信、skew、慢 stage 或其他护栏触发>
+- **回退策略**：<失效后采用的参数调整或替代部署方案>
 
-### 适用边界与回退
-
-- **允许变换**：<能够按哪些比例、阈值或公式调整参数>
-- **停止条件**：<缺字段、越界、冲突或非 active 时停止直接复用>
-- **回退策略**：<停止直接复用后采用的已知策略或补库任务>
-
-### 准入记录
-
-- <ACCEPT_EXPERIENCE 等判定、审核人、日期和依据。>
-- <来源中的显式经验、分散结论、证据边界和缺口也在本章记录，不另建第三级正文结构。>
 ```
 
-具体经验卡正文只允许“场景描述”和“具体的并行策略”两个二级标题。来源已有显式经验时须忠实保留；只有分散结论时注明归纳依据；没有来源部署结论时才标记为 Wiki 推导。上述内容全部归入第二章的部署经验、适用边界或准入记录，不再新增并列的正文一级章节。
+具体经验卡正文只允许“场景描述”和“具体的并行策略”两个二级标题。状态、优化目标、准入主体、准入日期、来源和置信度只写 frontmatter。来源已有显式经验时须忠实保留；只有分散结论时注明归纳依据；没有来源部署结论时才标记为 Wiki 推导。来源审计与附件缺口保留在来源层或审核日志，不新增正文治理章节。
 
 ## 按优化目标组织的知识入口
 

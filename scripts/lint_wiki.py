@@ -17,7 +17,23 @@ EXPERIENCE_CATEGORIES = {
     "local-heterogeneity",
     "distributed-heterogeneity",
 }
+EXPERIENCE_STATUSES = {
+    "active",
+    "superseded",
+    "unverified",
+    "partially_supported",
+    "supported",
+    "refuted",
+    "mixed",
+}
+OPTIMIZATION_PRIORITIES = {"latency-first", "stability-first"}
+REQUIRED_EXPERIENCE_SUBHEADINGS = {"部署策略", "部署经验", "失效条件与回退"}
+FORBIDDEN_EXPERIENCE_SUBHEADINGS = {"直接输出", "部署动作", "适用边界与回退"}
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)")
+BODY_GOVERNANCE_RE = re.compile(
+    r"^\s*-\s*\*\*(状态|优化目标|准入依据|目标总览)\*\*：|^###\s+准入记录\s*$",
+    re.MULTILINE,
+)
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, object], str]:
@@ -87,6 +103,42 @@ def main() -> int:
                     f"{rel}: experience page must be stored under "
                     f"concepts/{category}/"
                 )
+            status = str(meta.get("status", ""))
+            if status not in EXPERIENCE_STATUSES:
+                errors.append(
+                    f"{rel}: status must be one of {sorted(EXPERIENCE_STATUSES)}"
+                )
+            priority = str(meta.get("optimization_priority", ""))
+            if priority not in OPTIMIZATION_PRIORITIES:
+                errors.append(
+                    f"{rel}: optimization_priority must be one of "
+                    f"{sorted(OPTIMIZATION_PRIORITIES)}"
+                )
+            if status == "active":
+                for field in ("admitted_by", "admitted_at"):
+                    if not str(meta.get(field, "")).strip():
+                        errors.append(f"{rel}: active experience missing {field}")
+            governance_match = BODY_GOVERNANCE_RE.search(body)
+            if governance_match:
+                errors.append(
+                    f"{rel}: governance metadata must be stored in frontmatter, "
+                    f"not body ({governance_match.group(0).strip()})"
+                )
+            subheadings = set(re.findall(r"^###\s+(.+?)\s*$", body, re.MULTILINE))
+            missing_subheadings = REQUIRED_EXPERIENCE_SUBHEADINGS - subheadings
+            if missing_subheadings:
+                errors.append(
+                    f"{rel}: missing experience subheadings "
+                    f"{sorted(missing_subheadings)}"
+                )
+            forbidden_subheadings = FORBIDDEN_EXPERIENCE_SUBHEADINGS & subheadings
+            if forbidden_subheadings:
+                errors.append(
+                    f"{rel}: obsolete experience subheadings "
+                    f"{sorted(forbidden_subheadings)}"
+                )
+            if "**不适用条件**：" not in body:
+                errors.append(f"{rel}: scene description missing 不适用条件")
         elif category:
             errors.append(f"{rel}: experience_category is only valid on experience pages")
         sources = meta.get("sources", [])

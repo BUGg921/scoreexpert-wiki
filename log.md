@@ -475,3 +475,54 @@
 - Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
 - Confirmed no standalone overall, isolation or balance/symmetry countermeasure bullet remains in the latency overview or complete framework.
 - Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
+
+## [2026-07-20] update | Move scenario-card governance into frontmatter
+
+- Added `status`, `optimization_priority`, `admitted_by` and `admitted_at` to all four active concrete experience cards.
+- Removed repeated status, optimization-goal, admission-basis, objective-summary and admission-record content from card bodies; the two body chapters now contain only scene conditions and deployable strategy.
+- Updated schema, complete framework, README, index, project Skill, workflow and formal-card template to separate governance metadata from deployment knowledge.
+- Extended the linter to require status and optimization priority on experience pages, require admission owner/date on active pages and reject governance labels in experience-card bodies.
+
+## [2026-07-20] lint | Governance-free scenario-card bodies
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed all four cards contain the required governance frontmatter and exactly two top-level body chapters.
+- Confirmed no status, optimization-goal, admission-basis, objective-summary or admission-record label remains in any concrete card body.
+- Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
+
+## [2026-07-20] update | Merge actions and separate applicability from fallback
+
+- Moved each card's scenario applicability and cross-category switch conditions into “场景描述 → 不适用条件”.
+- Merged PP/TP/DP/MBN, mapping and executable setup steps into “直接输出”, removing the separate “部署动作” section.
+- Replaced “适用边界与回退” with “失效条件与回退”, which now contains only runtime failures such as OOM, replica skew or a dominant slow stage and their fallback strategies.
+- Updated all four cards, schema, complete framework, README, index, project Skill, workflow and formal-card template; extended lint to enforce the new subheadings and require an in-body non-applicability condition.
+
+## [2026-07-20] lint | Executable output and runtime-only fallback
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed every concrete card contains “不适用条件” in scene description and exactly the required strategy subheadings: direct output, deployment experience and failure/fallback.
+- Confirmed no concrete card retains the obsolete deployment-action or applicability/fallback subheading; Skill frontmatter and agent YAML parse successfully.
+- Git changes remain uncommitted.
+
+## [2026-07-20] update | Rename direct output to deployment strategy
+
+- Renamed the concrete-card subheading “直接输出” to “部署策略” in all four active scenario cards.
+- Updated the schema, complete framework, README, index, project Skill, workflow, template and linter; the parameter, mapping and execution content under the heading was unchanged.
+
+## [2026-07-20] lint | Deployment-strategy heading
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed all four concrete cards use “部署策略、部署经验、失效条件与回退” and no longer use the old “直接输出” heading.
+- Skill frontmatter and agent YAML parse successfully; Git changes remain uncommitted.
+
+## [2026-07-20] update | Remove governance workflow from latency overview
+
+- Removed “6. 经验准入、直接推理与回退” from the latency-first experience summary because it described knowledge governance and query workflow rather than additional latency deployment experience.
+- Kept the reusable rule in the overview's overall experience: validation cost is paid at admission, matched active experience is reused directly, and only misses, boundary violations or conflicts trigger new validation.
+- Kept the complete admission and direct-inference contract in `SCHEMA.md` and the project Skill, with the core rule retained in the total-library framework; scenario-specific failure and fallback rules remain in the four concrete experience cards.
+
+## [2026-07-20] lint | Latency overview without governance section
+
+- Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the latency-first summary now ends with cross-scenario decision rules, while retaining links to the complete framework and ScoreExpert domain entry.
+- Git changes remain uncommitted.

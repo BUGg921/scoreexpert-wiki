@@ -9,29 +9,31 @@ confidence: high
 contested: false
 contradictions: []
 experience_category: local-heterogeneity
+status: active
+optimization_priority: latency-first
+admitted_by: knowledge-base-owner
+admitted_at: 2026-07-20
 ---
 
 # 单慢卡局部隔离延迟经验
 
 ## 1. 场景描述
 
-- **状态**：`active`。知识库所有者于 2026-07-20 审核为成熟经验，匹配条件时直接部署，无需重新运行真实 Evaluation。
-- **优化目标**：延迟优先；主指标为端到端 latency，同时监控最慢 TP group 和最慢 PP stage。
 - **资源拓扑**：32 张 GPU，4 个 8 卡节点，两个 16 卡亲和组。
 - **异构分布**：只有一张约半速慢卡；当前案例为 GPU 7，异常仍能限制在一个局部 TP group 和 PP stage。
 - **映射能力**：能够识别慢卡 rank，控制其 TP group、PP stage 和 layer mapping；调度器支持 16 个有效 stage。
 - **硬匹配条件**：慢卡只有一张、速度约为正常卡一半、模型允许 `16 stage × 2 GPU/stage`，并能按预测耗时给慢卡 stage 少分层或少分计算。
-- **准入依据**：来源明确给出小 TP、`DP=1`、高 PP 和大 MBN 四条经验；附件未包含原始 Evaluation 数值和可执行 layer mapping，但人工审核已完成准入。
-- **目标总览**：[[latency-first-experience-summary]]。
+- **不适用条件**：无法控制 rank/stage mapping，出现第二张跨区域慢卡、每节点均出现慢卡或场景恢复为全正常卡；分别切换到 [[two-slow-gpu-distributed-balance]]、[[four-slow-gpu-symmetric-replicas]] 或 [[homogeneous-32gpu-score-candidate]]。
 
 ## 2. 具体的并行策略
 
-### 直接输出
+### 部署策略
 
 ```text
 active_gpu=32
 PP=16, TP=2, DP=1, MBN=64
 映射：16 个 stage × 每 stage 2 卡；慢卡位于一个 2 卡 TP group
+执行：构造 16 个双卡 stage，保持 DP=1；慢卡 stage 按预测耗时减少层数或计算量
 ```
 
 ### 部署经验
@@ -42,21 +44,7 @@ PP=16, TP=2, DP=1, MBN=64
 - **DP**：使用 `DP=1`，消除纯快 replica 等待含慢卡 replica 的同步问题。
 - **PP/MBN**：深 PP 使用 `MBN=64` 降低 bubble；若显存、调度或 latency 护栏触发，依次回退到 32、16。
 
-### 部署动作
+### 失效条件与回退
 
-1. 将慢卡映射到一个 2 卡 TP group。
-2. 构造 `16 stage × 2 GPU/stage`，保持 `DP=1`。
-3. 按预测 stage time 给慢卡 stage 少分层或少分计算。
-4. 设置 `MBN=64`，并监控端到端 latency、最慢 stage、显存和调度开销。
-
-### 适用边界与回退
-
-- 允许慢卡在等价 rank 间重映射，但必须保持单慢卡、2 卡 TP group 和可重平衡 stage。
-- 出现第二张跨区域慢卡：切换到 [[two-slow-gpu-distributed-balance]]。
-- 每节点均出现慢卡：切换到 [[four-slow-gpu-symmetric-replicas]]。
-- 无法控制 rank/stage mapping、OOM 或慢 stage 仍支配周期：回退到浅 PP、无 PP 或剔除慢卡方案。
-- 正常卡场景改用 [[homogeneous-32gpu-score-candidate]]。
-
-### 准入记录
-
-- `ACCEPT_EXPERIENCE`；审核日期 2026-07-20，置信度 `high`。
+- 运行中 OOM 或调度开销超过护栏：将 MBN 从 64 依次回退到 32、16，必要时减少 PP 深度。
+- 完成 stage 重平衡后慢 stage 仍支配流水线周期：回退到浅 PP、无 PP 或剔除慢卡方案。

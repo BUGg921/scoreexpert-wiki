@@ -118,36 +118,4 @@ contradictions: []
 → 构造慢卡结构或预测耗时对称的 DP replica
 ```
 
-切换依据是慢卡影响能否局部化，不是只按慢卡数量机械选择参数。模型显存、慢卡位置和倍率、rank mapping 或搜索空间改变时，应回到 [[deployment-objective-knowledge-framework]] 重新选择候选。
-
-## 6. 经验准入、直接推理与回退
-
-### 经验准入
-
-经验进入 `active` 前必须定义 latency 口径和最小有效改善阈值 `δ`，并通过可追溯来源、历史 Evaluation、仿真或人工审核补齐：
-
-- 端到端平均、P50、P95 或 P99 latency；选择其中一个作为主指标。
-- throughput、peak memory、OOM 和稳定性护栏。
-- TP group time、PP stage time 或 DP replica time 中与当前机制对应的指标。
-- 重复运行波动，确认差异超过测量噪声。
-
-### 在线直接推理
-
-新场景的优化目标、资源拓扑、异构分布、模型约束、映射能力和经验量化边界全部匹配 `active` 卡时，直接返回：
-
-- 主部署策略及 `PP/TP/DP/MBN`。
-- rank/group/stage 映射和资源使用方式。
-- 命中的经验、置信度、适用边界与回退策略。
-
-这一路径不要求重新运行真实 Evaluation。
-
-### 回退与补库条件
-
-- `PP=1` 或目标候选 OOM。
-- 慢卡位置、速度倍率或拓扑不匹配。
-- 反事实候选的真实 latency 更低。
-- MBN 只表现为搜索边界解，并增加端到端时延或显存。
-- 对称映射降低 skew，但绝对 latency 超过业务上限。
-- 没有命中 `active` 经验、关键场景字段缺失、经验相互冲突或参数推导超出已登记量化范围。
-
-触发回退时才生成仿真、Evaluation 或人工审核任务，并把结果用于补库。当前四张场景卡均已由知识库所有者审核为 `active`；新场景命中任一卡的硬条件和量化边界时，直接输出其部署策略，不再重复支付 Evaluation 成本。完整经验库框架见 [[deployment-objective-knowledge-framework]]，领域状态与召回入口见 [[scoreexpert]]。
+切换依据是慢卡影响能否局部化，不是只按慢卡数量机械选择参数。模型显存、慢卡位置和倍率、rank mapping 或搜索空间改变时，应回到 [[deployment-objective-knowledge-framework]] 重新选择候选；领域入口与知识状态见 [[scoreexpert]]。

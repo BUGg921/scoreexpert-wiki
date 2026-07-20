@@ -14,7 +14,7 @@
 - 每个新知识页都必须加入 `index.md`，每次操作都必须追加到 `log.md`。
 - 更新知识页时必须更新 `updated` 日期；原始来源只读，不在 `raw/` 内直接修订。
 - 综合 3 个及以上来源时，在关键段落末尾追加 `^[raw/articles/source-file.md]` 来源标记。
-- 具体场景经验卡的正文固定只有两个一级章节：`1. 场景描述` 和 `2. 具体的并行策略`。成熟状态、优化目标、资源拓扑、异构分布、模型/映射约束、硬匹配条件和准入依据写入第一章；直接输出、资源使用、TP/PP/DP/MBN 规则、部署动作、适用边界、回退与准入记录写入第二章。
+- 具体场景经验卡的正文固定只有两个一级章节：`1. 场景描述` 和 `2. 具体的并行策略`。状态、优化目标和准入信息属于治理元数据，写入 frontmatter；第一章写资源拓扑、异构分布、模型/映射约束、硬匹配条件和不适用条件，第二章固定使用“部署策略、部署经验、失效条件与回退”。执行步骤并入部署策略，不另设“部署动作”；适用范围归入第一章，不再与回退混写。
 - “并行策略”必须先按来源支持的维度拆成可复用部署经验，例如 `TP`、`TP/PP`、`DP`、`PP/MBN`；每个维度说明选择规则、作用机制或切换条件，参数元组只作为当前场景实例，不能替代经验。
 - “卡的数量”必须写成资源规模部署经验，而不是资源清单：说明满卡触发条件、少卡对照、减卡后的拓扑/并行重建方式和当前资源实例。异构场景减卡后若慢卡分布类别改变，必须重新分类，不能把收益只归因于卡数。
 - 来源存在显式“经验总结”“结论”“建议”或“最佳实践”时，在“具体的并行策略”中忠实保留其结论、限定词和因果关系，不另建第三个一级章节。Wiki 新增推理必须明确标注，不能冒充来源结论。
@@ -50,13 +50,27 @@ contradictions: []
 
 ```yaml
 experience_category: homogeneous-baseline | local-heterogeneity | distributed-heterogeneity
+status: active | superseded | unverified | partially_supported | supported | refuted | mixed
+optimization_priority: latency-first | stability-first
+admitted_by: <审核主体；active 必填>
+admitted_at: YYYY-MM-DD # active 必填
 ```
+
+`status`、`optimization_priority`、`admitted_by` 和 `admitted_at` 只用于知识库检索与治理，不在正文重复。`sources` 和 `confidence` 分别保存准入来源与置信度；来源附件缺口保留在来源层或审核日志，不混入场景描述。
 
 正文只允许以下两个一级章节；所需证据和直接推理字段通过二级标题或列表并入其中：
 
 ```markdown
 ## 1. 场景描述
 ## 2. 具体的并行策略
+```
+
+第二章的三级标题固定为：
+
+```markdown
+### 部署策略
+### 部署经验
+### 失效条件与回退
 ```
 
 ## Experience Knowledge Categories
@@ -166,6 +180,8 @@ original_sha256: original-file-sha256
 | `unverified` / `partially_supported` | 假设或初步证据 | 只输出候选和补库计划，不直接部署 |
 | `supported` | 可生成正式更新提案 | 仍需审核、dry-run 与显式写入 |
 | `refuted` / `mixed` | 被反驳或需要拆边界 | 不直接推广，保留反证和条件分支 |
+
+上表状态写入正式经验页的 `status` frontmatter。`active` 页同时记录 `admitted_by` 和 `admitted_at`；正文不再设置“状态”“准入依据”或“准入记录”。
 
 ## Direct Inference Contract
 

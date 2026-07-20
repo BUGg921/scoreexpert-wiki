@@ -175,15 +175,13 @@ contradictions: []
 - [[two-slow-gpu-distributed-balance]] 和 [[four-slow-gpu-symmetric-replicas]] 可作为稳定性对照场景。
 - 知识缺口：现有 Evaluation 没有报告重复运行方差、P99、超时和故障恢复，不能升级为稳定优先经验。
 
-## 4. 每个场景案例的准入与推理字段
+## 4. 具体经验卡的内容与治理字段
 
-上述格式定义知识入口；每张具体经验卡只使用“场景描述”和“具体的并行策略”两个一级章节，并补齐：
+每张具体经验卡只使用“场景描述”和“具体的并行策略”两个一级章节：
 
-1. 目标指标与护栏指标。
-2. 场景、卡数、拓扑、慢卡数量/位置/速度。
-3. `PP/TP/DP/MBN` 与可执行映射。
-4. 作用机制、适用边界和硬匹配字段。
-5. 直接输出的主策略、映射、置信度和回退动作。
-6. Score、拓扑推理、历史 Evaluation/仿真/审核等准入证据及状态。
+1. “场景描述”记录卡数、拓扑、慢卡数量/位置/速度、模型与映射约束、硬匹配条件和不适用条件。
+2. “具体的并行策略”只使用“部署策略、部署经验、失效条件与回退”；参数、映射和执行步骤合并进部署策略，适用范围不与回退混写。
+3. `status`、`optimization_priority`、`admitted_by`、`admitted_at`、`sources` 和 `confidence` 写入 frontmatter，不在正文重复。
+4. Score、历史 Evaluation、仿真、人工审核及来源附件缺口保留在来源层或审核日志。
 
 命中 `active` 卡且不越界时按 [[latency-first-experience-summary]] 直接推理，无需新 Evaluation；未命中、越界、冲突或只命中非 active 卡时，才进入仿真/Evaluation/人工审核补库流程。
