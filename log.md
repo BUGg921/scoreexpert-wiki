@@ -538,3 +538,130 @@
 - Result: `Pages: 7 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
 - Confirmed “延迟优先总体经验” and “总体经验可以概括为” no longer appear in the latency-first overview; the remaining knowledge sections are numbered consecutively from 1 through 4.
 - Git changes remain uncommitted.
+
+## [2026-07-21] update | Separate numeric strategies, reasons and scenario cases
+
+- Changed local and distributed heterogeneity knowledge to the five-part structure “scene definition → heterogeneity impact → parallel strategy → reason → scenario cases”.
+- Moved admitted numeric results into “parallel strategy”: single slow GPU uses `PP=16,TP=2,DP=1,MBN=64`; the two distributed cases use `PP=1,TP=8,DP=4,MBN=1`, with `TP:DP=2:1` recorded explicitly.
+- Moved TP synchronization, PP-stage, DP-replica and pipeline-bubble explanations into the separate “reason” section, while retaining scenario summaries and links in “scenario cases”.
+- Updated the latency overview, complete latency/stability framework, schema, README, index, project Skill, workflow and template. Concrete experience-card parameters and status were not changed by this update.
+
+## [2026-07-21] lint | Five-part heterogeneous knowledge structure
+
+- Confirmed local and distributed heterogeneity use “scene definition → heterogeneity impact → numeric parallel strategy → reason → scenario cases” in the latency overview and complete framework.
+- Confirmed Skill frontmatter and agent YAML parse successfully, and no obsolete four-part structure remains in the maintained schema, README, index, workflow or template.
+- Wiki lint still reports four existing concrete-card errors because all four cards lack the currently required “失效条件与回退” subheading; this structure update did not restore or redefine those card sections.
+
+## [2026-07-21] update | Apply five-part structure to homogeneous knowledge
+
+- Changed homogeneous baseline knowledge to “scene definition → homogeneous impact → numeric parallel strategy → reason → scenario cases”, matching the local and distributed branches.
+- Replaced the standalone resource-scale section with communication, synchronization and pipeline impacts; resource changes are now treated as new scene-matching inputs rather than unconditional transformations inside the original scene.
+- Recorded the admitted homogeneous strategy as `PP=1,TP=8,DP=4,MBN=1` with `TP:DP=2:1`, and separated the reasons for PP, TP, DP and MBN.
+- Updated the latency overview, complete latency/stability framework, schema, README, index, project Skill, workflow and template; the concrete homogeneous experience card was not changed by this structure update.
+
+## [2026-07-21] lint | Unified five-part three-category structure
+
+- Confirmed homogeneous, local-heterogeneity and distributed-heterogeneity branches all use five ordered sections in the latency overview and in both objective branches of the complete framework.
+- Confirmed numeric strategy, reason and scenario-case responsibilities are separated; Skill frontmatter, agent YAML and `git diff --check` pass.
+- Wiki lint continues to report the same four concrete-card errors for the missing required “失效条件与回退” subheading; this overview-structure update did not redefine those card bodies.
+
+## [2026-07-21] delete | Remove homogeneous impact section
+
+- Removed “同构基线的影响” from both latency-first and stability-first homogeneous knowledge.
+- Homogeneous knowledge now uses “scene definition → numeric parallel strategy → reason → scenario cases”; local and distributed heterogeneity retain their separate heterogeneity-impact section.
+- Updated the latency overview, complete framework, schema, README, index, project Skill, workflow and template; numeric strategies and reasons were unchanged.
+
+## [2026-07-21] lint | Homogeneous knowledge without impact section
+
+- Confirmed homogeneous knowledge now has four ordered sections and retains numeric strategy, reasons and scenario cases; local and distributed knowledge retain their five ordered sections.
+- Skill frontmatter, agent YAML and `git diff --check` pass; no maintained schema or template still requires “同构基线的影响”.
+- Wiki lint reports 16 broken-link errors because all four concrete experience-card files are currently deleted in the working tree; this structure update did not restore or clean up those separate deletions.
+
+## [2026-07-21] delete | Remove heterogeneous impact sections
+
+- Removed “局部异构的影响” and “分布式异构的影响” from latency-first and stability-first objective knowledge.
+- All three categories now use “scene definition → numeric parallel strategy → reason → scenario cases”.
+- Updated overview, complete framework, schema, README, index, Skill, workflow and template; numeric strategies, reasons and scenario cases were retained.
+
+## [2026-07-21] lint | Unified four-part knowledge structure
+
+- Confirmed all three categories use four ordered sections in the latency overview and in both objective branches of the complete framework; no maintained schema, workflow or template still requires a heterogeneous-impact section.
+- Skill frontmatter, agent YAML and `git diff --check` pass.
+- Wiki lint reports 16 broken-link errors because all four concrete experience-card files remain deleted in the working tree; this structure update preserved those separate deletions.
+
+## [2026-07-22] update | Rewrite source reports as four scenario files
+
+- Re-summarized the three root source reports into four independent scenario files: homogeneous 32 GPU, single slow GPU, two slow GPUs across affinity groups, and four slow GPUs distributed one per node.
+- Preserved the report body format of task, experiment scene, optimum, scoring code and experience summary.
+- Separated executable numeric parallel strategies from the reasons for PP, TP, DP, MBN and topology mapping; split the former multi-slow-GPU report into independent two-GPU and four-GPU files.
+- At this stage the rewritten reports remained in the project root; the four deleted formal experience cards were unchanged.
+
+## [2026-07-22] lint | Four rewritten scenario source files
+
+- Confirmed all four source files retain the five-part report body and contain separate “parallel strategy”, “reason” and “conclusion boundary” subsections.
+- Confirmed each file records explicit `PP/TP/DP/MBN` values and the applicable `TP:DP` ratio; `git diff --check` passes.
+- Wiki lint remains at `Pages: 3 | Errors: 16 | Review items: 0` because the four formal experience cards are still deleted and their existing incoming wikilinks are broken; this source rewrite did not restore them.
+
+## [2026-07-22] ingest | Move four scenario reports into raw
+
+- Moved the four rewritten root reports into dated immutable snapshots under `raw/articles/`: homogeneous 32 GPU, single slow GPU, two slow GPUs, and four slow GPUs.
+- Added `source_path`, `ingested`, body `sha256`, and `original_sha256` frontmatter to each snapshot without changing its report body.
+- Did not restore or overwrite the three earlier raw snapshots, which were already deleted in the working tree.
+- Updated `index.md` to describe the four current organized scenario sources.
+- Updated `entities/scoreexpert.md` and `concepts/latency-first-experience-summary.md` so their source metadata and inline citations point to the four new raw snapshots rather than the deleted historical files.
+
+## [2026-07-22] lint | Four raw scenario snapshots
+
+- Confirmed all four new raw snapshots pass body SHA-256 validation and no rewritten scenario report remains in the project root.
+- Confirmed maintained knowledge pages no longer reference the three deleted historical raw files; `git diff --check` passes.
+- Wiki lint remains at `Pages: 3 | Errors: 16 | Review items: 0`; all remaining errors are broken wikilinks caused by the four formal experience cards that remain deleted in the working tree.
+
+## [2026-07-22] update | Align links and architecture with current files
+
+- Removed all references to the four deleted concrete experience cards from the ScoreExpert entry, total framework, latency overview and index.
+- Linked scenario cases to the four existing raw sources with ordinary Markdown links; raw files remain source-layer documents rather than wikilink targets.
+- Aligned README, schema, project Skill, workflow and templates with the current “total library → objective summary → raw scenario source” structure; old formal-card templates are retained only for migration compatibility.
+- Updated the index page count from 7 to the actual 3 formal knowledge pages.
+
+## [2026-07-22] lint | Current-file architecture without broken links
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; all 16 obsolete concrete-card wikilinks have been removed.
+- Confirmed every local Markdown link to the four raw scenario sources resolves, raw hashes remain valid, and `git diff --check` passes.
+- Confirmed Skill frontmatter and agent YAML parse successfully; the deleted-card and deleted-historical-source states remain unchanged.
+
+## [2026-07-22] update | Add trigger conditions to parallel strategies
+
+- Rewrote the latency-first parallel strategies as “trigger condition → numeric PP/TP/DP/MBN strategy → topology mapping”.
+- Added the homogeneous full-card condition `idle loss > communication-optimization benefit`, the local-isolation condition, and separate two-slow-card and four-slow-card conditions.
+- Kept parameter-selection mechanisms in the independent “reason” sections and synchronized the complete framework, README, schema, Skill, workflow and templates.
+
+## [2026-07-22] lint | Conditional parallel strategies
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; all latency-first branches retain the ordered “scene definition → parallel strategy → reason → scenario cases” structure.
+- Confirmed each mature parallel strategy now contains a trigger condition, concrete `PP/TP/DP/MBN` values and topology mapping, while reasons remain separate.
+- Skill frontmatter, agent YAML and `git diff --check` pass; raw source snapshots were not modified.
+
+## [2026-07-22] update | Refine heterogeneous strategy conditions
+
+- Refined the local-heterogeneity strategy to compare the compute benefit of retaining and isolating one slow GPU against deep-PP pipeline and scheduling costs.
+- Refined the two-slow-card strategy to require both reduced PP-isolation value and a full-card compute benefit larger than replica-wait and communication costs.
+- Refined the four-slow-card strategy to require symmetric-replica benefit and full-card compute benefit to dominate multi-stage isolation and node-local TP communication costs.
+- Synchronized the latency overview, complete framework and project Skill; numeric strategies, reasons, scenario links and raw sources were unchanged.
+
+## [2026-07-22] lint | Refined local and distributed conditions
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`.
+- Confirmed local and distributed parallel strategies now include explicit benefit/cost conditions, full numeric parameters and topology mappings in both the latency overview and complete framework.
+- Skill frontmatter and `git diff --check` pass; raw source snapshots remain unchanged.
+
+## [2026-07-22] update | Separate reusable strategies from scenario names
+
+- Removed “single-slow-card isolation”, “two-slow-card asymmetric balance” and “four-slow-card symmetric replicas” labels from parallel-strategy sections.
+- Generalized local strategy by whether impact can be localized, and distributed strategies by whether DP replicas are asymmetric or can be mapped symmetrically.
+- Kept concrete slow-card counts and scenario names only in “scenario cases”; synchronized the total framework, schema, Skill and workflow.
+
+## [2026-07-22] lint | Reusable strategy wording
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`.
+- Confirmed no parallel-strategy section contains the three concrete scenario labels; those labels remain only in scenario cases.
+- Skill frontmatter and `git diff --check` pass; raw source snapshots remain unchanged.

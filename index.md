@@ -1,15 +1,15 @@
 # ScoreExpert 部署经验 Wiki
 
 > 面向 GPU 部署选型的互链知识目录。
-> Last updated: 2026-07-20 | Total pages: 7
+> Last updated: 2026-07-22 | Total pages: 3
 
 ## 当前状态
 
-已导入 3 份原始分析来源，形成 4 张成熟决策经验卡，当前全部属于**延迟优先型**并已由知识库所有者于 2026-07-20 审核为 `active`；稳定优先型目前没有经验卡。延迟优先入口下再按 **同构基线、局部异构、分布式异构** 选择场景知识。
+`raw/articles/` 当前保存 4 份按同构、单慢卡、两慢卡和四慢卡独立整理的场景来源。四个场景当前都属于**延迟优先型**；稳定优先型目前没有场景经验。延迟优先入口下再按 **同构基线、局部异构、分布式异构** 选择场景知识。
 
-命中任一 `active` 经验及其边界后直接推理部署策略，无需为新场景重新运行真实 Evaluation；只有未命中、越界或冲突时才进入补库流程。
+新场景同时命中延迟优先总览规则和对应 raw 场景边界后，直接推理部署策略，无需重新运行真实 Evaluation；只有未命中、越界或冲突时才进入补库流程。
 
-四张具体经验卡统一使用“1. 场景描述 → 2. 具体的并行策略”的正文结构。
+当前正式知识页为 ScoreExpert 入口、部署经验总库和延迟优先经验总览；四个具体场景保存在 `raw/articles/`。
 
 四场景统一源文档、初始库和两次增量更新的筛选前后过程见 [经验库增量演示](outputs/experience-evolution-demo/README.md)。演示快照位于 `outputs/`，不计入正式知识页总数。
 
@@ -20,23 +20,23 @@
 ## 部署经验
 
 - [[deployment-objective-knowledge-framework]] — ScoreExpert 部署经验总库，永久保留延迟优先、稳定优先以及各自三类场景的完整框架；稳定优先当前标记为知识缺口。
-- [[latency-first-experience-summary]] — 保存延迟优先的目标定义、三类场景规则和跨场景决策；具体卡数和参数在“场景案例”中按案例名称概括并链接对应经验卡，准入状态只在具体经验卡维护。
-- 局部异构和分布式异构知识均按“场景定义 → 异构影响 → 并行策略 → 场景案例”展开；隔离、均衡与对称对策融入具体并行维度，案例独立列出。
+- [[latency-first-experience-summary]] — 保存延迟优先的目标定义和三类场景规则；三类知识均直接给出数值化并行策略，在独立“原因”中解释机制，并保留场景案例。
+- 同构基线、局部异构和分布式异构统一按“场景定义 → 并行策略 → 原因 → 场景案例”展开。
 - 三类场景定义：无稳定设备快慢差异为同构，影响可限制在一个局部范围为局部异构，异常跨多个独立拓扑范围为分布式异构。
-- 具体经验卡的状态、优化目标和准入信息保存在 frontmatter；正文把适用范围写入场景描述、执行步骤并入部署策略，并单列失效条件与回退。
+- 总览负责可直接召回的场景规则、数值策略和原因；raw 场景来源负责实验设置、Score 推导、具体映射和结论边界。
 
 ### 同构基线
 
-- [[homogeneous-32gpu-score-candidate]] — 标准 32 卡：总结满卡条件、少卡反事实和拓扑重建，再按并行维度解释 `1/8/4/1` 当前实例。
+- [标准 32 卡同构场景](raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md) — 使用 `PP=1,TP=8,DP=4,MBN=1` 和 `TP:DP=2:1`。
 
 ### 局部异构
 
-- [[single-slow-gpu-isolation]] — 单慢卡：比较满卡隔离与放弃部分算力，再总结小 TP、TP/PP、DP 和 PP/MBN 联动；`16/2/1/64` 仅为当前实例。
+- [单张慢卡场景](raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md) — 使用 `PP=16,TP=2,DP=1,MBN=64` 隔离局部慢卡并重平衡慢卡 stage。
 
 ### 分布式异构
 
-- [[two-slow-gpu-distributed-balance]] — 两张慢卡跨亲和组：先约束减卡后的场景重分类，再按并行维度总结从隔离到副本均衡的经验。
-- [[four-slow-gpu-symmetric-replicas]] — 四张慢卡一节点一张：先保持资源规模下的对称拓扑，再按并行维度总结映射与 replica skew 经验。
+- [两张慢卡场景](raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md) — 两张慢卡跨亲和组时使用 `PP=1,TP=8,DP=4,MBN=1`，处理快慢 replica 等待。
+- [四张慢卡场景](raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md) — 四张慢卡一节点一张时使用相同参数构造对称 replica。
 
 ## Comparisons
 

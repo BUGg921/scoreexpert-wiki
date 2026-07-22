@@ -2,7 +2,7 @@
 
 这是一个使用 Markdown 与 `[[wikilinks]]` 维护的 ScoreExpert GPU 部署经验库。它把不可变原始来源、综合知识页和维护规则分开保存，可直接使用 Obsidian、VS Code 或普通文本编辑器阅读。
 
-核心目标是把历史验证成本沉淀为可复用经验：新场景命中 `active` 经验及其适用边界时，直接推理部署策略，不要求为每次部署重新运行真实 Evaluation。Evaluation、仿真或人工审核主要用于经验准入、越界补库和冲突处理。
+核心目标是把历史验证成本沉淀为可复用经验：新场景同时命中目标总览规则和对应 raw 场景边界时，直接推理部署策略，不要求为每次部署重新运行真实 Evaluation。Evaluation、仿真或人工审核主要用于越界补库和冲突处理。
 
 ## 快速开始
 
@@ -15,7 +15,7 @@
 ```text
 raw/          不可变来源快照
 entities/     实体页
-concepts/     按经验类别划分的经验页，以及根目录中的支撑知识
+concepts/     部署总库和按优化目标组织的经验总览
 comparisons/  场景与策略对比
 queries/      值得沉淀的查询结论
 outputs/      暂不写入经验库的独立分析结果
@@ -47,23 +47,20 @@ python3 scripts/lint_wiki.py
 2. **局部异构**：异常集中在单个局部区域时的污染限制与隔离。
 3. **分布式异构**：异常跨节点、亲和组或副本分布时的均衡与对称映射。
 
-局部异构和分布式异构知识统一按“场景定义 → 异构影响 → 并行策略 → 场景案例”组织；隔离、均衡与对称等对策直接融入 TP、TP/PP、DP、PP/MBN，不单列总体策略。
+同构基线、局部异构和分布式异构统一按“场景定义 → 并行策略 → 原因 → 场景案例”组织。“并行策略”写成“触发条件 + `PP/TP/DP/MBN`、`TP:DP` 数值结果 + 拓扑映射”，“原因”解释条件为什么会导向该参数组合，“场景案例”链接对应 raw 场景来源。
 
-每张经验页都使用 `experience_category` 和对应标签声明唯一场景分类；延迟/稳定是查询、指标和验收入口，不要求复制经验页。当前采用“总经验库 → 优化目标总体经验 → 具体场景经验卡”的三层结构：总体经验只写跨实例规则，具体参数放入“场景案例”并链接唯一经验卡；不再保留重复的分类总览、独立 Score 决策链和通用验证计划。
-
-每张具体场景经验卡的正文只保留“1. 场景描述”和“2. 具体的并行策略”两个一级章节；状态、优化目标、准入主体、准入日期、来源和置信度写入 frontmatter。适用范围写在场景描述，执行步骤并入部署策略，策略章只保留“部署策略、部署经验、失效条件与回退”。
+当前采用“总经验库 → 优化目标总览 → raw 场景来源”的结构：目标总览给出可召回的场景定义、数值策略和原因；raw 来源保存实验条件、Score 代码、具体映射和结论边界。延迟/稳定仍是查询入口，同构/局部异构/分布式异构仍是场景分类。
 
 ```text
 concepts/
 ├── deployment-objective-knowledge-framework.md  # 完整部署经验总库
-├── latency-first-experience-summary.md           # 延迟优先三类场景经验与跨场景决策
-├── homogeneous-baseline/
-│   └── homogeneous-32gpu-score-candidate.md
-├── local-heterogeneity/
-│   └── single-slow-gpu-isolation.md
-├── distributed-heterogeneity/
-│   ├── two-slow-gpu-distributed-balance.md
-│   └── four-slow-gpu-symmetric-replicas.md
+└── latency-first-experience-summary.md           # 延迟优先三类场景策略与原因
+
+raw/articles/
+├── homogeneous-32gpu-deployment-analysis-2026-07-22.md
+├── single-slow-gpu-deployment-analysis-2026-07-22.md
+├── two-slow-gpu-deployment-analysis-2026-07-22.md
+└── four-slow-gpu-deployment-analysis-2026-07-22.md
 ```
 
 ## 项目内 Codex Skill
