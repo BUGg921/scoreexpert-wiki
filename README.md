@@ -1,5 +1,7 @@
 # ScoreExpert 部署经验 Wiki
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/BUGg921/scoreexpert-wiki)
+
 这是一个使用 Markdown 与 `[[wikilinks]]` 维护的 ScoreExpert GPU 部署经验库。它把不可变原始来源、综合知识页和维护规则分开保存，可直接使用 Obsidian、VS Code 或普通文本编辑器阅读。
 
 核心目标是把历史验证成本沉淀为可复用经验：新场景同时命中目标总览规则和对应 raw 场景边界时，直接推理部署策略，不要求为每次部署重新运行真实 Evaluation。Evaluation、仿真或人工审核主要用于越界补库和冲突处理。

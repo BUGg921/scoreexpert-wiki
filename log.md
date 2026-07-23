@@ -665,3 +665,14 @@
 - Result: `Pages: 3 | Errors: 0 | Review items: 0`.
 - Confirmed no parallel-strategy section contains the three concrete scenario labels; those labels remain only in scenario cases.
 - Skill frontmatter and `git diff --check` pass; raw source snapshots remain unchanged.
+
+## [2026-07-22] update | Add DeepWiki README entry
+
+- Added the `Ask DeepWiki` badge directly below the README title.
+- The badge links to `https://deepwiki.com/BUGg921/scoreexpert-wiki` as a visible AI question-and-answer entry for the repository.
+
+## [2026-07-22] lint | DeepWiki README entry
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`.
+- Confirmed the README badge Markdown is valid and `git diff --check` passes.
+- Existing deletions under `outputs/experience-evolution-demo/` were left unchanged.
