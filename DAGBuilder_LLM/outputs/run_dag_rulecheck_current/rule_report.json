@@ -1,0 +1,45 @@
+{
+  "report_id": "rulecheck_1f1b_pp2_dp4_tp4_mb4_rs_ag",
+  "source_dag": "outputs/run_dag_rulecheck_current/dag.json",
+  "status": "pass",
+  "summary": {
+    "total_findings": 0,
+    "errors": 0,
+    "warnings": 0,
+    "readability": 0
+  },
+  "selected_rules": {
+    "dag_selected_rules": {
+      "pp_strategy": "1f1b",
+      "dp_strategy": "reduce_scatter_allgather_after_backward",
+      "pp_rule_source": "DagGenerator/rules/pp_strategies.md#1f1b",
+      "dp_rule_source": "DagGenerator/rules/dp_strategies.md#reduce_scatter_allgather_after_backward"
+    },
+    "rule_set_id": "default_parallel_training_semantics_v1",
+    "enabled_checks": {
+      "schema": true,
+      "parallel_domain_product": true,
+      "node_ids_unique": true,
+      "edge_endpoints_exist": true,
+      "acyclic": true,
+      "start_reaches_end": true,
+      "forward_backward_pairing": true,
+      "intra_layer_dependency": true,
+      "model_layer_dependencies": true,
+      "pp_cross_stage_dependencies": true,
+      "stream_placement": true,
+      "resource_serialization": true,
+      "naive_dp_allreduce": true,
+      "reduce_scatter_allgather": true,
+      "zero01_tail_order": true,
+      "dp_collective_duplication": true,
+      "readability": true
+    }
+  },
+  "findings": [],
+  "diagnostics": [],
+  "outputs": {
+    "json": "outputs/run_dag_rulecheck_current/rule_report.json",
+    "markdown": "outputs/run_dag_rulecheck_current/rule_report.md"
+  }
+}

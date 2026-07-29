@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScoreExpert DB Search (Full Database Ranking) — 实验总结报告</title>
+<style>
+  :root {
+    --bg: #fafbfc;
+    --surface: #fff;
+    --border: #d0d7de;
+    --text: #1f2328;
+    --muted: #656d76;
+    --accent: #0969da;
+    --green: #1a7f37;
+    --red: #d1242f;
+    --yellow: #9a6700;
+    --purple: #8250df;
+    --cyan: #0550ae;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.75rem; color: #0d1117; margin-bottom: 0.25rem; }
+  h2 {
+    font-size: 1.2rem; color: #0d1117; margin: 2rem 0 0.75rem;
+    padding-bottom: 0.4rem; border-bottom: 2px solid var(--border);
+  }
+  h3 { font-size: 1rem; color: #1f2328; margin: 1.25rem 0 0.5rem; }
+
+  .meta-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0.75rem;
+  }
+  .meta-item { }
+  .meta-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-value { font-size: 0.95rem; font-weight: 600; }
+
+  .badge {
+    display: inline-block; padding: 0.15em 0.55em; border-radius: 12px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .badge-pass  { background: #dafbe1; color: var(--green); }
+  .badge-fail  { background: #ffebe9; color: var(--red); }
+  .badge-warn  { background: #fff8c5; color: var(--yellow); }
+  .badge-info  { background: #ddf4ff; color: var(--accent); }
+  .badge-best  { background: #d0bfff; color: var(--purple); }
+
+  .hero-strategy {
+    background: linear-gradient(135deg, #e8f0fe 0%, #ddf4ff 100%);
+    border: 2px solid var(--accent); border-radius: 10px;
+    padding: 1.5rem; text-align: center; margin: 1.5rem 0;
+  }
+  .hero-strategy .latency { font-size: 2.5rem; font-weight: 800; color: var(--cyan); font-variant-numeric: tabular-nums; }
+  .hero-strategy .params { font-size: 1.1rem; color: var(--text); margin: 0.5rem 0; }
+  .hero-strategy .detail { font-size: 0.85rem; color: var(--muted); }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem;
+    font-size: 0.9rem; background: var(--surface); border-radius: 6px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    padding: 0.55rem 0.75rem; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; background: #f6f8fa; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: rgba(9,105,218,0.04); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.good { color: var(--green); font-weight: 600; }
+  td.bad  { color: var(--red); }
+
+  .round-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .round-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .round-num { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
+  .round-status { font-size: 0.75rem; }
+
+  .evolution-chain {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;
+    margin: 0.4rem 0; font-size: 0.82rem;
+  }
+  .evo-node {
+    background: #ddf4ff; border: 1px solid #54aeff; border-radius: 4px;
+    padding: 0.1em 0.45em; font-weight: 600; font-family: monospace; font-size: 0.8rem;
+  }
+  .evo-arrow { color: var(--muted); }
+
+  .guidance {
+    background: #fbefff; border-left: 3px solid var(--purple);
+    border-radius: 0 4px 4px 0; padding: 0.5rem 0.75rem; margin: 0.5rem 0;
+    font-size: 0.82rem; color: var(--muted);
+    font-style: italic;
+  }
+
+  .footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+  .diff-table th, .diff-table td { padding: 0.4rem 0.7rem; font-size: 0.84rem; }
+  .diff-table td.num2 { font-variant-numeric: tabular-nums; text-align: right; }
+
+  .ping { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .ping-red   { background: var(--red); }
+  .ping-green { background: var(--green); }
+
+  .callout {
+    border-left: 4px solid var(--accent); background: #f0f6fc;
+    padding: 0.6rem 1rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+  }
+  .callout strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ScoreExpert DB Search — 实验总结报告</h1>
+<p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">
+  运行时间: <strong>2026-06-13 20:21:07</strong> &nbsp;|&nbsp;
+  模式: <span class="badge badge-best">Full Database Ranking</span> &nbsp;|&nbsp;
+  运行目录: <code style="color:var(--accent);">scoreexpert_db_search_20260613_202107</code>
+</p>
+
+<!-- ═══ 运行概览 ═══ -->
+<div class="meta-card">
+  <h3 style="margin-top:0;">运行概览</h3>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">最终状态</div>
+      <div class="meta-value"><span class="badge badge-pass">PASS</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">停止原因</div>
+      <div class="meta-value">max_rounds (50/50)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">搜索轮次</div>
+      <div class="meta-value">50</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">数据库条目</div>
+      <div class="meta-value">322</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">DeepSeek 增强</div>
+      <div class="meta-value"><span class="badge badge-info">Enabled</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Target Gap / Patience</div>
+      <div class="meta-value">Disabled / Disabled</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">每轮策略</div>
+      <div class="meta-value"><code>all_database_strategies</code></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Seed 初始化</div>
+      <div class="meta-value">4/4 <span class="badge badge-pass">passed</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 最优策略 ═══ -->
+<div class="hero-strategy">
+  <div style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">🏆 全局最优策略（始终一致）</div>
+  <div class="latency">2.000 s</div>
+  <div class="params">
+    <strong>PP=1</strong> &nbsp;·&nbsp; <strong>TP=8</strong> &nbsp;·&nbsp; <strong>DP=4</strong> &nbsp;·&nbsp; <strong>MicroBatch=1</strong>
+  </div>
+  <div class="detail">
+    Pipeline: <code>1f1b</code>&ensp;|&ensp;
+    Data Parallel: <code>reduce_scatter_allgather_after_backward</code>&ensp;|&ensp;
+    DAG: <code style="font-size:0.8rem;">1f1b_pp1_dp4_tp8_mb1_rs_ag</code>
+  </div>
+  <div style="margin-top:0.6rem; font-size:0.8rem; color:var(--muted);">
+    Round 2 起 score_rank 即稳定为 #1（由 memory_safe v20 打分）
+  </div>
+</div>
+
+<!-- ═══ 实验模式说明 ═══ -->
+<div class="callout">
+  <strong>Full Database Ranking 模式</strong>：与策略探索模式不同，本实验每轮对所有 322 条数据库策略进行全局排序评分。
+  核心指标是 <em>ranking_quality</em>（排序质量）和 <em>Spearman 相关系数</em>（评分 vs. 实际延迟的秩相关性），通过 Island 遗传演化持续优化评分函数。
+</div>
+
+<!-- ═══ Island 排序质量演化 ═══ -->
+<h2>Island 排序性能演化</h2>
+
+<p style="color:var(--muted); font-size:0.9rem; margin-bottom:0.5rem;">
+  以下展示四个 Island 在关键轮次的排名质量 (ranking_quality) 和 Spearman 相关系数的变化。
+</p>
+
+<table>
+  <tr>
+    <th>轮次</th>
+    <th>memory_safe</th>
+    <th style="text-align:center;">Spearman</th>
+    <th>topology_affinity</th>
+    <th style="text-align:center;">Spearman</th>
+    <th>pipeline_efficiency</th>
+    <th style="text-align:center;">Spearman</th>
+    <th>balanced_generalist</th>
+    <th style="text-align:center;">Spearman</th>
+  </tr>
+  <tr>
+    <td><strong>R1</strong></td>
+    <td class="num">544.6</td><td class="num">0.604</td>
+    <td class="num" style="color:var(--red);">−38.8</td><td class="num" style="color:var(--red);">−0.017</td>
+    <td class="num">150.9</td><td class="num">0.192</td>
+    <td class="num">199.9</td><td class="num">0.366</td>
+  </tr>
+  <tr>
+    <td><strong>R2</strong></td>
+    <td class="num">544.6</td><td class="num">0.604</td>
+    <td class="num" style="color:var(--green);">713.1 ⬆</td><td class="num" style="color:var(--green);">0.712</td>
+    <td class="num">150.9</td><td class="num">0.192</td>
+    <td class="num" style="color:var(--green);">789.8 ⬆</td><td class="num" style="color:var(--green);">0.786</td>
+  </tr>
+  <tr>
+    <td><strong>R3</strong></td>
+    <td class="num">544.6</td><td class="num">0.604</td>
+    <td class="num">713.1</td><td class="num">0.712</td>
+    <td class="num">240.3</td><td class="num">0.309</td>
+    <td class="num">789.8</td><td class="num">0.786</td>
+  </tr>
+  <tr>
+    <td><strong>R4</strong></td>
+    <td class="num">544.6</td><td class="num">0.604</td>
+    <td class="num">713.1</td><td class="num">0.712</td>
+    <td class="num">337.9</td><td class="num">0.360</td>
+    <td class="num">789.8</td><td class="num">0.786</td>
+  </tr>
+  <tr>
+    <td><strong>R6</strong></td>
+    <td class="num">544.6</td><td class="num">0.604</td>
+    <td class="num">713.1</td><td class="num">0.712</td>
+    <td class="num">337.9</td><td class="num">0.360</td>
+    <td class="num">835.3</td><td class="num">0.852</td>
+  </tr>
+  <tr style="background:#dafbe1;">
+    <td><strong>R43−50</strong></td>
+    <td class="num good">883.3</td><td class="num">0.880</td>
+    <td class="num good">846.7</td><td class="num">0.845</td>
+    <td class="num good">881.0</td><td class="num">0.877</td>
+    <td class="num good">900.4</td><td class="num">0.897</td>
+  </tr>
+</table>
+
+<div class="callout" style="border-left-color:var(--green); background:#f6fef6;">
+  <strong>核心发现</strong>：topology_affinity 从 Round 1 的完全不相关 (Spearman −0.017) 经一轮演化跃升至 0.712，是最大单一改进。
+  balanced_generalist 在 Round 6 达到 Spearman 0.852，最终稳定在 0.897 成为最强排序 Island。
+  所有 Island 的 database_best_score_rank 在后期均收敛至 #1。
+</div>
+
+<!-- ═══ Program 演化统计 ═══ -->
+<h2>Program 演化统计</h2>
+
+<table>
+  <tr><th>Island</th><th>最终最佳 Program</th><th>最终 Ranking Quality</th><th>最终 Spearman</th><th>演化失败轮次</th></tr>
+  <tr><td>memory_safe</td><td><code>v20</code></td><td class="num">883.26</td><td class="num">0.880</td><td>R50</td></tr>
+  <tr><td>topology_affinity</td><td><code>v0</code></td><td class="num">846.68</td><td class="num">0.845</td><td>R49, R50</td></tr>
+  <tr><td>pipeline_efficiency</td><td><code>v0</code></td><td class="num">880.96</td><td class="num">0.877</td><td>R46, R50</td></tr>
+  <tr><td>balanced_generalist</td><td><code>v38</code></td><td class="num">900.43</td><td class="num">0.897</td><td>R50</td></tr>
+</table>
+
+<p style="font-size:0.82rem; color:var(--muted);">
+  注：Round 50 所有四个 Island 演化失败，说明此时基因池多样性降低，遗传操作逐渐难以产生更优 Program。
+  但这不影响之前的稳态最优解已达成。
+</p>
+
+<!-- ═══ 前6轮详细系统行为 ═══ -->
+<h2>关键轮次详解</h2>
+
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 1 — 冷启动基线</span>
+    <span class="badge badge-pass">PASS</span>
+  </div>
+  <p style="font-size:0.88rem;">
+    首次全量数据库排序。整体评分质量偏低，topology_affinity 以 Spearman −0.017 远低于随机水平。
+    最优策略 score_rank 仅排第 14 位（由 pipeline_efficiency v0 打分 1003.2），topology_affinity 中全局最优排第 189 位。
+  </p>
+  <div class="guidance">
+    自适应上下文首次注入: "优化全数据库排序质量，提高被遗漏的低延迟策略得分"
+  </div>
+</div>
+
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 2 — 重大突破</span>
+    <span class="badge badge-pass">PASS</span>
+  </div>
+  <p style="font-size:0.88rem;">
+    topology_affinity (v2) 将 ranking_quality 从 −38.8 提升至 713.1，Spearman 从 −0.017 升至 0.712。
+    balanced_generalist (v2) 将 ranking_quality 从 199.9 提升至 789.8。
+    最优策略 score_rank 从 #14 跃升至 #1。全数据库最佳策略被准确排名到首位。
+  </p>
+  <div class="evolution-chain">
+    <span style="color:var(--muted);">memory_safe:</span> <span class="evo-node">v1</span><span class="evo-arrow">+</span><span class="evo-node">v2</span><span class="evo-arrow">→</span><span class="evo-node" style="background:#dafbe1;">v3</span>
+  </div>
+  <div class="evolution-chain">
+    <span style="color:var(--muted);">topology_affinity:</span> <span class="evo-node">v2</span><span class="evo-arrow">+</span><span class="evo-node">v0</span><span class="evo-arrow">→</span><span class="evo-node" style="background:#dafbe1;">v3</span>
+    &nbsp;(v2 已是新最优)
+  </div>
+</div>
+
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 6 — balanced_generalist 再升级</span>
+    <span class="badge badge-pass">PASS</span>
+  </div>
+  <p style="font-size:0.88rem;">
+    balanced_generalist v6 将 ranking_quality 提升至 835.3 (Spearman 0.852)，逼近最终稳态。
+  </p>
+</div>
+
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Rounds 43−50 — 稳态收敛</span>
+    <span class="badge badge-pass">PASS</span>
+    <span style="font-size:0.8rem; color:var(--muted);">(8 轮稳定)</span>
+  </div>
+  <table style="margin-top:0.5rem;">
+    <tr><th>Island</th><th>最佳 Program</th><th class="num">Ranking Quality</th><th class="num">Spearman</th><th class="num">Top-K 平均延迟</th><th>DB Best Rank</th></tr>
+    <tr><td>memory_safe</td><td><code>v20</code></td><td class="num good">883.26</td><td class="num">0.880</td><td class="num">2.50s</td><td>#1</td></tr>
+    <tr><td>topology_affinity</td><td><code>v0</code></td><td class="num good">846.68</td><td class="num">0.845</td><td class="num">2.80s</td><td>#1</td></tr>
+    <tr><td>pipeline_efficiency</td><td><code>v0</code></td><td class="num good">880.96</td><td class="num">0.877</td><td class="num">2.49s</td><td>#1</td></tr>
+    <tr><td>balanced_generalist</td><td><code>v38</code></td><td class="num good">900.43</td><td class="num">0.897</td><td class="num">2.42s</td><td>#1</td></tr>
+  </table>
+  <p style="font-size:0.82rem; color:var(--muted); margin-top:0.5rem;">
+    Top-K 平均延迟从 Round 1 的 7.03s (memory_safe) / 28.52s (balanced_generalist) 收敛至 2.42~2.80s，
+    说明评分函数准确将低延迟策略排到前列。
+  </p>
+</div>
+
+<!-- ═══ 与策略探索模式对比 ═══ -->
+<h2>与 17:38 策略探索实验对比</h2>
+
+<table>
+  <tr><th>维度</th><th>17:38 实验 (策略探索)</th><th>本实验 20:21 (全量排序)</th></tr>
+  <tr>
+    <td>轮次</td><td>3 (target_gap_reached)</td><td>50 (max_rounds)</td>
+  </tr>
+  <tr>
+    <td>搜索模式</td><td>逐轮迭代单策略 → 延迟反馈</td><td>每轮全量数据库排序 → 排序质量反馈</td>
+  </tr>
+  <tr>
+    <td>目标</td><td>找到最优并行策略</td><td>优化评分函数使其能正确排序所有策略</td>
+  </tr>
+  <tr>
+    <td>最优策略</td><td>{1, 8, 4, 1} @ 2.000s</td><td>{1, 8, 4, 1} @ 2.000s (一致)</td>
+  </tr>
+  <tr>
+    <td>Island 评价指标</td><td>单项策略评分 (993~1027)</td><td>全库排序质量 (883~900) + Spearman (0.845~0.897)</td>
+  </tr>
+  <tr>
+    <td>program 版本</td><td>v0→v4</td><td>v0→v29 (memory_safe), v0→v48 (balanced_generalist)</td>
+  </tr>
+  <tr>
+    <td>收敛特征</td><td>快速收敛后立即停止</td><td>持续演化至 max_rounds，后期出现演化失败</td>
+  </tr>
+</table>
+
+<!-- ═══ 关键结论 ═══ -->
+<h2>关键结论</h2>
+
+<div class="meta-card">
+  <ol style="padding-left:1.25rem;">
+    <li style="margin-bottom:0.6rem;">
+      <strong>评分函数优化卓有成效</strong>：经过 50 轮演化，四个 Island 的 Spearman 相关系数从 0.192~0.604 提升至 0.845~0.897，ranking_quality 从 150~544 提升至 846~900，表明遗传演化有效提升了全库排序能力。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>topology_affinity 改进最为戏剧性</strong>：从 Round 1 的 Spearman −0.017（完全不相关，甚至略低于随机）到 Round 2 的 0.712，一轮演化即完成最大飞跃，体现了自适应反馈机制的有效性。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>balanced_generalist 最终最强</strong>：达到 ranking_quality 900.43、Spearman 0.897，Top-K 平均延迟仅 2.42s，是最可靠的通用排序器。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>后期遗传退化显现</strong>：Round 46 起出现个别 Island 演化失败，Round 50 全部四个 Island 失败，说明 50 轮后基因池多样性不足，建议引入多样性保护机制或合理设定 patience 提前停止。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>全局最优策略稳定一致</strong>：两个模式的实验均指向同一最优策略 {PP=1, TP=8, DP=4, MB=1} @ 2.000s (1F1B + RS/AG)，相互验证了结果的可靠性。
+    </li>
+    <li>
+      <strong>feedback-driven 学习有效</strong>：自适应上下文持续注入排名反馈（漏排/误排案例），LLM 在 50 轮中持续微调评分逻辑，Top-K 平均延迟从 7~28s 降至 2.4~2.8s。
+    </li>
+  </ol>
+</div>
+
+<!-- ═══ 输出产物 ═══ -->
+<h2>实验输出产物</h2>
+<table>
+  <tr><th>文件</th><th>说明</th></tr>
+  <tr><td><code>round_trace.json</code></td><td>完整轮次跟踪数据 (166,072 行, 6.9 MB)</td></tr>
+  <tr><td><code>scoreexpert_db_search_report.md</code></td><td>Markdown 格式报告 (1,432 行)</td></tr>
+  <tr><td><code>latency_trend.png</code></td><td>延迟变化趋势图</td></tr>
+  <tr><td><code>score_trend.png</code></td><td>Island 评分变化趋势图</td></tr>
+  <tr><td><code>island_replacement_events.png</code></td><td>Program 替换事件图</td></tr>
+  <tr><td style="background:#f6fef6;"><code>scoreexpert_db_search_summary.html</code> ←</td><td><strong>本报告</strong></td></tr>
+</table>
+
+<div class="footer">
+  Generated by Hermes Agent · ScoreExpert DB Search (Full Ranking) Experiment · 2026-06-13
+</div>
+
+</div>
+</body>
+</html>

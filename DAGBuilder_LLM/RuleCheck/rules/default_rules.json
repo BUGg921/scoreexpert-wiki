@@ -1,0 +1,65 @@
+{
+  "rule_set_id": "default_parallel_training_semantics_v1",
+  "enabled_checks": {
+    "schema": true,
+    "parallel_domain_product": true,
+    "node_ids_unique": true,
+    "edge_endpoints_exist": true,
+    "acyclic": true,
+    "start_reaches_end": true,
+    "forward_backward_pairing": true,
+    "intra_layer_dependency": true,
+    "model_layer_dependencies": true,
+    "pp_cross_stage_dependencies": true,
+    "stream_placement": true,
+    "resource_serialization": true,
+    "naive_dp_allreduce": true,
+    "reduce_scatter_allgather": true,
+    "zero01_tail_order": true,
+    "dp_collective_duplication": true,
+    "readability": true
+  },
+  "severity": {
+    "schema": "error",
+    "parallel_domain_product": "error",
+    "node_ids_unique": "error",
+    "edge_endpoints_exist": "error",
+    "acyclic": "error",
+    "start_reaches_end": "error",
+    "forward_backward_pairing": "error",
+    "intra_layer_dependency": "error",
+    "model_layer_dependencies": "error",
+    "pp_cross_stage_dependencies": "error",
+    "stream_placement": "error",
+    "compute_resource_serialization": "error",
+    "comm_resource_serialization": "error",
+    "dp_comm_resource_serialization": "warning",
+    "naive_dp_allreduce": "error",
+    "reduce_scatter_allgather": "error",
+    "zero01_tail_order": "error",
+    "dp_collective_duplication": "warning",
+    "readability": "readability"
+  },
+  "layout": {
+    "minimum_same_row_column_gap": 0.7
+  },
+  "edge_roles": {
+    "control": "control",
+    "data": "data_dependency",
+    "resource": "resource_dependency"
+  },
+  "edge_kinds": {
+    "control": "control",
+    "intra_layer": "intra_layer_dependency",
+    "forward_model": "model_forward_dependency",
+    "backward_model": "model_backward_dependency",
+    "pp_forward_send": "pp_forward_send_dependency",
+    "pp_forward_recv": "pp_forward_recv_dependency",
+    "pp_backward_send": "pp_backward_send_dependency",
+    "pp_backward_recv": "pp_backward_recv_dependency",
+    "resource": "resource_dependency",
+    "dp_allreduce_trigger": "dp_allreduce_trigger_dependency",
+    "dp_reducescatter_trigger": "dp_reducescatter_trigger_dependency",
+    "dp_allgather_after_reducescatter": "dp_allgather_after_reducescatter_dependency"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "flow_id": "dag_generator_rulecheck_valuesim",
+  "status": "fail",
+  "source_config": "config/config.py",
+  "rules": "RuleCheck/rules/default_rules.json",
+  "steps": [
+    {
+      "name": "DagGenerator",
+      "status": "fail",
+      "message": "Invalid parallel domains: pp_size * dp_size * tp_size must equal num_gpus (2 * 4 * 4 != 16).",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\CodeProgram\\codex\\DAGBuilder_LLM\\SearchRunner\\run_dag_rulecheck.py\", line 49, in run_flow\n    dag = build_dag(config, config_path, html_path, dag_json_path)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\CodeProgram\\codex\\DAGBuilder_LLM\\DagGenerator\\generate_dag.py\", line 289, in build_dag\n    resolved_domains = resolve_domains(domains)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\CodeProgram\\codex\\DAGBuilder_LLM\\DagGenerator\\generate_dag.py\", line 87, in resolve_domains\n    raise ValueError(\nValueError: Invalid parallel domains: pp_size * dp_size * tp_size must equal num_gpus (2 * 4 * 4 != 16).\n"
+    }
+  ],
+  "artifacts": {},
+  "rule_check_summary": null,
+  "next_action": "fix_dag_generator_or_config",
+  "contract": {
+    "pass": "DAG 已完成规则检查和耗时填充，可供后续 OverlapOPT 使用。",
+    "fail": "使用 RuleCheck 发现的问题反馈给 DagGenerator，重新生成后再运行流程。"
+  },
+  "outputs": {
+    "json": "config/dag_rulecheck_flow_report.json",
+    "markdown": "config/dag_rulecheck_flow_report.md"
+  }
+}

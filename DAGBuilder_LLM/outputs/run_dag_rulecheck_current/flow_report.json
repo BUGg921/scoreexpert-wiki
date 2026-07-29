@@ -1,0 +1,69 @@
+{
+  "flow_id": "dag_generator_rulecheck_valuesim",
+  "status": "pass",
+  "source_config": "/Users/cookie/Documents/DAGBuilder_LLM/config/config.py",
+  "rules": "/Users/cookie/Documents/DAGBuilder_LLM/RuleCheck/rules/default_rules.json",
+  "steps": [
+    {
+      "name": "DagGenerator",
+      "status": "pass",
+      "message": "已生成 DAG HTML 和 JSON 产物。",
+      "outputs": {
+        "html": "outputs/run_dag_rulecheck_current/dag.html",
+        "json": "outputs/run_dag_rulecheck_current/dag.json"
+      }
+    },
+    {
+      "name": "RuleCheck",
+      "status": "pass",
+      "message": "已检查 DAG 语义有效性。",
+      "summary": {
+        "total_findings": 0,
+        "errors": 0,
+        "warnings": 0,
+        "readability": 0
+      },
+      "outputs": {
+        "json": "outputs/run_dag_rulecheck_current/rule_report.json",
+        "markdown": "outputs/run_dag_rulecheck_current/rule_report.md"
+      }
+    },
+    {
+      "name": "ValueSim",
+      "status": "pass",
+      "message": "已为 DAG 节点填充计算和通信耗时字段。",
+      "summary": {
+        "nodes": 1062,
+        "edges": 2595,
+        "topology_unchanged": true
+      },
+      "outputs": {
+        "weighted_dag": "outputs/run_dag_rulecheck_current/weighted_dag.json",
+        "node_timing_table": "outputs/run_dag_rulecheck_current/node_timing_table.json"
+      }
+    }
+  ],
+  "artifacts": {
+    "dag_html": "outputs/run_dag_rulecheck_current/dag.html",
+    "dag_json": "outputs/run_dag_rulecheck_current/dag.json",
+    "rule_check_json": "outputs/run_dag_rulecheck_current/rule_report.json",
+    "rule_check_md": "outputs/run_dag_rulecheck_current/rule_report.md",
+    "weighted_dag_json": "outputs/run_dag_rulecheck_current/weighted_dag.json",
+    "node_timing_table_json": "outputs/run_dag_rulecheck_current/node_timing_table.json"
+  },
+  "rule_check_summary": {
+    "total_findings": 0,
+    "errors": 0,
+    "warnings": 0,
+    "readability": 0
+  },
+  "next_action": "ready_for_overlap_opt",
+  "contract": {
+    "pass": "DAG 已完成规则检查和耗时填充，可供后续 OverlapOPT 使用。",
+    "fail": "使用 RuleCheck 发现的问题反馈给 DagGenerator，重新生成后再运行流程。"
+  },
+  "outputs": {
+    "json": "outputs/run_dag_rulecheck_current/flow_report.json",
+    "markdown": "outputs/run_dag_rulecheck_current/flow_report.md"
+  }
+}

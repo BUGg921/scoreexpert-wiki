@@ -1,0 +1,9 @@
+round,island,call_type,start_time,end_time,elapsed_s,status,reason
+0,memory_safe,second_seed,2026-06-18T15:50:22.632,2026-06-18T15:52:12.089,109.455,pass,
+0,topology_affinity,second_seed,2026-06-18T15:50:22.633,2026-06-18T15:58:21.262,478.621,pass,
+0,pipeline_efficiency,second_seed,2026-06-18T15:50:22.634,2026-06-18T15:51:29.622,66.987,pass,
+0,balanced_generalist,second_seed,2026-06-18T15:50:22.636,2026-06-18T15:53:09.923,167.284,pass,
+1,memory_safe,score_evolution,2026-06-18T15:58:21.331,2026-06-18T16:00:59.680,158.346,pass,
+1,topology_affinity,score_evolution,2026-06-18T15:58:21.331,2026-06-18T16:01:46.746,205.411,pass,
+1,pipeline_efficiency,score_evolution,2026-06-18T15:58:21.332,2026-06-18T16:03:42.564,321.226,pass,
+1,balanced_generalist,score_evolution,2026-06-18T15:58:21.333,2026-06-18T16:01:55.946,214.609,pass,

@@ -676,3 +676,80 @@
 - Result: `Pages: 3 | Errors: 0 | Review items: 0`.
 - Confirmed the README badge Markdown is valid and `git diff --check` passes.
 - Existing deletions under `outputs/experience-evolution-demo/` were left unchanged.
+
+## [2026-07-27] update | Generalize minimum-PP and TP-to-DP ratio strategies
+
+- Replaced fixed 32-GPU tuples in the homogeneous and distributed parallel-strategy sections with a reusable solver: use all available GPUs when compute benefit dominates communication cost, choose the minimum feasible `PP`, solve integer `TP` and `DP` under `PP × TP × DP = active_gpu` and `TP:DP=2:1`, and choose the minimum feasible `MBN`.
+- Kept the 32-GPU tuples only in scenario cases and immutable raw sources; the single-slow-GPU local-isolation strategy remains fixed because deep PP is its isolation mechanism rather than an avoidable pipeline cost.
+- Updated the direct-inference contract so a different card count may be answered without Evaluation only when the admitted scaling rule produces complete integer groups within model and communication boundaries.
+- Synchronized the total framework, latency overview, ScoreExpert entry, schema, project Skill, workflow and template. Existing unrelated README, IDE metadata and DAGBuilder working-tree changes were left untouched.
+
+## [2026-07-27] lint | Resource-scalable parallel strategies
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the admitted solver maps 8 GPUs to `PP=1,TP=4,DP=2,MBN=1` and preserves the 32-GPU example as `PP=1,TP=8,DP=4,MBN=1`.
+- Confirmed fixed 32-GPU tuples remain only in scenario cases and the separate local-isolation strategy; raw source snapshots were not modified.
+- Existing staged IDE metadata, untracked DAGBuilder directories and the unrelated README demo removal remain untouched.
+
+## [2026-07-27] update | Generalize local-heterogeneity isolation strategy
+
+- Replaced the fixed 32-GPU local-heterogeneity tuple with a reusable solver: minimize `DP` to avoid replica skew, preserve `TP:DP=2:1`, derive integer `PP` from `PP × TP × DP = active_gpu`, and use the resulting maximum feasible PP depth for local stage isolation.
+- Changed `MBN=64` from a reusable fixed value to the 32-GPU scenario's search-boundary example; the reusable rule selects the largest feasible MBN under memory, latency and scheduling constraints.
+- Kept `PP=16,TP=2,DP=1,MBN=64` in the scenario case and immutable raw source only. No raw source was modified.
+- Synchronized the local-heterogeneity solver into the project Skill and query workflow so future maintenance keeps it distinct from the minimum-PP homogeneous/distributed rule.
+
+## [2026-07-27] lint | Resource-scalable local isolation
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the solver maps 8 GPUs to `PP=4,TP=2,DP=1` and 32 GPUs to `PP=16,TP=2,DP=1`; `MBN` remains a boundary-driven value rather than a fixed cross-resource constant.
+- Confirmed fixed `PP=16,TP=2,DP=1,MBN=64` text remains only in the 32-GPU scenario case and immutable raw source.
+
+## [2026-07-27] update | Merge distributed-heterogeneity parameter strategies
+
+- Merged the asymmetric-replica and symmetric-replica entries into one distributed-heterogeneity parallel strategy because both use the same minimum-PP, `TP:DP=2:1` parameter solver.
+- Kept two explicit mapping branches inside the shared strategy: predicted-execution-time balancing for asymmetric replicas, and identical anomaly structure for replicas that can be mapped symmetrically.
+- Kept the two-slow-GPU and four-slow-GPU scenario cases and raw sources separate; only the reusable strategy was merged.
+- Updated the project Skill so future equivalent parameter rules are merged while mapping branches and scenario sources remain explicit.
+
+## [2026-07-27] lint | Merged distributed-heterogeneity strategy
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed both the latency summary and total framework contain exactly one numbered distributed-heterogeneity strategy.
+- Confirmed the merged strategy retains explicit asymmetric-replica balancing and symmetric-replica mapping branches, while both scenario cases and raw sources remain separate.
+
+## [2026-07-27] update | Number reasons to match parallel strategies
+
+- Replaced the distributed-heterogeneity reason bullets with one numbered reason corresponding to the single merged parallel strategy.
+- Kept common parameter reasoning, asymmetric-replica balancing and symmetric-replica mapping as explicit subpoints inside reason 1.
+- Updated the schema, README, project Skill and template so reasons must match parallel strategies by number; mapping branches merged into one strategy must be explained inside the corresponding reason item.
+- Applied the same one-to-one numbering to the mature homogeneous and local-heterogeneity branches; stability-first knowledge gaps remain unnumbered because they do not contain mature strategies.
+
+## [2026-07-27] lint | One-to-one strategy and reason numbering
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed homogeneous, local-heterogeneity and distributed-heterogeneity branches each contain one numbered strategy and one corresponding numbered reason in both the latency summary and total framework.
+- Confirmed the distributed reason retains common parameter reasoning plus explicit asymmetric and symmetric mapping explanations inside reason 1.
+
+## [2026-07-27] update | Remove redundant reason correspondence labels
+
+- Removed the visible “对应并行策略 1” label from all mature reason items.
+- Kept the shared `1.` numbering and placed the reason content directly after it; one-to-one correspondence remains implicit in the matching strategy and reason numbers.
+- Updated the template wording to describe shared numbering without generating the redundant label.
+
+## [2026-07-27] lint | Direct reason numbering
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed no maintained concept, schema, README, Skill, workflow or template contains the visible “对应并行策略” label.
+- Confirmed all mature reason sections retain direct numbered content beginning with `1.`.
+
+## [2026-07-27] update | Expand local-heterogeneity scene definition
+
+- Expanded the local-heterogeneity definition to cover stable anomaly identification, known rank/speed/location, concentration or remapping into one local execution unit, unaffected structure outside that unit, and model support for local rank/stage/layer/load adjustment.
+- Clarified that local heterogeneity is determined by whether the impact can be contained, not by slow-GPU count: multiple anomalies can remain local if one unit contains them, while even one slow GPU is not locally isolatable when its impact cannot be remapped or rebalanced.
+- Added explicit boundaries to homogeneous and distributed heterogeneity and synchronized the latency summary, both objective branches of the total framework, schema and project Skill.
+
+## [2026-07-27] lint | Detailed local-heterogeneity definition
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the local definition records stable anomaly detection, rank/speed/location, local topology scope, remapping capability, unaffected external structure, and boundaries to homogeneous and distributed heterogeneity.
+- Confirmed the immutable single-slow-GPU raw source was not modified.

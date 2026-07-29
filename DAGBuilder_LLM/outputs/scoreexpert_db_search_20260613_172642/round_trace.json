@@ -1,0 +1,2066 @@
+{
+  "status": "pass",
+  "run_root": "outputs/scoreexpert_db_search_20260613_172642",
+  "database": "EVALUATION_DATABASE.md",
+  "database_entries": 322,
+  "database_best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 4,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 2.000179116,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward"
+  },
+  "deepseek_enabled": true,
+  "seed_results": [
+    {
+      "island": "memory_safe",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "topology_affinity",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "pipeline_efficiency",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "balanced_generalist",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    }
+  ],
+  "max_rounds": 3,
+  "rounds_run": 3,
+  "stop_reason": "target_gap_reached",
+  "best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 4,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 2.000179116,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward"
+  },
+  "latency_chart": "outputs/scoreexpert_db_search_20260613_172642/latency_trend.png",
+  "score_chart": "outputs/scoreexpert_db_search_20260613_172642/score_trend.png",
+  "replacement_chart": "outputs/scoreexpert_db_search_20260613_172642/island_replacement_events.png",
+  "rounds": [
+    {
+      "round": 1,
+      "strategy": {
+        "pp": 1,
+        "tp": 1,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "scores": {
+        "memory_safe": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 993.26
+            },
+            {
+              "program_id": "v1",
+              "score": 747.0
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 993.26
+        },
+        "topology_affinity": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1000.2
+            },
+            {
+              "program_id": "v1",
+              "score": 1000.3
+            }
+          ],
+          "best_program_id": "v1",
+          "best_score": 1000.3
+        },
+        "pipeline_efficiency": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1001.0999999999999
+            },
+            {
+              "program_id": "v1",
+              "score": 1000.3000000000001
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 1001.0999999999999
+        },
+        "balanced_generalist": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 934.08
+            },
+            {
+              "program_id": "v1",
+              "score": 933.6800000000001
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 934.08
+        }
+      },
+      "evaluation": {
+        "status": "invalid",
+        "reason": "strategy_not_found_in_database",
+        "total_latency_s": null
+      },
+      "latency": null,
+      "adjustment": {
+        "type": "repair_illegal",
+        "changed": "tp",
+        "reason": "strategy_not_found_in_database",
+        "target": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 1,
+          "micro_batch_num": 1
+        }
+      },
+      "next_strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        },
+        {
+          "island": "topology_affinity",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly."
+          ]
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly."
+          ]
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly."
+          ]
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly."
+          ]
+        }
+      },
+      "replacements": [],
+      "best_so_far": null
+    },
+    {
+      "round": 2,
+      "strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "scores": {
+        "memory_safe": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1014.26
+            },
+            {
+              "program_id": "v1",
+              "score": 768.0
+            },
+            {
+              "program_id": "v2",
+              "score": 1024.0
+            }
+          ],
+          "best_program_id": "v2",
+          "best_score": 1024.0
+        },
+        "topology_affinity": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1000.2
+            },
+            {
+              "program_id": "v1",
+              "score": 1000.3
+            },
+            {
+              "program_id": "v2",
+              "score": 997.0
+            }
+          ],
+          "best_program_id": "v1",
+          "best_score": 1000.3
+        },
+        "pipeline_efficiency": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1003.1999999999999
+            },
+            {
+              "program_id": "v1",
+              "score": 1001.7
+            },
+            {
+              "program_id": "v2",
+              "score": -8999.4
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 1003.1999999999999
+        },
+        "balanced_generalist": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 955.08
+            },
+            {
+              "program_id": "v1",
+              "score": 952.552
+            },
+            {
+              "program_id": "v2",
+              "score": 880.86
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 955.08
+        }
+      },
+      "evaluation": {
+        "strategy": [
+          1,
+          8,
+          1,
+          1
+        ],
+        "status": "pass",
+        "total_latency_s": 7.537446331,
+        "baseline_latency_s": 7.537446331,
+        "pp_strategy": "gpipe",
+        "dp_strategy": "naive_allreduce_after_backward",
+        "overlap_ratio": "0.000000%",
+        "events": 0,
+        "rulecheck": "pass",
+        "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+      },
+      "latency": 7.537446331,
+      "adjustment": {
+        "type": "latency_guided",
+        "changed": "dp",
+        "target": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        },
+        "next": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        }
+      },
+      "next_strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 4,
+        "micro_batch_num": 1
+      },
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "pass",
+          "program_id": "v3",
+          "parent_ids": [
+            "v2",
+            "v0"
+          ]
+        },
+        {
+          "island": "topology_affinity",
+          "status": "pass",
+          "program_id": "v3",
+          "parent_ids": [
+            "v2",
+            "v0"
+          ]
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "pass",
+          "program_id": "v3",
+          "parent_ids": [
+            "v2",
+            "v0"
+          ]
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "pass",
+          "program_id": "v3",
+          "parent_ids": [
+            "v0",
+            "v2"
+          ]
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1024.0
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1000.3
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1003.1999999999999
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 955.08
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        }
+      },
+      "replacements": [],
+      "best_so_far": {
+        "strategy": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 1,
+          "micro_batch_num": 1
+        },
+        "total_latency_s": 7.537446331
+      }
+    },
+    {
+      "round": 3,
+      "strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 4,
+        "micro_batch_num": 1
+      },
+      "scores": {
+        "memory_safe": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1021.94
+            },
+            {
+              "program_id": "v1",
+              "score": 960.0
+            },
+            {
+              "program_id": "v2",
+              "score": 1023.4
+            },
+            {
+              "program_id": "v3",
+              "score": 1034.0
+            }
+          ],
+          "best_program_id": "v3",
+          "best_score": 1034.0
+        },
+        "topology_affinity": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1000.8
+            },
+            {
+              "program_id": "v1",
+              "score": 1001.2
+            },
+            {
+              "program_id": "v2",
+              "score": 988.0
+            },
+            {
+              "program_id": "v3",
+              "score": 996.0
+            }
+          ],
+          "best_program_id": "v1",
+          "best_score": 1001.2
+        },
+        "pipeline_efficiency": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1003.1999999999999
+            },
+            {
+              "program_id": "v1",
+              "score": 1001.7
+            },
+            {
+              "program_id": "v2",
+              "score": 1003.7
+            },
+            {
+              "program_id": "v3",
+              "score": 1003.7
+            }
+          ],
+          "best_program_id": "v2",
+          "best_score": 1003.7
+        },
+        "balanced_generalist": {
+          "scores": [
+            {
+              "program_id": "v0",
+              "score": 1007.52
+            },
+            {
+              "program_id": "v1",
+              "score": 1004.992
+            },
+            {
+              "program_id": "v2",
+              "score": 995.16
+            },
+            {
+              "program_id": "v3",
+              "score": 993.16
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 1007.52
+        }
+      },
+      "evaluation": {
+        "strategy": [
+          1,
+          8,
+          4,
+          1
+        ],
+        "status": "pass",
+        "total_latency_s": 2.000179116,
+        "baseline_latency_s": 2.021285636,
+        "pp_strategy": "1f1b",
+        "dp_strategy": "reduce_scatter_allgather_after_backward",
+        "overlap_ratio": "1.044213%",
+        "events": 2,
+        "rulecheck": "pass",
+        "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+      },
+      "latency": 2.000179116,
+      "adjustment": {
+        "type": "latency_guided",
+        "changed": "multi_parameter_jump_to_database_candidate",
+        "target": {
+          "pp": 1,
+          "tp": 16,
+          "dp": 2,
+          "micro_batch_num": 1
+        },
+        "next": {
+          "pp": 1,
+          "tp": 16,
+          "dp": 2,
+          "micro_batch_num": 1
+        }
+      },
+      "next_strategy": {
+        "pp": 1,
+        "tp": 16,
+        "dp": 2,
+        "micro_batch_num": 1
+      },
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "pass",
+          "program_id": "v4",
+          "parent_ids": [
+            "v3",
+            "v1"
+          ]
+        },
+        {
+          "island": "topology_affinity",
+          "status": "pass",
+          "program_id": "v4",
+          "parent_ids": [
+            "v3",
+            "v1"
+          ]
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "pass",
+          "program_id": "v4",
+          "parent_ids": [
+            "v2",
+            "v0"
+          ]
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "pass",
+          "program_id": "v4",
+          "parent_ids": [
+            "v2",
+            "v0"
+          ]
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  4,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 2.000179116,
+                "baseline_latency_s": 2.021285636,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "overlap_ratio": "1.044213%",
+                "events": 2,
+                "rulecheck": "pass",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              "score": 1034.0
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1024.0
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  4,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 2.000179116,
+                "baseline_latency_s": 2.021285636,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "overlap_ratio": "1.044213%",
+                "events": 2,
+                "rulecheck": "pass",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              "score": 1001.2
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1000.3
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  4,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 2.000179116,
+                "baseline_latency_s": 2.021285636,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "overlap_ratio": "1.044213%",
+                "events": 2,
+                "rulecheck": "pass",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              "score": 1003.7
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1003.1999999999999
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  4,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 2.000179116,
+                "baseline_latency_s": 2.021285636,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "overlap_ratio": "1.044213%",
+                "events": 2,
+                "rulecheck": "pass",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              "score": 1007.52
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 955.08
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Prefer strategy shapes that reduce database total_latency_s while preserving the island core direction."
+          ]
+        }
+      },
+      "replacements": [],
+      "best_so_far": {
+        "strategy": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        },
+        "total_latency_s": 2.000179116
+      }
+    }
+  ],
+  "report_md": "outputs/scoreexpert_db_search_20260613_172642/scoreexpert_db_search_report.md"
+}

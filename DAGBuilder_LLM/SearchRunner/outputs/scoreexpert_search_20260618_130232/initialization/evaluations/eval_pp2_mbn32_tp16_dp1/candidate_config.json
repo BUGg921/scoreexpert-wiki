@@ -1,0 +1,313 @@
+{
+  "dag_id": "1f1b_pp2_dp1_tp16_mb32_candidate",
+  "immutable_config_sections": [
+    "model_para",
+    "network_config"
+  ],
+  "model_para": {
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "ffn_hidden_size": 11008,
+    "precision_factors": {
+      "tp": 16,
+      "dp": 32,
+      "pp": 16,
+      "ep": 16,
+      "sp": 16
+    }
+  },
+  "parallelism_config": {
+    "global_batch_size": 128.0,
+    "seq_len": 2048,
+    "dp_size": 1,
+    "tp_size": 16,
+    "pp_size": 2,
+    "vpp_size": 1,
+    "sp_ce_size": 1,
+    "sp_me_size": 1,
+    "microbatch_num": 32,
+    "microbatch_size": 4.0,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward",
+    "dp_allreduce_granularity": "stage",
+    "local_minibatch_size": 128.0
+  },
+  "network_config": {
+    "npu_innode_static_delay_s": 6e-05,
+    "roce_static_delay_s": 6e-05,
+    "npu_innode_bandwidth_gbps": 1574.72,
+    "hccs_bandwidth_gbps": 1400,
+    "roce_bandwidth_gbps": 200,
+    "bandwidth_utilization_ratio": 0.8,
+    "hccs_bandwidth_utilization_ratio": 0.9,
+    "die_num_per_node": 16,
+    "alltoall_concurrency": 16,
+    "hbm_bandwidth_gbps": 4800,
+    "npu_memory_gb": 16
+  },
+  "value_sim_config": {
+    "device_peak_flops": 312000000000000.0,
+    "compute_efficiency": 0.45,
+    "dp_bucket_size_bytes": 268435456,
+    "pp_link_type": "roce",
+    "dp_collective_algorithm": "abstract_layered",
+    "dp_collective_model": "hierarchical",
+    "allreduce_mode": "monolithic",
+    "affinity_group_size": 16,
+    "ranks_per_node": 16,
+    "num_affinity_groups": 2,
+    "rank_to_affinity_group": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "tp_size_limit": 16,
+    "validate_pp_affinity_symmetry": true,
+    "backward_flop_multiplier": 2.0,
+    "tp_compute_sharding_enabled": true,
+    "tp_comm_enabled": true,
+    "tp_comm_model": "ring",
+    "tp_forward_collectives_per_layer": 2,
+    "tp_backward_collectives_per_layer": 2,
+    "tp_comm_payload": "activation",
+    "tp_intra_affinity_link_type": "hccs",
+    "tp_cross_affinity_link_type": "roce",
+    "tp_comm_overlap_ratio": 0.0
+  },
+  "search_config": {
+    "top_k": 3,
+    "evaluation_budget": 8,
+    "candidate_pool_per_island": 64,
+    "initial_nomination_top_n": 64,
+    "program_nomination_top_n": 32,
+    "protected_candidate_ttl": 3,
+    "score_db_search": {
+      "max_rounds": 100,
+      "patience_rounds": 10,
+      "min_relative_improvement": 0.001,
+      "target_gap_to_database_best": 0.01,
+      "stop_on_target_gap": false,
+      "stop_on_patience": false,
+      "island_workers": 4,
+      "ranking_top_k": 16,
+      "experience_retrieval_top_k": 3,
+      "migration_interval": 10
+    },
+    "allow_idle_gpus": true,
+    "allowed_active_gpu_counts": [
+      4,
+      8,
+      16,
+      32
+    ],
+    "allowed_tp_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "micro_batch_candidates": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "placement_matrix_value": "binary",
+    "enable_pp_schedule_search": false,
+    "allowed_pp_strategies": [
+      "1f1b"
+    ],
+    "scoring_mode": "formula_expert",
+    "base_score": 1000.0,
+    "invalid_strategy_score": -1e+18,
+    "bubble_weight": 100.0,
+    "memory_risk_weight": 1000.0,
+    "topology_penalty_weight": 10.0,
+    "comm_weight": 1.0,
+    "memory_safe_threshold_ratio": 0.9,
+    "memory_safe_soft_weight": 1.0,
+    "memory_safe_risk_weight": 100.0,
+    "memory_safe_risk_exponent": 2,
+    "topology_tp_cross_affinity_weight": 100.0,
+    "topology_dp_cross_affinity_weight": 10.0,
+    "topology_pp_cross_affinity_weight": 1.0,
+    "islands": [
+      "memory_safe",
+      "topology_affinity"
+    ],
+    "island_mutation_bias": {
+      "memory_safe": {
+        "tp": 2.0,
+        "pp": 2.0,
+        "dp": 0.5
+      },
+      "topology_affinity": {
+        "tp": 1.0,
+        "pp": 1.0,
+        "dp": 1.0
+      }
+    },
+    "evolution": {
+      "total_iterations": 30,
+      "enabled": true,
+      "max_rounds": 5,
+      "programs_per_prompt": 2,
+      "migration_interval": 3,
+      "replace_fraction": 0.5,
+      "metric": "baseline_latency_s",
+      "phase_ratios": {
+        "explore": 0.3,
+        "low_migration": 0.5,
+        "exploit": 0.2
+      },
+      "low_migration_interval": 5,
+      "exploit_migration_interval": 1,
+      "migrants_per_event": 1,
+      "structure_difference_keys": [
+        "pp_size",
+        "tp_size",
+        "dp_size",
+        "micro_batch_num",
+        "signature"
+      ]
+    },
+    "sandbox": {
+      "timeout_seconds": 2,
+      "max_program_chars": 6000
+    },
+    "cluster_scenarios": [
+      {
+        "name": "target_32g_2affinity_2nodes",
+        "num_gpus": 32,
+        "affinity_groups": 2,
+        "nodes_per_affinity_group": 1,
+        "gpus_per_node": 16,
+        "weight": 1.0
+      }
+    ],
+    "funsearch": {
+      "enabled": true,
+      "llm_client": "local_command",
+      "max_steps": 5,
+      "samples_per_prompt": 1,
+      "k_programs_per_prompt": 2,
+      "full_eval_programs_per_step": 1,
+      "full_eval_strategies_per_program": 1,
+      "island_population_size": 4,
+      "agent_timeout_seconds": 120,
+      "local_agent_command": "",
+      "fallback_to_mock": true,
+      "program_bank_top_k_per_island": 12,
+      "prompt_examples_per_island": 2,
+      "sampler_model": "gpt-5.5",
+      "reset_interval": 100,
+      "reset_patience": 3,
+      "keep_local_top_m": 3,
+      "copy_remote_top_k": 2
+    },
+    "deepseek": {
+      "enabled": true,
+      "base_url": "https://api.deepseek.com",
+      "model": "deepseek-v4-pro",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "timeout_seconds": 120,
+      "temperature": 0.7,
+      "pricing_per_1m_tokens": {
+        "input": 0.435,
+        "output": 0.87
+      }
+    },
+    "overlapopt": {
+      "enabled": true,
+      "top_k": 3,
+      "max_iterations": 5,
+      "keep_metric": "overlap_saved_ratio",
+      "pp_strategies": [
+        "gpipe",
+        "1f1b"
+      ],
+      "dp_strategies": [
+        "naive_allreduce_after_backward",
+        "reduce_scatter_allgather_after_backward"
+      ]
+    },
+    "full_loop": {
+      "outer_rounds": 5,
+      "score_rounds": 5,
+      "overlap_iterations": 5
+    }
+  },
+  "domains": {
+    "num_gpus": 32,
+    "dp_size": 1,
+    "tp_size": 16,
+    "pp_size": 2,
+    "num_layers": 32,
+    "num_microbatches": 32
+  },
+  "strategies": {
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward",
+    "dp_allreduce_granularity": "stage"
+  },
+  "color_theme": {
+    "forward_node_color": "#D7E7F5",
+    "backward_node_color": "#FCE4CC",
+    "pp_comm_node_color": "#ECE4FF",
+    "dp_comm_node_color": "#DDF3DD",
+    "control_node_color": "#F2F2F2",
+    "data_dependency_edge_color": "#2F6FB3",
+    "resource_dependency_edge_color": "#2E8B57",
+    "control_edge_color": "#333333"
+  },
+  "outputs": {
+    "base_dir": "outputs/scoreexpert_search_20260618_130232/initialization/evaluations/eval_pp2_mbn32_tp16_dp1",
+    "name_template": "dag_artifacts",
+    "html_filename": "dag.html",
+    "json_filename": "dag.json"
+  },
+  "candidate_metadata": {
+    "original_total_gpus": 32,
+    "active_gpus": 32,
+    "idle_gpus": 0,
+    "placement_matrix_path": "",
+    "island_score": 1048.6799999999998,
+    "source_islands": [
+      "memory_safe"
+    ],
+    "micro_batch_num": 32
+  }
+}

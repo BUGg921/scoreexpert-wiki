@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValueSim 数值仿真建模方式总结</title>
+<style>
+  :root {
+    --bg: #f8f9fa; --bg-card: #ffffff; --bg-hover: #f1f3f5;
+    --border: #dee2e6; --text: #343a40; --muted: #6c757d;
+    --bright: #212529; --accent: #0d6efd; --accent-light: #e8f4fd;
+    --green: #198754; --green-light: #e6f9f0;
+    --orange: #fd7e14; --orange-light: #fff4e8;
+    --red: #dc3545; --purple: #6f42c1;
+    --shadow: 0 1px 3px rgba(0,0,0,.06);
+    --shadow-lg: 0 2px 8px rgba(0,0,0,.08);
+    --code-bg: #f5f5f5; --code-border: #e0e0e0;
+    --radius: 10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8; padding: 2rem;
+  }
+  .container { max-width: 1100px; margin:0 auto; }
+
+  /* ====== Header ====== */
+  .page-header {
+    background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
+    padding: 2.5rem 2rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .page-header h1 { font-size: 1.9rem; color: var(--bright); font-weight: 800; margin-bottom: .4rem; }
+  .page-header .sub { color: var(--muted); font-size: .9rem; }
+  .page-header .badge-row { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+  .page-header .badge-row .tag {
+    display: inline-block; padding: .2rem .7rem; border-radius: 20px;
+    font-size: .75rem; font-weight: 600; border: 1px solid;
+  }
+  .tag-compute { color: var(--accent); background: var(--accent-light); border-color: #b6d4fe; }
+  .tag-comm   { color: var(--green);  background: var(--green-light);  border-color: #a3e4c1; }
+  .tag-control{ color: var(--muted);  background: #f0f0f0;             border-color: var(--border); }
+
+  /* ====== Navigation ====== */
+  .nav {
+    background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
+    padding: 1.2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+  }
+  .nav h3 { font-size: .85rem; color: var(--muted); margin-bottom: .6rem; text-transform: uppercase; letter-spacing: 1px; }
+  .nav ol { columns:2; column-gap:2rem; font-size:.86rem; padding-left:1.2rem; }
+  .nav li { margin-bottom: .3rem; break-inside:avoid; }
+  .nav a { color: var(--accent); text-decoration: none; }
+  .nav a:hover { text-decoration: underline; }
+
+  /* ====== Sections ====== */
+  .section {
+    background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
+    padding: 1.8rem 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+  }
+  .section h2 {
+    font-size: 1.2rem; color: var(--bright); margin-bottom: 1rem;
+    padding-bottom: .5rem; border-bottom: 2px solid var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .section h2 .num {
+    display: inline-flex; align-items:center; justify-content:center;
+    width: 28px; height: 28px; background: var(--accent); color: #fff;
+    border-radius: 50%; font-size: .8rem; font-weight: 700; flex-shrink:0;
+  }
+  .section h3 {
+    font-size: 1rem; color: var(--bright); margin: 1.5rem 0 .6rem;
+    padding-left: .6rem; border-left: 3px solid var(--accent);
+  }
+  .section h3:first-of-type { margin-top: .5rem; }
+
+  /* ====== Tables ====== */
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; margin: 1rem 0; }
+  th, td { padding: .6rem .9rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: var(--bg); color: var(--muted); font-weight: 600; font-size: .78rem; letter-spacing: .5px; }
+  tr:hover td { background: var(--bg-hover); }
+  td:first-child { font-family: 'JetBrains Mono','Cascadia Code','Fira Code',monospace; font-size: .82rem; }
+  td:last-child { color: var(--text); }
+
+  /* ====== Code blocks ====== */
+  pre {
+    background: var(--code-bg); border: 1px solid var(--code-border); border-radius: 6px;
+    padding: 1rem 1.2rem; margin: .8rem 0; overflow-x: auto;
+    font-family: 'JetBrains Mono','Cascadia Code','Fira Code','Source Code Pro',monospace;
+    font-size: .82rem; line-height: 1.7; color: #333;
+  }
+  code { font-family: 'JetBrains Mono','Cascadia Code','Fira Code',monospace; font-size: .84rem; }
+  p code, li code { background: var(--code-bg); padding: .12rem .35rem; border-radius: 3px; border:1px solid var(--code-border); }
+
+  /* ====== Callouts ====== */
+  .callout {
+    border-left: 4px solid; border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem; margin: 1rem 0;
+  }
+  .callout-info   { background: var(--accent-light); border-color: var(--accent); }
+  .callout-warn   { background: var(--orange-light); border-color: var(--orange); }
+  .callout-tip    { background: var(--green-light);  border-color: var(--green); }
+  .callout-info h4, .callout-warn h4, .callout-tip h4 {
+    margin-bottom: .3rem; font-size: .9rem;
+  }
+  .callout-info h4 { color: var(--accent); }
+  .callout-warn h4 { color: var(--orange); }
+  .callout-tip h4  { color: var(--green); }
+
+  /* ====== Schema box ====== */
+  .schema-box {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: .8rem; margin: 1rem 0;
+  }
+  .schema-item {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem; text-align: center;
+  }
+  .schema-item .field {
+    font-family: 'JetBrains Mono',monospace; font-size: .9rem; color: var(--accent);
+    font-weight: 700; margin-bottom: .2rem;
+  }
+  .schema-item .desc { font-size: .8rem; color: var(--muted); }
+
+  /* ====== Flow diagram ====== */
+  .flow {
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    flex-wrap: wrap; margin: 1.2rem 0; padding: 1.2rem;
+    background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .flow-step {
+    background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px;
+    padding: .7rem 1rem; text-align: center; font-size: .85rem; font-weight: 600;
+    white-space: nowrap;
+  }
+  .flow-step.input  { border-color: var(--green); }
+  .flow-step.output { border-color: var(--purple); }
+  .flow-arrow { font-size: 1.3rem; color: var(--muted); font-weight: 700; }
+
+  /* ====== Formula highlight ====== */
+  .formula {
+    background: linear-gradient(135deg, #fffbe6, #fff3cd);
+    border: 1px solid #ffc107; border-left: 4px solid #ffc107;
+    border-radius: 6px; padding: .8rem 1rem; margin: .6rem 0;
+    font-family: 'JetBrains Mono',monospace; font-size: .83rem; color: #5a4a00;
+    white-space: pre-wrap;
+  }
+
+  /* ====== Footer ====== */
+  .footer {
+    text-align: center; color: var(--muted); font-size: .8rem;
+    margin-top: 2.5rem; padding: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    body { padding: .5rem; }
+    .nav ol { columns: 1; }
+    .section { padding: 1.2rem; }
+    pre { font-size: .75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============ HEADER ============ -->
+<div class="page-header">
+  <h1>ValueSim 数值仿真建模方式总结</h1>
+  <p class="sub">本文档总结 ValueSim 对 DAG 图中各类节点的建模方式及 <code>duration_s</code> 的计算来源</p>
+  <div class="badge-row">
+    <span class="tag tag-compute">计算建模</span>
+    <span class="tag tag-comm">通信建模</span>
+    <span class="tag tag-control">控制节点</span>
+    <span class="tag tag-compute">TP / PP / DP</span>
+  </div>
+</div>
+
+<!-- ============ NAVIGATION ============ -->
+<div class="nav">
+  <h3>📑 目录</h3>
+  <ol>
+    <li><a href="#sec1">总体流程</a></li>
+    <li><a href="#sec2">节点类型分发</a></li>
+    <li><a href="#sec3">Control 节点</a></li>
+    <li><a href="#sec4">Forward / Backward 计算节点</a></li>
+    <li><a href="#sec5">PP 通信节点</a></li>
+    <li><a href="#sec6">DP 通信节点</a></li>
+    <li><a href="#sec7">DP ReduceScatter / AllGather</a></li>
+    <li><a href="#sec8">DP AllReduce</a></li>
+    <li><a href="#sec9">输出字段含义</a></li>
+    <li><a href="#sec10">当前模型假设与限制</a></li>
+  </ol>
+</div>
+
+<!-- ============ 1. 总体流程 ============ -->
+<div class="section" id="sec1">
+  <h2><span class="num">1</span>总体流程</h2>
+  <p>入口位于 <code>ValueSim/simulation/simulate_dag.py</code>，依据 DAG 节点的 <code>task_kind</code> 进行解析，只给已有 DAG 节点补充时间和载荷字段，<strong>不改变 DAG 拓扑</strong>。</p>
+
+  <div class="flow">
+    <div class="flow-step input">📥 dag.json<br><small>nodes + edges</small></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-step input">⚙️ config.py<br><small>模型参数 / 并行配置</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="background:var(--accent-light);">🔬 ValueSim<br><small>数值仿真</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step output">📤 weighted_dag.json<br><small>带 duration_s 的 DAG</small></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-step output">📊 node_timing_table.json<br><small>按节点展开的时序表</small></div>
+  </div>
+
+  <h3>每个节点新增字段</h3>
+  <div class="schema-box">
+    <div class="schema-item">
+      <div class="field">duration_s</div>
+      <div class="desc">该节点估算耗时（秒）</div>
+    </div>
+    <div class="schema-item">
+      <div class="field">flops</div>
+      <div class="desc">计算量（通信节点为 0）</div>
+    </div>
+    <div class="schema-item">
+      <div class="field">payload_bytes</div>
+      <div class="desc">通信或 TP 内部载荷</div>
+    </div>
+    <div class="schema-item">
+      <div class="field">value_sim_detail</div>
+      <div class="desc">模型细节：带宽、延迟、TP 切分、collective 步骤等</div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <h4>⚠️ 拓扑不变性检查</h4>
+    ValueSim 会验证仿真前后节点数和边数是否一致。若仿真过程改变了 DAG 拓扑，将直接报错。
+  </div>
+</div>
+
+<!-- ============ 2. 节点类型分发 ============ -->
+<div class="section" id="sec2">
+  <h2><span class="num">2</span>节点类型分发</h2>
+  <p>根据 <code>task_kind</code> 分发到不同模型。遇到未支持的 <code>task_kind</code> 会报错。</p>
+  <table>
+    <thead><tr><th>task_kind</th><th>建模方式</th></tr></thead>
+    <tbody>
+      <tr><td>control</td><td>零耗时节点</td></tr>
+      <tr><td>forward</td><td>Transformer layer 前向计算 + TP 通信</td></tr>
+      <tr><td>backward</td><td>Transformer layer 反向计算 + TP 通信</td></tr>
+      <tr><td>pp_forward_send / pp_backward_send</td><td rowspan="2">PP 点到点通信</td></tr>
+      <tr><td>pp_forward_recv / pp_backward_recv</td></tr>
+      <tr><td>dp_allreduce / zero01_g_ar</td><td>DP AllReduce</td></tr>
+      <tr><td>dp_reducescatter / reduce_scatter / zero01_g_rs</td><td>DP ReduceScatter</td></tr>
+      <tr><td>dp_allgather / allgather / zero01_p_ag</td><td>DP AllGather</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 3. Control 节点 ============ -->
+<div class="section" id="sec3">
+  <h2><span class="num">3</span>Control 节点</h2>
+  <p><code>control</code> 节点用于 DAG 起点、终点或控制依赖，不代表真实计算或通信。</p>
+  <pre>duration_s   = 0
+flops        = 0
+payload_bytes = 0</pre>
+</div>
+
+<!-- ============ 4. Forward / Backward ============ -->
+<div class="section" id="sec4">
+  <h2><span class="num">4</span>Forward / Backward 计算节点</h2>
+  <p>使用 <code>estimate_tp_compute(...)</code> 建模，将一个 layer 视为 TP supernode：本地计算按 TP 切分，同时加入 TP 内部 collective 通信时间。</p>
+
+  <h3>4.1 计算量估算</h3>
+  <p>若配置中显式提供 <code>value_sim_config.layer_forward_flops</code> 则直接使用；否则按 Transformer layer 估算：</p>
+  <pre>tokens = microbatch_size × seq_len
+attention_flops = 8 × tokens × hidden_size × hidden_size
+mlp_flops = 4 × tokens × hidden_size × ffn_hidden_size
+forward_flops = attention_flops + mlp_flops</pre>
+  <p>反向计算量使用倍率：</p>
+  <pre>backward_flops = forward_flops × backward_flop_multiplier    （默认 2.0）</pre>
+
+  <h3>4.2 TP 切分后本地计算时间</h3>
+  <div class="formula">sharded_flops = flops / tp_size        （tp_compute_sharding_enabled == True）
+sharded_flops = flops                 （否则）
+effective_flops = device_peak_flops × compute_efficiency
+local_compute_s = sharded_flops / effective_flops</div>
+
+  <h3>4.3 TP 内部通信</h3>
+  <p>若 <code>tp_comm_enabled = True</code>，当前仅支持 ring 模型。</p>
+
+  <pre>tp_activation_bytes = microbatch_size × seq_len × hidden_size × precision_bytes(tp)
+local_payload_bytes = full_activation_bytes / tp_size
+steps_per_collective = 2 × (tp_size - 1)
+wire_bytes_per_collective = 2 × local_payload_bytes × (tp_size - 1) / tp_size</pre>
+
+  <p>每个 collective 的通信时间：</p>
+  <div class="formula">duration_per_collective =
+    steps_per_collective × latency_s
+  + wire_bytes_per_collective / effective_bandwidth_bytes_per_s</div>
+
+  <p>总 TP 通信时间：</p>
+  <pre>tp_comm_s = duration_per_collective × collective_count</pre>
+  <table>
+    <thead><tr><th>节点类型</th><th>collective_count</th></tr></thead>
+    <tbody>
+      <tr><td>forward</td><td>tp_forward_collectives_per_layer</td></tr>
+      <tr><td>backward</td><td>tp_backward_collectives_per_layer</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <h4>💡 跨亲和组 (Cross-Affinity) 链路</h4>
+    TP domain 跨 affinity group 时使用 <code>tp_cross_affinity_link_type</code>（通常走 RoCE）；否则使用 <code>tp_intra_affinity_link_type</code>（通常 HCCS / 节点内）。
+  </div>
+
+  <h3>4.4 Forward / Backward 最终 duration</h3>
+  <div class="formula">tp_comm_non_overlapped_s = tp_comm_s × (1 - tp_comm_overlap_ratio)
+duration_s = local_compute_s + tp_comm_non_overlapped_s</div>
+</div>
+
+<!-- ============ 5. PP 通信 ============ -->
+<div class="section" id="sec5">
+  <h2><span class="num">5</span>PP 通信节点</h2>
+  <p>包括 <code>pp_forward_send</code>、<code>pp_forward_recv</code>、<code>pp_backward_send</code>、<code>pp_backward_recv</code>，统一使用 <code>estimate_pp_p2p(...)</code> 建模。</p>
+
+  <h3>Payload 计算</h3>
+  <div class="formula">pp_activation_bytes =
+    microbatch_size × seq_len × hidden_size × precision_bytes(pp) / tp_size</div>
+
+  <h3>链路类型</h3>
+  <p>由 <code>value_sim_config.pp_link_type</code> 决定：</p>
+  <table>
+    <thead><tr><th>链路类型</th><th>带宽来源</th><th>延迟来源</th></tr></thead>
+    <tbody>
+      <tr><td>roce</td><td>RoCE 带宽</td><td>RoCE 静态延迟</td></tr>
+      <tr><td>hccs / innode</td><td>HCCS / 节点内带宽</td><td>节点内静态延迟</td></tr>
+    </tbody>
+  </table>
+
+  <div class="formula">effective_bandwidth = bandwidth_gbps × 1e9 / 8 × utilization_ratio
+duration_s = latency_s + payload_bytes / effective_bandwidth</div>
+
+  <div class="callout callout-warn">
+    <h4>⚠️ Ascend 约束</h4>
+    <code>validate_value_sim_config()</code> 要求 Ascend profile 下 <code>pp_link_type = roce</code>，除非后续显式重新设计。
+  </div>
+</div>
+
+<!-- ============ 6. DP 通信 ============ -->
+<div class="section" id="sec6">
+  <h2><span class="num">6</span>DP 通信节点</h2>
+  <p>DP 节点的 payload 通常来自当前 PP stage 的梯度大小。</p>
+
+  <h3>6.1 DP Payload 计算优先级</h3>
+  <ol>
+    <li>若 DAG 节点显式带有 <code>payload_bytes</code> 或 <code>bucket_bytes</code>，优先使用；若未声明已 TP 切分则除以 <code>tp_size</code></li>
+    <li>若节点有 <code>pp_stage_id</code>，按 stage 内层数计算梯度大小：</li>
+  </ol>
+  <pre>stage_gradient_bytes = num_layers_in_stage × layer_param_bytes / tp_size</pre>
+
+  <h3>6.2 单层参数量估算</h3>
+  <pre>attention_params = 4 × hidden_size × hidden_size
+mlp_params = 2 × hidden_size × ffn_hidden_size
+layer_param_count = attention_params + mlp_params
+layer_param_bytes = layer_param_count × precision_bytes(dp)</pre>
+
+  <p>若无 stage 信息，则退化为单层参数大小或配置中的 <code>dp_bucket_size_bytes</code>。</p>
+</div>
+
+<!-- ============ 7. DP ReduceScatter / AllGather ============ -->
+<div class="section" id="sec7">
+  <h2><span class="num">7</span>DP ReduceScatter / AllGather</h2>
+  <p><code>dp_reducescatter</code> 和 <code>dp_allgather</code> 使用同一套<strong>分层 collective 模型</strong>（layered collective），仅 <code>direction</code> 不同。</p>
+
+  <h3>模型输入参数</h3>
+  <table>
+    <thead><tr><th>参数</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td>domain_size</td><td>= dp_size</td></tr>
+      <tr><td>ranks_per_node</td><td>每节点 rank 数</td></tr>
+      <tr><td>affinity_group_size</td><td>亲和组大小</td></tr>
+      <tr><td>HCCS 有效带宽</td><td>节点内带宽</td></tr>
+      <tr><td>RoCE 有效带宽</td><td>跨节点带宽</td></tr>
+      <tr><td>节点内 / RoCE 静态延迟</td><td>链路延迟</td></tr>
+    </tbody>
+  </table>
+
+  <h3>三层分层结构</h3>
+  <div class="formula">n1 = min(ranks_per_node, domain_size)
+n2 = min(affinity_group_size, ceil(domain_size / n1))
+n3 = ceil(domain_size / (n1 × n2))</div>
+
+  <p>每个 rank 的基本数据量：</p>
+  <pre>per_rank_bytes = total_data_size / domain_size</pre>
+
+  <p>三层步骤数：</p>
+  <pre>layer1_steps = n1 - 1            ← 节点内
+layer2_steps = ceil(log₂(n2))    ← 亲和组内
+layer3_steps = ceil(log₂(n3))    ← 跨节点 RoCE</pre>
+
+  <p>每步数据量按 <code>per_rank_bytes × 2^step</code> 估算：</p>
+  <div class="formula">step_time = latency_s + step_bytes / bandwidth
+duration_s = sum(节点内) + sum(亲和组) + sum(跨节点 RoCE)</div>
+
+  <div class="callout callout-tip">
+    <h4>📝 详细记录</h4>
+    <code>value_sim_detail.steps</code> 会记录每一层、每一步的 payload、传输时间、静态延迟和 step duration。
+  </div>
+</div>
+
+<!-- ============ 8. DP AllReduce ============ -->
+<div class="section" id="sec8">
+  <h2><span class="num">8</span>DP AllReduce</h2>
+  <p><code>dp_allreduce</code> 支持两类模式。</p>
+
+  <h3>① 分层 / 分解路径 (hierarchical / decomposed)</h3>
+  <p>当 <code>allreduce_mode = decomposed</code> 或 <code>dp_collective_model = hierarchical</code> 时：</p>
+  <div class="formula">duration_s = ReduceScatter(payload).duration_s + AllGather(payload).duration_s</div>
+  <p>不改变 DAG 拓扑，仅在 <code>dp_allreduce</code> 节点内部把时间分解为 RS + AG。</p>
+
+  <h3>② 简单 Ring 路径</h3>
+  <p>使用 ring alpha-beta 估算（当前走 HCCS 带宽和节点内延迟）：</p>
+  <pre>steps = 2 × (dp_size - 1)
+wire_bytes = 2 × payload_bytes × (dp_size - 1) / dp_size</pre>
+  <div class="formula">duration_s = steps × latency_s + wire_bytes / effective_bandwidth</div>
+</div>
+
+<!-- ============ 9. 输出字段 ============ -->
+<div class="section" id="sec9">
+  <h2><span class="num">9</span>输出字段含义</h2>
+
+  <h3>weighted_dag.json</h3>
+  <p>每个节点保留原始 DAG 字段，并增加：</p>
+  <div class="schema-box">
+    <div class="schema-item"><div class="field">duration_s</div><div class="desc">耗时（秒）</div></div>
+    <div class="schema-item"><div class="field">flops</div><div class="desc">计算量</div></div>
+    <div class="schema-item"><div class="field">payload_bytes</div><div class="desc">载荷字节</div></div>
+    <div class="schema-item"><div class="field">value_sim_detail</div><div class="desc">模型细节</div></div>
+  </div>
+
+  <h3>node_timing_table.json</h3>
+  <p>每行包含：</p>
+  <pre>node_id   label   task_kind   duration_s   flops   payload_bytes   resource   value_sim_detail</pre>
+  <p>其中 <code>resource</code> 来自 DAG 节点的 <code>stream_type</code>，供后续 Evaluation 或 OverlapOPT 判断资源串行和关键路径使用。</p>
+</div>
+
+<!-- ============ 10. 假设与限制 ============ -->
+<div class="section" id="sec10">
+  <h2><span class="num">10</span>当前模型假设与限制</h2>
+
+  <table>
+    <thead><tr><th style="width:50px;">#</th><th>假设 / 限制</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>ValueSim 不修改节点和边，只给节点加权</td></tr>
+      <tr><td>2</td><td>Forward / Backward 是 layer 粒度节点，不是算子级节点</td></tr>
+      <tr><td>3</td><td>TP 通信被合并进 compute 节点内部，不展开成独立 DAG 节点</td></tr>
+      <tr><td>4</td><td>PP send/recv 当前使用同样的点到点通信模型</td></tr>
+      <tr><td>5</td><td>DP stage-level 节点可能是 monolithic，也可能由 DagGenerator 直接生成 RS+AG 节点</td></tr>
+      <tr><td>6</td><td>AllReduce 的 hierarchical 分解仅发生在 duration 估算内部，不会自动拆 DAG 节点</td></tr>
+      <tr><td>7</td><td>当前仅支持已列出的 <code>task_kind</code>，新节点类型需要显式增加模型分发</td></tr>
+      <tr><td>8</td><td>当前模型主要是<strong>解析式估算</strong>，不是基于真实 profiler trace 的逐算子仿真</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info" style="margin-top:1.5rem;">
+    <h4>📌 核心设计原则</h4>
+    ValueSim 定位为<strong>轻量级数值仿真层</strong>：基于解析公式快速估算 DAG 节点耗时，服务于搜索空间内的快速评估，而非取代 profiling。如需逐算子精确仿真，请结合真实硬件 trace 数据。
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<div class="footer">
+  ValueSim 数值仿真建模方式总结 · 自动生成 HTML 报告 · Hermes Agent
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,531 @@
+{
+  "status": "pass",
+  "experience_candidate_status": "KEEP_FOR_VALIDATION",
+  "scenario": {
+    "id": "s6_four_symmetric",
+    "title": "四张慢卡四节点对称分布",
+    "experience_category": "distributed-heterogeneity",
+    "slow_ranks": [
+      7,
+      15,
+      23,
+      31
+    ],
+    "total_gpus": 32,
+    "servers": 4,
+    "gpus_per_server": 8,
+    "affinity_groups": 2,
+    "servers_per_affinity_group": 2,
+    "normal_compute_tflops": 312.0,
+    "slow_compute_tflops": 156.0,
+    "slow_ratio": 0.5,
+    "ep_enabled": false
+  },
+  "model": {
+    "name": "scoreexpert_32g_reference_model",
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "ffn_hidden_size": 11008
+  },
+  "workload": {
+    "seq_len": 2048,
+    "global_batch_size": 128.0
+  },
+  "search_space": {
+    "active_gpus": [
+      32
+    ],
+    "allowed_tp_sizes": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "micro_batch_candidates": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "allow_idle_gpus": false,
+    "rank_mapping_mode": "pp_major_huawei"
+  },
+  "counts": {
+    "enumerated": 106,
+    "scoreable": 106,
+    "fully_evaluated": 56,
+    "passed": 56,
+    "failed": 50
+  },
+  "best": {
+    "strategy": {
+      "pp_size": 16,
+      "tp_size": 2,
+      "dp_size": 1,
+      "micro_batch_num": 64,
+      "active_gpus": 32,
+      "idle_gpus": 0,
+      "island_scores": {
+        "memory_safe": 1013.84,
+        "topology_affinity": 997.85625,
+        "pipeline_efficiency": 918.4632911392405,
+        "balanced_generalist": 945.1579746835444
+      },
+      "rule_check": {
+        "status": "pass",
+        "violations": [],
+        "warnings": [],
+        "risk_labels": []
+      }
+    },
+    "total_latency_s": 4.169283550422197,
+    "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp16_mbn64_tp2_dp1",
+    "dag_id": "1f1b_pp16_dp1_tp2_mb64_candidate",
+    "dag_node_count": 6050,
+    "dag_edge_count": 14000,
+    "sum_node_duration_by_category_s": {
+      "control": 0.0,
+      "compute": 37.09658073802494,
+      "pp": 0.4134907105590309,
+      "dp": 0.0
+    },
+    "compute_critical_ranks_seen": [
+      0,
+      2,
+      4,
+      7,
+      8,
+      10,
+      12,
+      15,
+      16,
+      18,
+      20,
+      23,
+      24,
+      26,
+      28,
+      31
+    ],
+    "weighted_dag": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp16_mbn64_tp2_dp1/weighted_dag.json",
+    "node_timing_table": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp16_mbn64_tp2_dp1/node_timing_table.json",
+    "slow_tp_group_analysis": {
+      "tp_size": 2,
+      "affected_tp_group_count": 4,
+      "affected_tp_groups": [
+        {
+          "group_index": 3,
+          "group_ranks": [
+            6,
+            7
+          ],
+          "slow_ranks": [
+            7
+          ]
+        },
+        {
+          "group_index": 7,
+          "group_ranks": [
+            14,
+            15
+          ],
+          "slow_ranks": [
+            15
+          ]
+        },
+        {
+          "group_index": 11,
+          "group_ranks": [
+            22,
+            23
+          ],
+          "slow_ranks": [
+            23
+          ]
+        },
+        {
+          "group_index": 15,
+          "group_ranks": [
+            30,
+            31
+          ],
+          "slow_ranks": [
+            31
+          ]
+        }
+      ],
+      "model_semantics": "A compute supernode is bounded by the slowest rank in its TP group; equal-speed slow ranks in the same group do not multiply its duration."
+    }
+  },
+  "top_candidates": [
+    {
+      "strategy_key": "pp16_mbn64_tp2_dp1",
+      "strategy": {
+        "pp_size": 16,
+        "tp_size": 2,
+        "dp_size": 1,
+        "micro_batch_num": 64,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1013.84,
+          "topology_affinity": 997.85625,
+          "pipeline_efficiency": 918.4632911392405,
+          "balanced_generalist": 945.1579746835444
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.169283550422197,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp16_mbn64_tp2_dp1"
+    },
+    {
+      "strategy_key": "pp1_mbn4_tp8_dp4",
+      "strategy": {
+        "pp_size": 1,
+        "tp_size": 8,
+        "dp_size": 4,
+        "micro_batch_num": 4,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1023.86,
+          "topology_affinity": 1000.8,
+          "pipeline_efficiency": 1003.1999999999999,
+          "balanced_generalist": 1008.4799999999999
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [
+            "memory_soft_overflow"
+          ],
+          "risk_labels": [
+            "memory_soft_overflow"
+          ]
+        }
+      },
+      "total_latency_s": 4.238720098529211,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp1_mbn4_tp8_dp4"
+    },
+    {
+      "strategy_key": "pp8_mbn64_tp4_dp1",
+      "strategy": {
+        "pp_size": 8,
+        "tp_size": 4,
+        "dp_size": 1,
+        "micro_batch_num": 64,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1015.84,
+          "topology_affinity": 999.10625,
+          "pipeline_efficiency": 958.3042253521127,
+          "balanced_generalist": 974.5425352112676
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.301445101873703,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp8_mbn64_tp4_dp1"
+    },
+    {
+      "strategy_key": "pp8_mbn32_tp4_dp1",
+      "strategy": {
+        "pp_size": 8,
+        "tp_size": 4,
+        "dp_size": 1,
+        "micro_batch_num": 32,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1015.68,
+          "topology_affinity": 998.0125,
+          "pipeline_efficiency": 917.8564102564103,
+          "balanced_generalist": 950.1938461538463
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.40287102642931,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp8_mbn32_tp4_dp1"
+    },
+    {
+      "strategy_key": "pp2_mbn8_tp4_dp4",
+      "strategy": {
+        "pp_size": 2,
+        "tp_size": 4,
+        "dp_size": 4,
+        "micro_batch_num": 8,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1012.68,
+          "topology_affinity": 999.55,
+          "pipeline_efficiency": 947.2444444444445,
+          "balanced_generalist": 971.3066666666666
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.422282283248567,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp2_mbn8_tp4_dp4"
+    },
+    {
+      "strategy_key": "pp8_mbn64_tp2_dp2",
+      "strategy": {
+        "pp_size": 8,
+        "tp_size": 2,
+        "dp_size": 2,
+        "micro_batch_num": 64,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1009.92,
+          "topology_affinity": 999.30625,
+          "pipeline_efficiency": 657.7042253521126,
+          "balanced_generalist": 972.7825352112676
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.447027968742017,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp8_mbn64_tp2_dp2"
+    },
+    {
+      "strategy_key": "pp32_mbn64_tp1_dp1",
+      "strategy": {
+        "pp_size": 32,
+        "tp_size": 1,
+        "dp_size": 1,
+        "micro_batch_num": 64,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1018.84,
+          "topology_affinity": 995.35625,
+          "pipeline_efficiency": 862.7421052631579,
+          "balanced_generalist": 903.2252631578947
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.480018551156672,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp32_mbn64_tp1_dp1"
+    },
+    {
+      "strategy_key": "pp4_mbn32_tp4_dp2",
+      "strategy": {
+        "pp_size": 4,
+        "tp_size": 4,
+        "dp_size": 2,
+        "micro_batch_num": 32,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1013.84,
+          "topology_affinity": 999.4625,
+          "pipeline_efficiency": 961.5428571428572,
+          "balanced_generalist": 978.6057142857143
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.489842702527835,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp4_mbn32_tp4_dp2"
+    },
+    {
+      "strategy_key": "pp2_mbn16_tp4_dp4",
+      "strategy": {
+        "pp_size": 2,
+        "tp_size": 4,
+        "dp_size": 4,
+        "micro_batch_num": 16,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1012.84,
+          "topology_affinity": 1000.175,
+          "pipeline_efficiency": 973.3882352941177,
+          "balanced_generalist": 987.0729411764705
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.491254410283339,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp2_mbn16_tp4_dp4"
+    },
+    {
+      "strategy_key": "pp4_mbn16_tp4_dp2",
+      "strategy": {
+        "pp_size": 4,
+        "tp_size": 4,
+        "dp_size": 2,
+        "micro_batch_num": 16,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1013.68,
+          "topology_affinity": 998.525,
+          "pipeline_efficiency": 925.4526315789475,
+          "balanced_generalist": 956.8715789473684
+        },
+        "rule_check": {
+          "status": "pass",
+          "violations": [],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "total_latency_s": 4.533767987737572,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluations/eval_pp4_mbn16_tp4_dp2"
+    }
+  ],
+  "evaluation_cache": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/evaluation_cache.json",
+  "scenario_config": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/scenario_config.json",
+  "result_json": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/s6_four_symmetric.json",
+  "result_markdown": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/s6_four_symmetric.md",
+  "counterfactuals": [
+    {
+      "strategy_key": "pp1_mbn1_tp8_dp4",
+      "strategy": {
+        "pp_size": 1,
+        "tp_size": 8,
+        "dp_size": 4,
+        "micro_batch_num": 1,
+        "active_gpus": 32,
+        "idle_gpus": 0,
+        "island_scores": {
+          "memory_safe": 1021.94,
+          "topology_affinity": 1000.8,
+          "pipeline_efficiency": 1003.1999999999999,
+          "balanced_generalist": 1007.52
+        },
+        "rule_check": {
+          "status": "fail",
+          "violations": [
+            "memory_hard_overflow"
+          ],
+          "warnings": [],
+          "risk_labels": []
+        }
+      },
+      "evaluation_status": "pass",
+      "total_latency_s": 3.9161600985292315,
+      "rulecheck_status": "pass",
+      "valuesim_status": "pass",
+      "candidate_dir": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/s6_four_symmetric/counterfactuals/eval_pp1_mbn1_tp8_dp4",
+      "ranking_eligible": false,
+      "ranking_exclusion_reason": "memory_hard_overflow"
+    }
+  ],
+  "artifact_retention": {
+    "policy": "retain_ranked_top_10_and_counterfactuals",
+    "retained_ranked_candidate_count": 10,
+    "pruned_ranked_candidate_count": 46,
+    "pruned_candidate_names": [
+      "eval_pp16_mbn16_tp1_dp2",
+      "eval_pp16_mbn16_tp2_dp1",
+      "eval_pp16_mbn32_tp1_dp2",
+      "eval_pp16_mbn32_tp2_dp1",
+      "eval_pp16_mbn4_tp1_dp2",
+      "eval_pp16_mbn4_tp2_dp1",
+      "eval_pp16_mbn64_tp1_dp2",
+      "eval_pp16_mbn8_tp1_dp2",
+      "eval_pp16_mbn8_tp2_dp1",
+      "eval_pp1_mbn16_tp8_dp4",
+      "eval_pp1_mbn32_tp8_dp4",
+      "eval_pp1_mbn8_tp8_dp4",
+      "eval_pp2_mbn16_tp8_dp2",
+      "eval_pp2_mbn32_tp4_dp4",
+      "eval_pp2_mbn32_tp8_dp2",
+      "eval_pp2_mbn4_tp4_dp4",
+      "eval_pp2_mbn4_tp8_dp2",
+      "eval_pp2_mbn64_tp8_dp2",
+      "eval_pp2_mbn8_tp8_dp2",
+      "eval_pp32_mbn16_tp1_dp1",
+      "eval_pp32_mbn32_tp1_dp1",
+      "eval_pp32_mbn4_tp1_dp1",
+      "eval_pp32_mbn8_tp1_dp1",
+      "eval_pp4_mbn16_tp2_dp4",
+      "eval_pp4_mbn16_tp8_dp1",
+      "eval_pp4_mbn32_tp2_dp4",
+      "eval_pp4_mbn32_tp8_dp1",
+      "eval_pp4_mbn4_tp2_dp4",
+      "eval_pp4_mbn4_tp4_dp2",
+      "eval_pp4_mbn4_tp8_dp1",
+      "eval_pp4_mbn64_tp4_dp2",
+      "eval_pp4_mbn64_tp8_dp1",
+      "eval_pp4_mbn8_tp2_dp4",
+      "eval_pp4_mbn8_tp4_dp2",
+      "eval_pp4_mbn8_tp8_dp1",
+      "eval_pp8_mbn16_tp1_dp4",
+      "eval_pp8_mbn16_tp2_dp2",
+      "eval_pp8_mbn16_tp4_dp1",
+      "eval_pp8_mbn32_tp1_dp4",
+      "eval_pp8_mbn32_tp2_dp2",
+      "eval_pp8_mbn4_tp1_dp4",
+      "eval_pp8_mbn4_tp2_dp2",
+      "eval_pp8_mbn4_tp4_dp1",
+      "eval_pp8_mbn8_tp1_dp4",
+      "eval_pp8_mbn8_tp2_dp2",
+      "eval_pp8_mbn8_tp4_dp1"
+    ],
+    "recoverability": "rerun this scenario with the same script and config"
+  }
+}

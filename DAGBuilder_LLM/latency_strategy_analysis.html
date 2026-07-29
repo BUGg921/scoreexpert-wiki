@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAGBuilder LLM — 策略Latency影响分析 & 最佳训练时延</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fb;
+    --surface: #ffffff;
+    --surface2: #f0f2f5;
+    --border: #e0e3e8;
+    --text: #1a1d26;
+    --text2: #6b7280;
+    --accent: #3b6cf4;
+    --accent-light: #e8eeff;
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --yellow: #f59e0b;
+    --yellow-light: #fffbeb;
+    --orange: #f97316;
+    --orange-light: #fff7ed;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',system-ui,sans-serif; line-height:1.7; }
+  .container { max-width:1400px; margin:0 auto; padding:32px 24px; }
+  h1 { font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:4px; }
+  h2 { font-size:1.35rem; font-weight:600; margin:48px 0 16px; padding-bottom:10px; border-bottom:2px solid var(--accent); color:var(--text); }
+  h3 { font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--text); }
+  .subtitle { color:var(--text2); font-size:0.9rem; margin-bottom:32px; }
+  .grid { display:grid; gap:20px; }
+  .grid-2 { grid-template-columns:1fr 1fr; }
+  .grid-3 { grid-template-columns:repeat(3,1fr); }
+  .grid-4 { grid-template-columns:repeat(4,1fr); }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; box-shadow:var(--shadow); }
+  .card-full { grid-column:1/-1; }
+  .card h3 { font-size:0.9rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
+  .metric { text-align:center; padding:16px 12px; }
+  .metric .value { font-size:1.8rem; font-weight:700; }
+  .metric .label { font-size:0.78rem; color:var(--text2); margin-top:6px; line-height:1.4; }
+  .metric .value.green { color:var(--green); }
+  .metric .value.blue { color:var(--accent); }
+  .metric .value.red { color:var(--red); }
+  .metric .value.orange { color:var(--orange); }
+  .metric .value.purple { color:var(--purple); }
+  canvas { max-height:380px; }
+  table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  th, td { padding:9px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  th { color:var(--text2); font-weight:600; font-size:0.78rem; text-transform:uppercase; background:var(--surface2); }
+  tr:hover { background:var(--surface2); }
+  .tag { display:inline-block; padding:3px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; }
+  .tag-green { background:var(--green-light); color:var(--green); }
+  .tag-red { background:var(--red-light); color:var(--red); }
+  .tag-yellow { background:var(--yellow-light); color:var(--yellow); }
+  .tag-blue { background:var(--accent-light); color:var(--accent); }
+  .tag-purple { background:var(--purple-light); color:var(--purple); }
+  .tag-orange { background:var(--orange-light); color:var(--orange); }
+  .strategy-badge { display:inline-block; padding:5px 14px; border-radius:6px; font-size:0.8rem; font-weight:600; margin:4px; }
+  .s-gpipe { background:var(--red-light); color:var(--red); border:1px solid #fca5a5; }
+  .s-1f1b { background:var(--green-light); color:var(--green); border:1px solid #6ee7b7; }
+  .s-naive { background:var(--yellow-light); color:var(--yellow); border:1px solid #fcd34d; }
+  .s-rsag { background:var(--accent-light); color:var(--accent); border:1px solid #93c5fd; }
+  .insight { background:var(--accent-light); border-left:4px solid var(--accent); padding:14px 18px; margin:16px 0; border-radius:0 8px 8px 0; font-size:0.9rem; }
+  .insight strong { color:var(--accent); }
+  .insight.green { background:var(--green-light); border-left-color:var(--green); }
+  .insight.green strong { color:var(--green); }
+  .insight.orange { background:var(--orange-light); border-left-color:var(--orange); }
+  .insight.orange strong { color:var(--orange); }
+  .insight.red { background:var(--red-light); border-left-color:var(--red); }
+  .insight.red strong { color:var(--red); }
+  .chart-wrap { position:relative; width:100%; }
+  .footer { text-align:center; color:var(--text2); font-size:0.8rem; margin-top:56px; padding:20px; border-top:1px solid var(--border); }
+  .highlight { background:linear-gradient(180deg, transparent 60%, #dbeafe 60%); padding:0 2px; font-weight:600; }
+  .rank-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; font-size:0.75rem; font-weight:700; }
+  .rank-1 { background:var(--yellow); color:#fff; }
+  .rank-2 { background:#9ca3af; color:#fff; }
+  .rank-3 { background:#cd853f; color:#fff; }
+  @media (max-width:900px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>DAGBuilder LLM — 策略Latency影响 & 最佳训练时延分析</h1>
+<p class="subtitle">数据来源: EVALUATION_DATABASE.md | 生成: 2026-06-12 | 644条记录 (322组合 × 2策略) | 策略: gpipe+naive_allreduce vs 1f1b+reduce_scatter_allgather</p>
+
+<!-- ===== SECTION 1: OVERVIEW ===== -->
+<h2>一、总览</h2>
+<div class="grid grid-4">
+  <div class="card metric">
+    <div class="value blue">2.000s</div>
+    <div class="label">全局最低训练时延<br>(PP=1 TP=8 DP=4 MB=1)</div>
+  </div>
+  <div class="card metric">
+    <div class="value green">3.14s</div>
+    <div class="label">1f1b+RS/AG 平均节省<br>(vs gpipe+naive)</div>
+  </div>
+  <div class="card metric">
+    <div class="value orange">26.68%</div>
+    <div class="label">最高 Overlap Ratio<br>(DP=32 极高通信重叠)</div>
+  </div>
+  <div class="card metric">
+    <div class="value green">1010.85s</div>
+    <div class="label">全部配置累计节省时间<br>(322组 × 1f1b+RS/AG)</div>
+  </div>
+</div>
+
+<div style="display:flex; gap:24px; flex-wrap:wrap; margin-top:20px;">
+  <div class="card" style="flex:1; min-width:300px;">
+    <h3>策略组合 A — Baseline</h3>
+    <div style="margin:8px 0;">
+      <span class="strategy-badge s-gpipe">PP: gpipe</span>
+      <span class="strategy-badge s-naive">DP: naive_allreduce</span>
+    </div>
+    <p style="color:var(--text2); font-size:0.85rem;">GPipe 流水线 + 朴素 AllReduce。计算与通信<span style="color:var(--red); font-weight:600;">完全串行</span>，Overlap Ratio = 0%。</p>
+    <p style="color:var(--text2); font-size:0.82rem; margin-top:8px;">平均 Overlap Latency: <strong>27.88s</strong></p>
+  </div>
+  <div class="card" style="flex:1; min-width:300px;">
+    <h3>策略组合 B — Optimized ★</h3>
+    <div style="margin:8px 0;">
+      <span class="strategy-badge s-1f1b">PP: 1f1b</span>
+      <span class="strategy-badge s-rsag">DP: reduce_scatter_allgather</span>
+    </div>
+    <p style="color:var(--text2); font-size:0.85rem;">1F1B 调度 + Reduce-Scatter/AllGather。计算与通信<span style="color:var(--green); font-weight:600;">可部分重叠</span>。</p>
+    <p style="color:var(--text2); font-size:0.82rem; margin-top:8px;">平均 Overlap Latency: <strong>24.74s</strong> (↓11.3%)</p>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: BEST TRAINING LATENCY ===== -->
+<h2>二、最佳训练时延分析 ★</h2>
+<p style="color:var(--text2); margin-bottom:16px;">分析什么并行配置组合能在 1f1b+RS/AG 策略下实现最低的端到端训练延迟。</p>
+
+<div class="card" style="margin-bottom:20px;">
+  <h3>全局最低时延 Top 10 配置</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>#</th><th>PP</th><th>TP</th><th>DP</th><th>MB</th><th>总GPU</th><th>Overlap时延</th><th>Baseline</th><th>节省</th><th>Ratio</th><th>TP/DP比</th></tr></thead>
+    <tbody id="bestLatencyBody"></tbody>
+  </table>
+  </div>
+</div>
+
+<div class="insight green">
+  <strong>最佳配置: PP=1, TP=8, DP=4, MB=1 → 2.000s</strong><br>
+  该配置在 32 GPUs 上实现了全局最低时延。关键特征: 无流水线并行(PP=1)、高张量并行(TP=8)、中等数据并行(DP=4)、最小 micro-batch(MB=1)。TP/DP=2.0 的比值表示张量并行度高于数据并行度——这是降低时延的有效策略。
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>同GPU数(32)下不同切分策略的时延对比</h3>
+    <div class="chart-wrap"><canvas id="chartSameGPU"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>TP vs DP 权衡 (PP=1, 总32 GPU)</h3>
+    <div class="chart-wrap"><canvas id="chartTPDP"></canvas></div>
+  </div>
+</div>
+
+<div class="insight">
+  <strong>TP vs DP 权衡:</strong> 在相同 GPU 总数下，<strong>优先增大 TP、减小 DP</strong> 可以显著降低训练时延。TP=8/DP=4 比 TP=4/DP=8 快 21%，比 TP=1/DP=32 快 <strong>96.6倍</strong>。原因是 DP 增大引入的跨节点 AllReduce 通信开销远大于 TP 的节点内通信。
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>各 PP 深度下的最优时延</h3>
+    <div class="chart-wrap"><canvas id="chartPPBest"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>各 DP 度下的最优时延</h3>
+    <div class="chart-wrap"><canvas id="chartDPBest"></canvas></div>
+  </div>
+</div>
+
+<div class="insight orange">
+  <strong>PP 的收益递减:</strong> PP=1→2.000s, PP=8→2.199s, PP=16→2.283s, PP=32→2.723s。PP 从 1 到 8 时延增加 10%，再到 32 增加 36%。流水线深度增加时，bubble overhead 和调度延迟开始累积，抵消了并行带来的收益。
+</div>
+
+<div class="card">
+  <h3>Micro-Batch 对最优配置时延的影响 (PP=1, TP=8, DP=4)</h3>
+  <div class="chart-wrap"><canvas id="chartMBScaling"></canvas></div>
+</div>
+
+<div class="insight">
+  <strong>MB 线性增长时延:</strong> 在固定并行配置下，MB 从 1→32 时延从 2.00s 增长到 5.33s (2.67x)，接近线性。但每次翻倍 MB 的绝对节省量恒定(~0.021s)，说明 Overlap 的收益与通信量挂钩而不随 MB 改变。
+</div>
+
+<!-- ===== SECTION 3: STRATEGY IMPACT ===== -->
+<h2>三、不同策略对 Latency 效果影响</h2>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>平均延迟对比</h3>
+    <div class="chart-wrap"><canvas id="chartAvgLatency"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Overlap Ratio 分布 (1f1b+RS/AG)</h3>
+    <div class="chart-wrap"><canvas id="chartRatioDist"></canvas></div>
+  </div>
+</div>
+
+<div class="insight">
+  <strong>策略效果两极分化:</strong> 1f1b+RS/AG 在 63% 配置中有正向收益，但 37% 配置中 Saved=0（均为 DP=1 场景，无可重叠的数据并行通信）。在有收益的配置中，4.26% 平均 Ratio，最高 26.68%。
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>按 DP (数据并行度) 分组</h3>
+    <div class="chart-wrap"><canvas id="chartByDP"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>按 PP (流水线并行度) 分组</h3>
+    <div class="chart-wrap"><canvas id="chartByPP"></canvas></div>
+  </div>
+</div>
+
+<div class="insight red">
+  <strong>DP=1 是 Overlap 的死区:</strong> 119 组 DP=1 的配置 Saved 全部为 0——没有数据并行就没有 AllReduce 通信可被重叠。DP≥2 开始出现收益，DP≥8 时平均 Overlap Ratio 跃升至 2.5% 以上。
+</div>
+
+<div class="insight">
+  <strong>PP 增大降低 Overlap Ratio:</strong> PP=1 平均 6.8%（主要是因为高 DP/低 PP 的极端配置拉高均值），PP=4 平均 2.2%，PP=16 降至 0.47%。流水线阶段越多，单阶段计算时间越短，与通信的重叠窗口比例缩小。
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>按 TP (张量并行度) 分组</h3>
+    <div class="chart-wrap"><canvas id="chartByTP"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>按 MB (Micro-Batch) 分组</h3>
+    <div class="chart-wrap"><canvas id="chartByMB"></canvas></div>
+  </div>
+</div>
+
+<div class="insight">
+  <strong>TP 和 MB 的影响:</strong> TP 和 MB 对 Overlap Ratio 的影响相对平缓，不改变重叠的基本模式。MB 主要影响绝对时延的线性增长。
+</div>
+
+<!-- ===== SECTION 4: TOP PERFORMERS ===== -->
+<h2>四、Top 配置: 最高 Overlap Ratio</h2>
+<div style="overflow-x:auto;">
+<table>
+<thead><tr><th>#</th><th>PP</th><th>TP</th><th>DP</th><th>MB</th><th>Baseline(s)</th><th>Overlap(s)</th><th>节省(s)</th><th>Overlap Ratio</th><th>Events</th><th>特征</th></tr></thead>
+<tbody id="top15body"></tbody>
+</table>
+</div>
+
+<div class="insight green">
+  <strong>两种高收益模式:</strong><br>
+  <strong>模式A — 极高DP:</strong> DP=32, PP=1 → Overlap Ratio 26.68%，通信量极大但计算可全部覆盖<br>
+  <strong>模式B — 中等DP+多Events:</strong> DP=8, PP=4 → Ratio 15-25%，流水线中每个 micro-batch 都有重叠机会(Events 高达 368)<br>
+  <strong>模式C — 大规模DP=16:</strong> 绝对节省 75s（最高），虽然 Ratio 14% 不是最高，但 Baseline 大(263-527s)
+</div>
+
+<h2>五、绝对节省时间最大 (Top 10)</h2>
+<div style="overflow-x:auto;">
+<table>
+<thead><tr><th>PP</th><th>TP</th><th>DP</th><th>MB</th><th>Baseline(s)</th><th>Overlap(s)</th><th>节省(s)</th><th>Overlap Ratio</th><th>Events</th></tr></thead>
+<tbody id="bestSavedBody"></tbody>
+</table>
+</div>
+
+<!-- ===== SECTION 5: SCATTER ===== -->
+<h2>六、全景: Baseline vs Overlap 散点分布</h2>
+<div class="card">
+  <div class="chart-wrap"><canvas id="chartScatter"></canvas></div>
+</div>
+<p style="color:var(--text2); font-size:0.82rem; margin-top:8px;">红色: gpipe+naive (全部在 y=x 线上, 无节省) | 蓝色: 1f1b+RS/AG (对角线下方, 有节省)</p>
+
+<!-- ===== SECTION 6: SUMMARY ===== -->
+<h2>七、策略效果总结</h2>
+<div class="grid grid-3">
+  <div class="card">
+    <h3>gpipe + naive_allreduce</h3>
+    <div class="metric"><div class="value red">0%</div><div class="label">全部 322 组 Overlap Ratio = 0%</div></div>
+    <p style="color:var(--text2);font-size:0.83rem;margin-top:8px;">计算与通信完全串行<br>无任何重叠优化空间</p>
+  </div>
+  <div class="card">
+    <h3>1f1b + RS/AG (有收益)</h3>
+    <div class="metric"><div class="value green">203 / 322</div><div class="label">63% 配置获得正向优化</div></div>
+    <p style="color:var(--text2);font-size:0.83rem;margin-top:8px;">平均 Ratio: 4.26%<br>最高: 26.68% | 最低: 0.03%</p>
+  </div>
+  <div class="card">
+    <h3>1f1b + RS/AG (无收益)</h3>
+    <div class="metric"><div class="value orange">119 / 322</div><div class="label">37% 配置零收益</div></div>
+    <p style="color:var(--text2);font-size:0.83rem;margin-top:8px;">根因: DP=1 无数据并行通信<br>或特定 PP/TP 组合无重叠窗口</p>
+  </div>
+</div>
+
+<h2>八、最终建议</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>目标</th><th>推荐策略</th><th>推荐并行配置</th><th>预期效果</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>最低时延</strong></td>
+        <td>1f1b + RS/AG</td>
+        <td>PP=1, TP=8, DP=4, MB=1</td>
+        <td><span class="tag tag-green">2.000s (全局最优)</span></td>
+      </tr>
+      <tr>
+        <td><strong>最大 Overlap 比例</strong></td>
+        <td>1f1b + RS/AG</td>
+        <td>高 DP (≥32), 低 PP</td>
+        <td><span class="tag tag-green">最高 26.68%</span></td>
+      </tr>
+      <tr>
+        <td><strong>最大绝对时间节省</strong></td>
+        <td>1f1b + RS/AG</td>
+        <td>DP=16, 大规模 Baseline</td>
+        <td><span class="tag tag-green">节省 75s</span></td>
+      </tr>
+      <tr>
+        <td><strong>同GPU数下最优</strong></td>
+        <td>增大TP, 减小DP</td>
+        <td>TP/DP 比 ≥ 2</td>
+        <td><span class="tag tag-blue">TP=8/DP=4 比 TP=4/DP=8 快21%</span></td>
+      </tr>
+      <tr>
+        <td><strong>DP=1 场景</strong></td>
+        <td>两种策略等价</td>
+        <td>任意</td>
+        <td><span class="tag tag-yellow">无差异</span></td>
+      </tr>
+      <tr>
+        <td><strong>大规模训练(DP≥8)</strong></td>
+        <td>1f1b + RS/AG (强烈推荐)</td>
+        <td>结合适中 PP</td>
+        <td><span class="tag tag-green">Ratio 10-25% 或数十秒</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="insight green">
+  <strong>核心结论:</strong><br>
+  1. <strong>1f1b + ReduceScatter/AllGather</strong> 在所有场景 ≤ gpipe + naive_allreduce，在有 DP 时严格更优<br>
+  2. <strong>最低训练时延</strong> 来自 <strong>高TP + 低DP + 低MB</strong> 的组合（PP=1, TP=8, DP=4, MB=1 → 2.000s）<br>
+  3. <strong>同GPU数下</strong>，优先增大 TP 而非 DP——TP 是节点内通信，DP 是跨节点通信<br>
+  4. <strong>Deep PP 收益递减</strong>：PP 从 8 加到 32，时延反而增加 24%<br>
+  5. <strong>DP ≥ 2 是 Overlap 的前提</strong>——没有数据并行的场景两种策略等价
+</div>
+
+<div class="footer">
+  Generated by Hermes Agent | Source: DAGBuilder_LLM/EVALUATION_DATABASE.md | 644 configurations (322 pairs × 2 strategies) | 2026-06-12
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ===== DATA =====
+const top15 = [
+  {pp:1,tp:1,dp:32,mb:1,baseline:263.552,overlap:193.238,saved:70.314,ratio:26.68,events:2},
+  {pp:1,tp:1,dp:32,mb:2,baseline:263.552,overlap:193.238,saved:70.314,ratio:26.68,events:2},
+  {pp:1,tp:1,dp:32,mb:4,baseline:263.552,overlap:193.238,saved:70.314,ratio:26.68,events:2},
+  {pp:4,tp:1,dp:8,mb:16,baseline:6.160,overlap:4.636,saved:1.523,ratio:24.73,events:368},
+  {pp:4,tp:1,dp:8,mb:8,baseline:6.495,overlap:4.972,saved:1.523,ratio:23.45,events:176},
+  {pp:4,tp:1,dp:8,mb:4,baseline:7.166,overlap:5.643,saved:1.523,ratio:21.26,events:80},
+  {pp:2,tp:1,dp:8,mb:16,baseline:7.806,overlap:6.284,saved:1.523,ratio:19.50,events:124},
+  {pp:2,tp:1,dp:8,mb:8,baseline:8.028,overlap:6.506,saved:1.523,ratio:18.97,events:60},
+  {pp:2,tp:8,dp:2,mb:16,baseline:4.093,overlap:3.331,saved:0.762,ratio:18.61,events:124},
+  {pp:2,tp:8,dp:2,mb:8,baseline:4.145,overlap:3.384,saved:0.762,ratio:18.37,events:60},
+  {pp:4,tp:1,dp:8,mb:2,baseline:8.508,overlap:6.984,saved:1.523,ratio:17.90,events:32},
+  {pp:2,tp:1,dp:8,mb:4,baseline:8.472,overlap:6.950,saved:1.523,ratio:17.97,events:28},
+  {pp:2,tp:8,dp:2,mb:4,baseline:4.344,overlap:3.582,saved:0.762,ratio:17.53,events:28},
+  {pp:2,tp:1,dp:8,mb:2,baseline:9.360,overlap:7.837,saved:1.523,ratio:16.27,events:12},
+  {pp:2,tp:8,dp:2,mb:2,baseline:4.786,overlap:4.024,saved:0.762,ratio:15.91,events:12}
+];
+
+const bestSaved = [
+  {pp:2,tp:1,dp:16,mb:8,baseline:525.549,overlap:450.368,saved:75.180,ratio:14.31,events:116},
+  {pp:2,tp:1,dp:16,mb:4,baseline:525.771,overlap:450.590,saved:75.180,ratio:14.30,events:52},
+  {pp:2,tp:1,dp:16,mb:2,baseline:526.214,overlap:451.034,saved:75.180,ratio:14.29,events:20},
+  {pp:1,tp:1,dp:16,mb:2,baseline:527.087,overlap:451.907,saved:75.180,ratio:14.26,events:2},
+  {pp:1,tp:1,dp:16,mb:4,baseline:527.087,overlap:451.907,saved:75.180,ratio:14.26,events:2},
+  {pp:1,tp:1,dp:16,mb:1,baseline:527.087,overlap:451.907,saved:75.180,ratio:14.26,events:2},
+  {pp:1,tp:1,dp:16,mb:8,baseline:527.087,overlap:451.907,saved:75.180,ratio:14.26,events:2},
+  {pp:2,tp:1,dp:16,mb:1,baseline:527.102,overlap:451.922,saved:75.180,ratio:14.26,events:4},
+  {pp:1,tp:1,dp:32,mb:1,baseline:263.552,overlap:193.238,saved:70.314,ratio:26.68,events:2},
+  {pp:1,tp:1,dp:32,mb:2,baseline:263.552,overlap:193.238,saved:70.314,ratio:26.68,events:2}
+];
+
+const bestLatency = [
+  {pp:1,tp:8,dp:4,mb:1,latency:2.000,baseline:2.021,saved:0.021,ratio:1.04,events:2},
+  {pp:1,tp:16,dp:2,mb:1,latency:2.100,baseline:2.103,saved:0.003,ratio:0.14,events:2},
+  {pp:1,tp:8,dp:4,mb:2,latency:2.108,baseline:2.129,saved:0.021,ratio:0.99,events:2},
+  {pp:8,tp:2,dp:2,mb:64,latency:2.199,baseline:2.223,saved:0.024,ratio:1.09,events:898},
+  {pp:4,tp:2,dp:4,mb:32,latency:2.265,baseline:2.349,saved:0.084,ratio:3.59,events:380},
+  {pp:16,tp:1,dp:2,mb:64,latency:2.283,baseline:2.332,saved:0.049,ratio:2.09,events:1922},
+  {pp:1,tp:8,dp:4,mb:4,latency:2.323,baseline:2.344,saved:0.021,ratio:0.90,events:2},
+  {pp:1,tp:16,dp:2,mb:2,latency:2.330,baseline:2.333,saved:0.003,ratio:0.13,events:2},
+  {pp:8,tp:2,dp:2,mb:32,latency:2.342,baseline:2.366,saved:0.024,ratio:1.03,events:450},
+  {pp:16,tp:2,dp:1,mb:64,latency:2.345,baseline:2.345,saved:0.000,ratio:0.00,events:945}
+];
+
+const sameGPU = [
+  {label:'PP=1 TP=8\nDP=4', tp:8,dp:4,pp:1, lat:2.000},
+  {label:'PP=1 TP=16\nDP=2', tp:16,dp:2,pp:1, lat:2.100},
+  {label:'PP=8 TP=2\nDP=2', tp:2,dp:2,pp:8, lat:2.199},
+  {label:'PP=4 TP=2\nDP=4', tp:2,dp:4,pp:4, lat:2.265},
+  {label:'PP=16 TP=1\nDP=2', tp:1,dp:2,pp:16, lat:2.283},
+  {label:'PP=16 TP=2\nDP=1', tp:2,dp:1,pp:16, lat:2.345},
+  {label:'PP=8 TP=4\nDP=1', tp:4,dp:1,pp:8, lat:2.461},
+  {label:'PP=32 TP=1\nDP=1', tp:1,dp:1,pp:32, lat:2.723},
+  {label:'PP=1 TP=4\nDP=8', tp:4,dp:8,pp:1, lat:2.525},
+  {label:'PP=1 TP=1\nDP=32', tp:1,dp:32,pp:1, lat:193.238}
+];
+
+const tpdpTrade = [
+  {label:'TP=8 DP=4\n(TP>DP)', lat:2.000},
+  {label:'TP=16 DP=2\n(TP≫DP)', lat:2.100},
+  {label:'TP=4 DP=8\n(TP<DP)', lat:2.525},
+  {label:'TP=2 DP=16\n(TP≪DP)', lat:223.293},
+  {label:'TP=1 DP=32\n(纯DP)', lat:193.238}
+];
+
+const ppBest = [
+  {pp:1, lat:2.000, config:'TP=8 DP=4 MB=1'},
+  {pp:2, lat:2.354, config:'TP=4 DP=4 MB=8'},
+  {pp:4, lat:2.265, config:'TP=2 DP=4 MB=32'},
+  {pp:8, lat:2.199, config:'TP=2 DP=2 MB=64'},
+  {pp:16, lat:2.283, config:'TP=1 DP=2 MB=64'},
+  {pp:32, lat:2.723, config:'TP=1 DP=1 MB=64'}
+];
+
+const dpBest = [
+  {dp:1, lat:2.345, config:'PP=16 TP=2 MB=64'},
+  {dp:2, lat:2.100, config:'PP=1 TP=16 MB=1'},
+  {dp:4, lat:2.000, config:'PP=1 TP=8 MB=1'},
+  {dp:8, lat:2.525, config:'PP=1 TP=4 MB=1'}
+];
+
+const mbScaling = [
+  {mb:1, lat:2.000, saved:0.021},
+  {mb:2, lat:2.108, saved:0.021},
+  {mb:4, lat:2.323, saved:0.021},
+  {mb:8, lat:2.753, saved:0.021},
+  {mb:16, lat:3.613, saved:0.021},
+  {mb:32, lat:5.333, saved:0.021}
+];
+
+// ===== CHARTS =====
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { labels: { color: '#6b7280', usePointStyle: true, boxWidth: 8, padding: 16, font: { size: 11 } } }
+  },
+  scales: {
+    x: { ticks: { color: '#6b7280', font: { size: 10 } }, grid: { color: '#e5e7eb' } },
+    y: { ticks: { color: '#6b7280', font: { size: 10 } }, grid: { color: '#e5e7eb' } }
+  }
+};
+
+// Same GPU comparison (horizontal bar)
+new Chart(document.getElementById('chartSameGPU'), {
+  type: 'bar',
+  data: {
+    labels: sameGPU.map(d => d.label),
+    datasets: [{
+      data: sameGPU.map(d => d.lat),
+      backgroundColor: sameGPU.map((d,i) => i === 0 ? 'rgba(16,185,129,0.7)' : i < 8 ? 'rgba(59,108,244,0.5)' : 'rgba(239,68,68,0.5)'),
+      borderColor: sameGPU.map((d,i) => i === 0 ? '#10b981' : i < 8 ? '#3b6cf4' : '#ef4444'),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(3) + ' s' } } },
+    scales: {
+      x: { title: { display: true, text: 'Overlap Latency (s) — 越低越好', color: '#6b7280' }, ...chartDefaults.scales.x },
+      y: { ...chartDefaults.scales.y }
+    }
+  }
+});
+
+// TP vs DP tradeoff
+new Chart(document.getElementById('chartTPDP'), {
+  type: 'bar',
+  data: {
+    labels: tpdpTrade.map(d => d.label),
+    datasets: [{
+      data: tpdpTrade.map(d => d.lat),
+      backgroundColor: ['rgba(16,185,129,0.7)', 'rgba(16,185,129,0.5)', 'rgba(245,158,11,0.6)', 'rgba(239,68,68,0.6)', 'rgba(239,68,68,0.8)'],
+      borderColor: ['#10b981', '#10b981', '#f59e0b', '#ef4444', '#ef4444'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(3) + ' s' } } },
+    scales: {
+      y: { title: { display: true, text: 'Latency (s)', color: '#6b7280' }, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// PP Best
+new Chart(document.getElementById('chartPPBest'), {
+  type: 'bar',
+  data: {
+    labels: ppBest.map(d => 'PP=' + d.pp + '\n' + d.config),
+    datasets: [{
+      data: ppBest.map(d => d.lat),
+      backgroundColor: 'rgba(139,92,246,0.6)',
+      borderColor: '#8b5cf6',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(3) + ' s' } } },
+    scales: {
+      y: { title: { display: true, text: '最低时延 (s)', color: '#6b7280' }, min: 1.8, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// DP Best
+new Chart(document.getElementById('chartDPBest'), {
+  type: 'bar',
+  data: {
+    labels: dpBest.map(d => 'DP=' + d.dp + '\n' + d.config),
+    datasets: [{
+      data: dpBest.map(d => d.lat),
+      backgroundColor: 'rgba(249,115,22,0.6)',
+      borderColor: '#f97316',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(3) + ' s' } } },
+    scales: {
+      y: { title: { display: true, text: '最低时延 (s)', color: '#6b7280' }, min: 1.8, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// MB Scaling
+new Chart(document.getElementById('chartMBScaling'), {
+  type: 'bar',
+  data: {
+    labels: mbScaling.map(d => 'MB=' + d.mb),
+    datasets: [{
+      label: 'Overlap时延 (s)',
+      data: mbScaling.map(d => d.lat),
+      backgroundColor: 'rgba(59,108,244,0.5)',
+      borderColor: '#3b6cf4',
+      borderWidth: 1,
+      yAxisID: 'y'
+    }, {
+      label: '节省时间 (s)',
+      data: mbScaling.map(d => d.saved),
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,0.1)',
+      borderWidth: 2,
+      type: 'line',
+      yAxisID: 'y1',
+      pointRadius: 5,
+      pointBackgroundColor: '#10b981'
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: {
+      ...chartDefaults.plugins,
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw.toFixed(3) + ' s' } }
+    },
+    scales: {
+      y: { title: { display: true, text: 'Latency (s)', color: '#3b6cf4' }, position: 'left', ...chartDefaults.scales.y },
+      y1: { title: { display: true, text: 'Saved (s)', color: '#10b981' }, position: 'right', ticks: { color: '#6b7280' }, grid: { display: false } },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// Avg Latency
+new Chart(document.getElementById('chartAvgLatency'), {
+  type: 'bar',
+  data: {
+    labels: ['平均 Baseline', 'gpipe+naive\n(Overlap)', '1f1b+RS/AG\n(Overlap)'],
+    datasets: [{
+      data: [27.88, 27.88, 24.74],
+      backgroundColor: ['rgba(59,108,244,0.6)', 'rgba(239,68,68,0.6)', 'rgba(16,185,129,0.6)'],
+      borderColor: ['#3b6cf4', '#ef4444', '#10b981'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(2) + ' s' } } },
+    scales: {
+      y: { title: { display: true, text: 'Latency (s)', color: '#6b7280' }, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// Ratio Distribution
+new Chart(document.getElementById('chartRatioDist'), {
+  type: 'bar',
+  data: {
+    labels: ['0%', '0-1%', '1-3%', '3-5%', '5-10%', '10-15%', '15-20%', '20%+'],
+    datasets: [{
+      data: [119, 98, 50, 8, 2, 29, 10, 6],
+      backgroundColor: ['rgba(239,68,68,0.5)', 'rgba(245,158,11,0.5)', 'rgba(245,158,11,0.7)', 'rgba(16,185,129,0.4)', 'rgba(16,185,129,0.55)', 'rgba(16,185,129,0.65)', 'rgba(16,185,129,0.75)', 'rgba(16,185,129,0.9)'],
+      borderColor: 'rgba(0,0,0,0.1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + ' 配置' } } },
+    scales: {
+      y: { title: { display: true, text: '配置数量', color: '#6b7280' }, ...chartDefaults.scales.y },
+      x: { title: { display: true, text: 'Overlap Ratio 区间', color: '#6b7280' }, ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// By DP
+new Chart(document.getElementById('chartByDP'), {
+  type: 'bar',
+  data: {
+    labels: ['DP=1', 'DP=2', 'DP=4', 'DP=8', 'DP=16', 'DP=32'],
+    datasets: [{
+      label: '平均 Ratio (%)',
+      data: [0, 0.46, 2.83, 2.47, 12.26, 15.25],
+      backgroundColor: 'rgba(59,108,244,0.6)',
+      borderColor: '#3b6cf4',
+      borderWidth: 1,
+      yAxisID: 'y'
+    }, {
+      label: '配置数',
+      data: [119, 42, 56, 49, 28, 7],
+      borderColor: 'rgba(107,114,128,0.4)',
+      backgroundColor: 'rgba(107,114,128,0.05)',
+      borderWidth: 2,
+      type: 'line',
+      yAxisID: 'y1',
+      pointRadius: 4,
+      pointBackgroundColor: '#6b7280'
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      y: { title: { display: true, text: 'Avg Ratio (%)', color: '#3b6cf4' }, position: 'left', ...chartDefaults.scales.y },
+      y1: { title: { display: true, text: '配置数', color: '#6b7280' }, position: 'right', ticks: { color: '#6b7280' }, grid: { display: false } },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// By PP
+new Chart(document.getElementById('chartByPP'), {
+  type: 'bar',
+  data: {
+    labels: ['PP=1', 'PP=2', 'PP=4', 'PP=8', 'PP=16', 'PP=32'],
+    datasets: [{
+      label: '平均 Ratio (%)',
+      data: [6.81, 2.64, 2.22, 1.04, 0.47, 0],
+      backgroundColor: 'rgba(139,92,246,0.6)',
+      borderColor: '#8b5cf6',
+      borderWidth: 1,
+      yAxisID: 'y'
+    }, {
+      label: '配置数',
+      data: [42, 63, 77, 63, 42, 14],
+      borderColor: 'rgba(107,114,128,0.4)',
+      backgroundColor: 'rgba(107,114,128,0.05)',
+      borderWidth: 2,
+      type: 'line',
+      yAxisID: 'y1',
+      pointRadius: 4,
+      pointBackgroundColor: '#6b7280'
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      y: { title: { display: true, text: 'Avg Ratio (%)', color: '#8b5cf6' }, position: 'left', ...chartDefaults.scales.y },
+      y1: { title: { display: true, text: '配置数', color: '#6b7280' }, position: 'right', ticks: { color: '#6b7280' }, grid: { display: false } },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// By TP
+new Chart(document.getElementById('chartByTP'), {
+  type: 'bar',
+  data: {
+    labels: ['TP=1', 'TP=2', 'TP=4', 'TP=8', 'TP=16'],
+    datasets: [{
+      data: [3.26, 1.54, 1.04, 3.52, 0.50],
+      backgroundColor: 'rgba(249,115,22,0.6)',
+      borderColor: '#f97316',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { title: { display: true, text: 'Avg Overlap Ratio (%)', color: '#6b7280' }, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// By MB
+new Chart(document.getElementById('chartByMB'), {
+  type: 'bar',
+  data: {
+    labels: ['MB=1', 'MB=2', 'MB=4', 'MB=8', 'MB=16', 'MB=32', 'MB=64'],
+    datasets: [{
+      data: [1.86, 1.76, 2.61, 3.38, 3.51, 3.97, 2.41],
+      backgroundColor: 'rgba(16,185,129,0.4)',
+      borderColor: '#10b981',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { title: { display: true, text: 'Avg Overlap Ratio (%)', color: '#6b7280' }, ...chartDefaults.scales.y },
+      x: { ...chartDefaults.scales.x }
+    }
+  }
+});
+
+// Scatter
+new Chart(document.getElementById('chartScatter'), {
+  type: 'scatter',
+  data: {
+    datasets: [{
+      label: 'gpipe + naive_allreduce',
+      data: [
+        {x:2.02,y:2.02},{x:2.10,y:2.10},{x:2.13,y:2.13},{x:2.22,y:2.22},
+        {x:2.35,y:2.35},{x:2.33,y:2.33},{x:2.34,y:2.34},{x:2.37,y:2.37},
+        {x:2.45,y:2.45},{x:2.46,y:2.46},{x:2.46,y:2.46},{x:2.48,y:2.48},
+        {x:2.54,y:2.54},{x:2.59,y:2.59},{x:2.61,y:2.61},{x:2.70,y:2.70},
+        {x:2.74,y:2.74},{x:2.77,y:2.77},{x:2.79,y:2.79},{x:2.86,y:2.86},
+        {x:2.91,y:2.91},{x:2.95,y:2.95},{x:2.97,y:2.97},{x:3.01,y:3.01},
+        {x:3.04,y:3.04},{x:3.14,y:3.14},{x:3.15,y:3.15},{x:3.23,y:3.23},
+        {x:3.36,y:3.36},{x:3.45,y:3.45},{x:3.46,y:3.46},{x:3.55,y:3.55},
+        {x:3.59,y:3.59},{x:3.63,y:3.63},{x:3.65,y:3.65},{x:3.80,y:3.80},
+        {x:3.85,y:3.85},{x:3.84,y:3.84},{x:3.89,y:3.89},{x:3.95,y:3.95}
+      ],
+      backgroundColor: 'rgba(239,68,68,0.2)',
+      borderColor: 'rgba(239,68,68,0.4)',
+      pointRadius: 3
+    }, {
+      label: '1f1b + reduce_scatter_allgather',
+      data: [
+        {x:2.02,y:2.00},{x:2.10,y:2.10},{x:2.13,y:2.11},{x:2.22,y:2.20},
+        {x:2.35,y:2.26},{x:2.33,y:2.28},{x:2.34,y:2.32},{x:2.37,y:2.34},
+        {x:2.45,y:2.43},{x:2.46,y:2.38},{x:2.46,y:2.46},{x:2.48,y:2.48},
+        {x:2.54,y:2.49},{x:2.59,y:2.59},{x:2.61,y:2.44},{x:2.70,y:2.69},
+        {x:2.74,y:2.72},{x:2.77,y:2.69},{x:2.79,y:2.79},{x:2.86,y:2.86},
+        {x:2.91,y:2.52},{x:2.95,y:2.57},{x:2.97,y:2.96},{x:3.01,y:2.84},
+        {x:3.04,y:2.66},{x:3.14,y:3.14},{x:3.15,y:3.15},{x:3.23,y:2.85},
+        {x:3.36,y:3.35},{x:3.45,y:3.37},{x:3.46,y:3.46},{x:3.55,y:3.52},
+        {x:3.59,y:3.59},{x:3.63,y:3.61},{x:3.65,y:3.65},{x:3.80,y:3.63},
+        {x:3.85,y:3.82},{x:3.84,y:3.83},{x:3.89,y:3.85},{x:3.95,y:3.94}
+      ],
+      backgroundColor: 'rgba(59,108,244,0.25)',
+      borderColor: 'rgba(59,108,244,0.5)',
+      pointRadius: 4
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: {
+      ...chartDefaults.plugins,
+      tooltip: { callbacks: { label: ctx => 'Baseline: ' + ctx.raw.x.toFixed(3) + 's → Overlap: ' + ctx.raw.y.toFixed(3) + 's' } }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Baseline Latency (s)', color: '#6b7280' }, type: 'logarithmic', ...chartDefaults.scales.x },
+      y: { title: { display: true, text: 'Overlap Latency (s)', color: '#6b7280' }, type: 'logarithmic', ...chartDefaults.scales.y }
+    }
+  }
+});
+
+// ===== TABLES =====
+(function() {
+  const tbody = document.getElementById('bestLatencyBody');
+  bestLatency.forEach((r, i) => {
+    const gpu = r.pp * r.tp * r.dp;
+    const rankCls = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const tpdp = (r.tp / r.dp).toFixed(1);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${rankCls ? '<span class="rank-num '+rankCls+'">'+(i+1)+'</span>' : (i+1)}</td>
+      <td>${r.pp}</td><td><strong>${r.tp}</strong></td><td>${r.dp}</td><td>${r.mb}</td>
+      <td>${gpu}</td>
+      <td style="color:var(--green);font-weight:700;">${r.latency.toFixed(3)}s</td>
+      <td>${r.baseline.toFixed(3)}s</td>
+      <td style="color:var(--green);">${r.saved.toFixed(3)}s</td>
+      <td>${r.ratio.toFixed(2)}%</td>
+      <td>${tpdp}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+(function() {
+  const tbody = document.getElementById('top15body');
+  top15.forEach((r, i) => {
+    const feats = [];
+    if (r.dp >= 32) feats.push('极高DP');
+    else if (r.dp >= 8) feats.push('高DP');
+    if (r.pp === 1) feats.push('无PP');
+    if (r.events >= 300) feats.push('海量Events');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${r.pp}</td><td>${r.tp}</td><td><strong>${r.dp}</strong></td><td>${r.mb}</td>
+      <td>${r.baseline.toFixed(3)}</td><td>${r.overlap.toFixed(3)}</td>
+      <td style="color:var(--green);font-weight:600;">${r.saved.toFixed(3)}</td>
+      <td style="color:var(--green);font-weight:700;">${r.ratio.toFixed(2)}%</td><td>${r.events}</td>
+      <td>${feats.join(', ') || '-'}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+(function() {
+  const tbody = document.getElementById('bestSavedBody');
+  bestSaved.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.pp}</td><td>${r.tp}</td><td><strong>${r.dp}</strong></td><td>${r.mb}</td>
+      <td>${r.baseline.toFixed(1)}</td><td>${r.overlap.toFixed(1)}</td>
+      <td style="color:var(--green);font-weight:600;">${r.saved.toFixed(3)}</td>
+      <td style="color:var(--green);font-weight:700;">${r.ratio.toFixed(2)}%</td><td>${r.events}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>

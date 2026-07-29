@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScoreExpert 经验库 · 总结报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root { 
+    --bg:#f8f9fa; --bg-card:#ffffff; --bg-hover:#f1f3f5; --border:#dee2e6; 
+    --text:#343a40; --muted:#6c757d; --bright:#212529; --accent:#0d6efd; 
+    --green:#198754; --orange:#fd7e14; --red:#dc3545; --purple:#6f42c1; --cyan:#0dcaf0;
+    --shadow:0 1px 3px rgba(0,0,0,.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; padding:2rem; }
+  .container { max-width:1400px; margin:0 auto; }
+  h1 { font-size:2rem; color:var(--bright); margin-bottom:.25rem; font-weight:700; }
+  .subtitle { color:var(--muted); font-size:.95rem; margin-bottom:2rem; }
+  .hero { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:2rem; margin-bottom:2rem; box-shadow:var(--shadow); }
+  .hero-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; }
+  .hero-stat { text-align:center; padding:1.2rem 1rem; background:var(--bg); border-radius:8px; border:1px solid var(--border); }
+  .hero-stat .label { font-size:.8rem; color:var(--muted); letter-spacing:.5px; margin-bottom:.25rem; }
+  .hero-stat .value { font-size:1.8rem; font-weight:700; color:var(--bright); }
+  .hero-stat .value.warn { color:var(--red); }
+  .hero-stat .value.good { color:var(--green); }
+  .hero-stat .note { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+  .section { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:1.8rem; margin-bottom:2rem; box-shadow:var(--shadow); }
+  .section h2 { font-size:1.25rem; color:var(--bright); margin-bottom:1rem; padding-bottom:.6rem; border-bottom:2px solid var(--accent); font-weight:700; }
+  .chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(460px,1fr)); gap:1.5rem; }
+  .chart-box { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:1.2rem; }
+  .chart-box h3 { font-size:.85rem; color:var(--muted); margin-bottom:.6rem; font-weight:600; }
+  .chart-box canvas { width:100% !important; height:280px !important; }
+  table { width:100%; border-collapse:collapse; font-size:.84rem; margin-top:1rem; }
+  th, td { padding:.6rem .8rem; text-align:left; border-bottom:1px solid var(--border); }
+  th { background:var(--bg); color:var(--muted); font-weight:600; font-size:.75rem; letter-spacing:.5px; }
+  tr:hover { background:var(--bg-hover); }
+  .num { text-align:right; font-variant-numeric:tabular-nums; font-family:'JetBrains Mono','Cascadia Code',monospace; }
+  .badge { display:inline-block; padding:.18rem .55rem; border-radius:4px; font-size:.73rem; font-weight:600; }
+  .badge-global { background:#fff0f0; color:var(--red); border:1px solid #fcc; }
+  .badge-island { background:#f0fff4; color:var(--green); border:1px solid #cfc; }
+  .badge-round { background:#e8f4fd; color:var(--accent); border:1px solid #cce5ff; }
+  .badge-island-tag { font-size:.7rem; padding:.1rem .45rem; border-radius:3px; }
+  .strategy-code { font-family:'JetBrains Mono','Cascadia Code',monospace; font-size:.8rem; color:var(--accent); font-weight:600; }
+  .latency-high { color:var(--red); font-weight:700; }
+  .latency-low { color:var(--green); font-weight:700; }
+  .score-rank { color:var(--orange); font-weight:600; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; margin-top:1rem; }
+  .kpi-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:1.2rem; }
+  .kpi-card h4 { font-size:.82rem; color:var(--muted); margin-bottom:.5rem; font-weight:700; letter-spacing:.5px; }
+  .kpi-card .big { font-size:1.5rem; font-weight:700; margin:.25rem 0; }
+  .kpi-card .sub { font-size:.78rem; color:var(--muted); margin-top:.3rem; }
+  .tabs { display:flex; gap:0; margin-bottom:1.2rem; border-bottom:2px solid var(--border); flex-wrap:wrap; }
+  .tab { padding:.5rem 1rem; cursor:pointer; border:none; background:none; color:var(--muted); font-size:.88rem; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; font-weight:500; }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:700; }
+  .tab:hover { color:var(--text); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .insight-box { background:linear-gradient(135deg,#e8f4fd,#f0e6ff); border:1px solid var(--accent); border-left:4px solid var(--accent); border-radius:8px; padding:1.2rem 1.4rem; margin:1rem 0; }
+  .insight-box h4 { color:var(--accent); margin-bottom:.5rem; font-size:.95rem; }
+  .insight-box p { font-size:.88rem; color:var(--text); line-height:1.7; }
+  .insight-box strong { color:var(--bright); }
+  .entry-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:1rem 1.2rem; margin-bottom:.75rem; transition:box-shadow .15s; }
+  .entry-card:hover { box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .entry-card .card-header { display:flex; align-items:center; gap:.5rem; margin-bottom:.4rem; flex-wrap:wrap; }
+  .entry-card .strat { font-family:'JetBrains Mono','Cascadia Code',monospace; font-size:.84rem; color:var(--accent); font-weight:600; margin:.3rem 0; }
+  .entry-card .meta { font-size:.78rem; color:var(--muted); display:flex; gap:1.2rem; flex-wrap:wrap; margin:.3rem 0; }
+  .entry-card .meta span { white-space:nowrap; }
+  .entry-card .rec { font-size:.82rem; color:var(--text); margin-top:.5rem; padding:.5rem .7rem; background:var(--bg-hover); border-radius:4px; border-left:3px solid var(--accent); line-height:1.6; }
+  .footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:2.5rem; padding:1.5rem; border-top:1px solid var(--border); }
+  .highlight-box { background:#fffbe6; border:1px solid #ffe082; border-radius:8px; padding:1rem 1.4rem; margin:1rem 0; }
+  .highlight-box h4 { color:var(--orange); margin-bottom:.4rem; }
+  @media (max-width:768px) { body { padding:.5rem; font-size:.9rem; } .chart-grid { grid-template-columns:1fr; } .hero-grid { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ScoreExpert 经验库</h1>
+<p class="subtitle">总结报告 · 21 条经验 · 来源于 ScoreExpert 数据库搜索实验</p>
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-stat">
+      <div class="label">经验总数</div>
+      <div class="value">21</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">全局经验</div>
+      <div class="value warn">14</div>
+      <div class="note">高分高延迟 · 坏模式</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">岛屿解读</div>
+      <div class="value good">7</div>
+      <div class="note">低延迟遗漏 · 好策略</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">全局经验均延迟</div>
+      <div class="value" style="color:var(--red);">37.9s</div>
+      <div class="note">被错误高分</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">岛屿解读均延迟</div>
+      <div class="value" style="color:var(--green);">2.2s</div>
+      <div class="note">被错误低分</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">最新轮次</div>
+      <div class="value">第 4 轮</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>经验分布概览</h2>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>按岛屿分布</h3>
+      <canvas id="chartIsland"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>按发现轮次分布</h3>
+      <canvas id="chartRound"></canvas>
+    </div>
+  </div>
+  <div class="chart-grid" style="margin-top:1.5rem;">
+    <div class="chart-box">
+      <h3>评分排名分布 · 全局经验</h3>
+      <canvas id="chartGeRank"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>评分排名分布 · 岛屿解读</h3>
+      <canvas id="chartIiRank"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>策略参数分析</h2>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>流水线并行度 (PP) 分布</h3>
+      <canvas id="chartPP"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>微批次数量 (MB) 分布</h3>
+      <canvas id="chartMB"></canvas>
+    </div>
+  </div>
+  <div class="insight-box">
+    <h4>关键发现：全局经验 vs 岛屿解读的策略模式</h4>
+    <p>全局经验条目（高分高延迟）以 <strong>PP=1</strong>（浅流水线）和 <strong>MB=1、2</strong>（极少微批次）为主。这些策略在算力评估上看似轻量，但实际执行延迟很高。</p>
+    <p>岛屿解读（被遗漏的低延迟策略）则集中在 <strong>PP=8、16</strong>（深流水线）和 <strong>MB=64</strong>——评分模型系统性地低估了深度流水线和大批次的价值。</p>
+  </div>
+</div>
+<div class="section"><h2>各岛屿详情</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:4px solid #2E7D32;">
+      <h4 style="color:#2E7D32;">内存安全</h4>
+      <div class="big">6 条</div>
+      <div class="sub"><span class="badge badge-global">2 全局</span> <span class="badge badge-island">4 岛屿</span></div>
+      <div class="sub" style="margin-top:.4rem;">全局均延迟：13.0s | 岛屿均延迟：2.1s</div>
+    </div><div class="kpi-card" style="border-left:4px solid #1565C0;">
+      <h4 style="color:#1565C0;">拓扑亲和</h4>
+      <div class="big">10 条</div>
+      <div class="sub"><span class="badge badge-global">9 全局</span> <span class="badge badge-island">1 岛屿</span></div>
+      <div class="sub" style="margin-top:.4rem;">全局均延迟：53.0s | 岛屿均延迟：2.3s</div>
+    </div><div class="kpi-card" style="border-left:4px solid #E65100;">
+      <h4 style="color:#E65100;">流水线效率</h4>
+      <div class="big">3 条</div>
+      <div class="sub"><span class="badge badge-global">3 全局</span> <span class="badge badge-island">0 岛屿</span></div>
+      <div class="sub" style="margin-top:.4rem;">全局均延迟：9.3s | 岛屿均延迟：无</div>
+    </div><div class="kpi-card" style="border-left:4px solid #7B1FA2;">
+      <h4 style="color:#7B1FA2;">均衡通才</h4>
+      <div class="big">2 条</div>
+      <div class="sub"><span class="badge badge-global">0 全局</span> <span class="badge badge-island">2 岛屿</span></div>
+      <div class="sub" style="margin-top:.4rem;">全局均延迟：无 | 岛屿均延迟：2.3s</div>
+    </div></div></div>
+<div class="section">
+  <h2>全部经验条目</h2>
+  <div class="tabs" id="entry-tabs">
+    <button class="tab active" onclick="switchTab('all')">全部 (21)</button>
+    <button class="tab" onclick="switchTab('global')">全局经验 (14)</button>
+    <button class="tab" onclick="switchTab('island')">岛屿解读 (7)</button>
+<button class="tab" onclick="switchTab('memory_safe')" style="color:#2E7D32;">内存安全 (6)</button><button class="tab" onclick="switchTab('topology_affinity')" style="color:#1565C0;">拓扑亲和 (10)</button><button class="tab" onclick="switchTab('pipeline_efficiency')" style="color:#E65100;">流水线效率 (3)</button><button class="tab" onclick="switchTab('balanced_generalist')" style="color:#7B1FA2;">均衡通才 (2)</button>
+  </div>
+<div class="tab-content active" id="tab-all">
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=16 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.3818s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1048.84</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">16.6150s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1048.42</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.1988s</span></span>
+      <span>评分排名：<span class="score-rank">#137</span></span>
+      <span>评分：1009.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=4 · TP=2 · DP=4 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2649s</span></span>
+      <span>评分排名：<span class="score-rank">#154</span></span>
+      <span>评分：1007.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.2422s</span></span>
+      <span>评分排名：<span class="score-rank">#11</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=1 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">11.1014s</span></span>
+      <span>评分排名：<span class="score-rank">#12</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=1 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2831s</span></span>
+      <span>评分排名：<span class="score-rank">#148</span></span>
+      <span>评分：944.40</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3420s</span></span>
+      <span>评分排名：<span class="score-rank">#120</span></span>
+      <span>评分：948.47</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=4 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0002s</span></span>
+      <span>评分排名：<span class="score-rank">#121</span></span>
+      <span>评分：1040.31</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0998s</span></span>
+      <span>评分排名：<span class="score-rank">#159</span></span>
+      <span>评分：1037.66</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">15.2607s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.34</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.7969s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.28</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.8429s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.30</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">7.5374s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1012.90</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.5880s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.6034s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3451s</span></span>
+      <span>评分排名：<span class="score-rank">#167</span></span>
+      <span>评分：992.66</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=16</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.2315s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1003.67</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=8</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.5115s</span></span>
+      <span>评分排名：<span class="score-rank">#16</span></span>
+      <span>评分：1003.05</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div></div><div class="tab-content" id="tab-global">
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=16 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.3818s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1048.84</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">16.6150s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1048.42</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.2422s</span></span>
+      <span>评分排名：<span class="score-rank">#11</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=1 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">11.1014s</span></span>
+      <span>评分排名：<span class="score-rank">#12</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">15.2607s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.34</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.7969s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.28</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.8429s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.30</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">7.5374s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1012.90</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.5880s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.6034s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=16</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.2315s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1003.67</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=8</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.5115s</span></span>
+      <span>评分排名：<span class="score-rank">#16</span></span>
+      <span>评分：1003.05</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div></div><div class="tab-content" id="tab-island">
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.1988s</span></span>
+      <span>评分排名：<span class="score-rank">#137</span></span>
+      <span>评分：1009.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=4 · TP=2 · DP=4 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2649s</span></span>
+      <span>评分排名：<span class="score-rank">#154</span></span>
+      <span>评分：1007.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=1 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2831s</span></span>
+      <span>评分排名：<span class="score-rank">#148</span></span>
+      <span>评分：944.40</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3420s</span></span>
+      <span>评分排名：<span class="score-rank">#120</span></span>
+      <span>评分：948.47</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=4 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0002s</span></span>
+      <span>评分排名：<span class="score-rank">#121</span></span>
+      <span>评分：1040.31</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0998s</span></span>
+      <span>评分排名：<span class="score-rank">#159</span></span>
+      <span>评分：1037.66</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3451s</span></span>
+      <span>评分排名：<span class="score-rank">#167</span></span>
+      <span>评分：992.66</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div></div><div class="tab-content" id="tab-memory_safe">
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=16 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.3818s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1048.84</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">16.6150s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1048.42</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.1988s</span></span>
+      <span>评分排名：<span class="score-rank">#137</span></span>
+      <span>评分：1009.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=4 · TP=2 · DP=4 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2649s</span></span>
+      <span>评分排名：<span class="score-rank">#154</span></span>
+      <span>评分：1007.92</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=4 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0002s</span></span>
+      <span>评分排名：<span class="score-rank">#121</span></span>
+      <span>评分：1040.31</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="memory_safe">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#2E7D3215;color:#2E7D32;border:1px solid #2E7D3240;">内存安全</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.0998s</span></span>
+      <span>评分排名：<span class="score-rank">#159</span></span>
+      <span>评分：1037.66</span>
+      <span>来源岛屿：内存安全</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div></div><div class="tab-content" id="tab-topology_affinity">
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=1 · DP=32 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">193.2385s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1006.40</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">15.2607s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.34</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.7969s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.28</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=4 · DP=1 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.8429s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.30</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.5880s</span></span>
+      <span>评分排名：<span class="score-rank">#1</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=2 · DP=2 · MB=2</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">14.6034s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：999.20</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 3 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=2 · DP=1 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3451s</span></span>
+      <span>评分排名：<span class="score-rank">#167</span></span>
+      <span>评分：992.66</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=16</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.2315s</span></span>
+      <span>评分排名：<span class="score-rank">#2</span></span>
+      <span>评分：1003.67</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="topology_affinity">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#1565C015;color:#1565C0;border:1px solid #1565C040;">拓扑亲和</span>
+      <span class="badge badge-round">第 4 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=2 · TP=4 · DP=1 · MB=8</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">8.5115s</span></span>
+      <span>评分排名：<span class="score-rank">#16</span></span>
+      <span>评分：1003.05</span>
+      <span>来源岛屿：拓扑亲和</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div></div><div class="tab-content" id="tab-pipeline_efficiency">
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">9.2422s</span></span>
+      <span>评分排名：<span class="score-rank">#11</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=16 · DP=1 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">11.1014s</span></span>
+      <span>评分排名：<span class="score-rank">#12</span></span>
+      <span>评分：1005.60</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div>
+  <div class="entry-card" data-type="global-experience" data-island="pipeline_efficiency">
+    <div class="card-header">
+      <span class="badge badge-global">全局经验</span>
+      <span class="badge badge-island-tag" style="background:#E6510015;color:#E65100;border:1px solid #E6510040;">流水线效率</span>
+      <span class="badge badge-round">第 2 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=1 · TP=8 · DP=1 · MB=1</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-high">7.5374s</span></span>
+      <span>评分排名：<span class="score-rank">#3</span></span>
+      <span>评分：1012.90</span>
+      <span>来源岛屿：流水线效率</span>
+    </div>
+    <div class="rec">💡 评分模型对该高延迟策略给出了过高分数；除非有岛屿特定的理由，否则应降低此类模式的评分权重。</div>
+  </div></div><div class="tab-content" id="tab-balanced_generalist">
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=16 · TP=1 · DP=2 · MB=64</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.2831s</span></span>
+      <span>评分排名：<span class="score-rank">#148</span></span>
+      <span>评分：944.40</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div>
+  <div class="entry-card" data-type="island-interpretations" data-island="balanced_generalist">
+    <div class="card-header">
+      <span class="badge badge-island">岛屿解读</span>
+      <span class="badge badge-island-tag" style="background:#7B1FA215;color:#7B1FA2;border:1px solid #7B1FA240;">均衡通才</span>
+      <span class="badge badge-round">第 1 轮</span>
+      <span style="font-size:.73rem;color:var(--muted);">置信度 60%</span>
+    </div>
+    <div class="strat">PP=8 · TP=2 · DP=2 · MB=32</div>
+    <div class="meta">
+      <span>延迟：<span class="latency-low">2.3420s</span></span>
+      <span>评分排名：<span class="score-rank">#120</span></span>
+      <span>评分：948.47</span>
+      <span>来源岛屿：均衡通才</span>
+    </div>
+    <div class="rec">💡 该低延迟策略被评分模型遗漏；如果此配置符合核心优化方向，应增加岛屿特定的奖励机制。</div>
+  </div></div></div>
+<div class="section">
+  <h2>深度分析与洞察</h2>
+  
+  <div class="insight-box">
+    <h4>① 拓扑亲和 (Topology Affinity) 是表现最差的评分器</h4>
+    <p>14 条全局经验中有 <strong>9 条</strong>来源于拓扑亲和。其评分模型持续给 <strong>PP=1、TP=4、DP=1</strong> 的朴素 AllReduce 配置打出高分，而这些配置的实际延迟高达 <strong>~15s</strong>，是数据库中最差的一批。模型高估了低 DP 计数的价值，同时严重低估了张量并行 (TP) 的作用。</p>
+  </div>
+  
+  <div class="insight-box">
+    <h4>② 内存安全 (Memory Safe)：能识别坏模式，但遗漏了全局最优</h4>
+    <p>内存安全发现了全局最优策略（PP=1, TP=8, DP=4, MB=1，延迟 2.000s），却将其排在第 <strong>#121</strong> 位——严重遗漏。其顶部推荐（PP=16, TP=2, DP=1, MB=64，延迟 2.345s）虽然合理，但未能将最优配置推到前面。此外还贡献了 2 条关于高 DP 配置的全局经验信号。</p>
+  </div>
+  
+  <div class="insight-box">
+    <h4>③ 流水线效率 (Pipeline Efficiency)：早期贡献了高延迟全局经验</h4>
+    <p>来自流水线效率的 3 条全局经验均涉及 <strong>TP=16</strong> 搭配较小微批次量，产生 7-11s 的延迟。模型在缺乏足够流水线深度的情况下，高估了高张量并行的收益。</p>
+  </div>
+  
+  <div class="insight-box">
+    <h4>④ 均衡通才 (Balanced Generalist)：最干净的评分器</h4>
+    <p>均衡通才<strong>零条全局经验</strong>，仅贡献了 2 条岛屿解读（遗漏的低延迟策略）。这与其在第 10 轮达到的 <strong>Spearman ρ = 0.895</strong> 的最高相关性一致，是四个岛屿中校准最好的评分模型。</p>
+  </div>
+  
+  <div class="insight-box">
+    <h4>⑤ 经验学习在第 4 轮后趋于饱和</h4>
+    <p>全部经验的 <strong>67%（14/21）</strong>在第 1 轮被发现，第 2-4 轮仅新增 7 条，第 4 轮之后<strong>零新增</strong>。这表明评分模型快速达到了稳定状态，持续的经验收集收益递减。建议引入基于经验新颖度的<strong>早停机制</strong>来优化搜索效率。</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>策略参数明细</h2>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>全局经验 — 策略参数 vs 实际延迟</h3>
+      <table><thead><tr><th>PP</th><th>TP</th><th>DP</th><th>MB</th><th class='num'>延迟 (s)</th><th class='num'>评分排名</th></tr></thead><tbody><tr><td class='num'>1</td><td class='num'>1</td><td class='num'>32</td><td class='num'>1</td><td class='num latency-high'>193.24</td><td class='num'>#1</td></tr><tr><td class='num'>1</td><td class='num'>1</td><td class='num'>32</td><td class='num'>2</td><td class='num latency-high'>193.24</td><td class='num'>#2</td></tr><tr><td class='num'>1</td><td class='num'>16</td><td class='num'>2</td><td class='num'>64</td><td class='num latency-high'>16.61</td><td class='num'>#3</td></tr><tr><td class='num'>2</td><td class='num'>2</td><td class='num'>1</td><td class='num'>64</td><td class='num latency-high'>15.26</td><td class='num'>#1</td></tr><tr><td class='num'>1</td><td class='num'>4</td><td class='num'>1</td><td class='num'>2</td><td class='num latency-high'>14.84</td><td class='num'>#2</td></tr><tr><td class='num'>1</td><td class='num'>4</td><td class='num'>1</td><td class='num'>1</td><td class='num latency-high'>14.80</td><td class='num'>#2</td></tr><tr><td class='num'>1</td><td class='num'>2</td><td class='num'>2</td><td class='num'>2</td><td class='num latency-high'>14.60</td><td class='num'>#2</td></tr><tr><td class='num'>1</td><td class='num'>2</td><td class='num'>2</td><td class='num'>1</td><td class='num latency-high'>14.59</td><td class='num'>#1</td></tr><tr><td class='num'>1</td><td class='num'>16</td><td class='num'>1</td><td class='num'>32</td><td class='num latency-high'>11.10</td><td class='num'>#12</td></tr><tr><td class='num'>2</td><td class='num'>16</td><td class='num'>1</td><td class='num'>64</td><td class='num latency-high'>9.38</td><td class='num'>#1</td></tr><tr><td class='num'>1</td><td class='num'>16</td><td class='num'>2</td><td class='num'>32</td><td class='num latency-high'>9.24</td><td class='num'>#11</td></tr><tr><td class='num'>2</td><td class='num'>4</td><td class='num'>1</td><td class='num'>8</td><td class='num latency-high'>8.51</td><td class='num'>#16</td></tr><tr><td class='num'>2</td><td class='num'>4</td><td class='num'>1</td><td class='num'>16</td><td class='num latency-high'>8.23</td><td class='num'>#2</td></tr><tr><td class='num'>1</td><td class='num'>8</td><td class='num'>1</td><td class='num'>1</td><td class='num latency-high'>7.54</td><td class='num'>#3</td></tr></tbody></table>
+    </div>
+    <div class="chart-box">
+      <h3>岛屿解读 — 策略参数 vs 实际延迟</h3>
+      <table><thead><tr><th>PP</th><th>TP</th><th>DP</th><th>MB</th><th class='num'>延迟 (s)</th><th class='num'>评分排名</th></tr></thead><tbody><tr><td class='num'>1</td><td class='num'>8</td><td class='num'>4</td><td class='num'>1</td><td class='num latency-low'>2.00</td><td class='num'>#121</td></tr><tr><td class='num'>1</td><td class='num'>16</td><td class='num'>2</td><td class='num'>1</td><td class='num latency-low'>2.10</td><td class='num'>#159</td></tr><tr><td class='num'>8</td><td class='num'>2</td><td class='num'>2</td><td class='num'>64</td><td class='num latency-low'>2.20</td><td class='num'>#137</td></tr><tr><td class='num'>4</td><td class='num'>2</td><td class='num'>4</td><td class='num'>32</td><td class='num latency-low'>2.26</td><td class='num'>#154</td></tr><tr><td class='num'>16</td><td class='num'>1</td><td class='num'>2</td><td class='num'>64</td><td class='num latency-low'>2.28</td><td class='num'>#148</td></tr><tr><td class='num'>8</td><td class='num'>2</td><td class='num'>2</td><td class='num'>32</td><td class='num latency-low'>2.34</td><td class='num'>#120</td></tr><tr><td class='num'>16</td><td class='num'>2</td><td class='num'>1</td><td class='num'>64</td><td class='num latency-low'>2.35</td><td class='num'>#167</td></tr></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <h4>📊 总结</h4>
+  <p style="font-size:.88rem;color:var(--text);margin:0;">
+  经验库共收录 <strong>21 条</strong>评分经验，其中 <strong>14 条全局经验</strong>（需降权的坏模式）和 <strong>7 条岛屿解读</strong>（需提权的好策略）。<br>
+  这些经验已反馈到后续轮次的评分进化中，驱动评分模型从初始的 Spearman ρ 0.18-0.37 提升至最终 0.58-0.89，验证了经验反馈机制的有效性。
+  </p>
+</div>
+
+<div class="footer">
+  ScoreExpert 经验库 · 自动生成总结报告 · DeepSeek V4 Pro · Hermes Agent
+</div>
+
+</div>
+
+<script>
+Chart.defaults.color = '#6c757d';
+Chart.defaults.borderColor = '#dee2e6';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif";
+Chart.defaults.font.size = 12;
+
+// Island distribution
+new Chart(document.getElementById('chartIsland'), {
+  type: 'bar',
+  data: {
+    labels: ["内存安全", "拓扑亲和", "流水线效率", "均衡通才"],
+    datasets: [
+      { label: '全局经验', data: [2, 9, 3, 0], backgroundColor: '#dc354580', borderColor: '#dc3545', borderWidth: 1 },
+      { label: '岛屿解读', data: [4, 1, 0, 2], backgroundColor: '#19875480', borderColor: '#198754', borderWidth: 1 }
+    ]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:10,padding:15}}}, scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}}} }
+});
+
+// Round distribution
+new Chart(document.getElementById('chartRound'), {
+  type: 'bar',
+  data: {
+    labels: ["第 1 轮", "第 2 轮", "第 3 轮", "第 4 轮"],
+    datasets: [{ label: '经验数量', data: [14, 2, 3, 2], backgroundColor: '#0d6efd70', borderColor: '#0d6efd', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}} }
+});
+
+// Rank distribution
+new Chart(document.getElementById('chartGeRank'), {
+  type: 'bar',
+  data: {
+    labels: ['1-10','11-50','51-100','101+'],
+    datasets: [{ label: '全局经验', data: [11, 3, 0, 0], backgroundColor: '#dc354570', borderColor: '#dc3545', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}} }
+});
+new Chart(document.getElementById('chartIiRank'), {
+  type: 'bar',
+  data: {
+    labels: ['1-10','11-50','51-100','101+'],
+    datasets: [{ label: '岛屿解读', data: [0, 0, 0, 7], backgroundColor: '#19875470', borderColor: '#198754', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}} }
+});
+
+// PP distribution
+var allPP = [1, 2, 4, 8, 16];
+new Chart(document.getElementById('chartPP'), {
+  type: 'bar',
+  data: { labels: allPP.map(function(v){return 'PP='+v;}), datasets:[
+    { label:'全局经验', data: allPP.map(function(v){return {"1": 10, "2": 4}[v]||0;}), backgroundColor:'#dc354570', borderColor:'#dc3545', borderWidth:1 },
+    { label:'岛屿解读', data: allPP.map(function(v){return {"1": 2, "4": 1, "8": 2, "16": 2}[v]||0;}), backgroundColor:'#19875470', borderColor:'#198754', borderWidth:1 }
+  ]},
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:10}}}, scales:{y:{title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}} }
+});
+
+// MB distribution
+var allMB = [1, 2, 8, 16, 32, 64];
+new Chart(document.getElementById('chartMB'), {
+  type: 'bar',
+  data: { labels: allMB.map(function(v){return 'MB='+v;}), datasets:[
+    { label:'全局经验', data: allMB.map(function(v){return {"1": 4, "2": 3, "8": 1, "16": 1, "32": 2, "64": 3}[v]||0;}), backgroundColor:'#dc354570', borderColor:'#dc3545', borderWidth:1 },
+    { label:'岛屿解读', data: allMB.map(function(v){return {"1": 2, "32": 2, "64": 3}[v]||0;}), backgroundColor:'#19875470', borderColor:'#198754', borderWidth:1 }
+  ]},
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:10}}}, scales:{y:{title:{display:true,text:'数量'},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}} }
+});
+
+function switchTab(name) {
+  document.querySelectorAll('#entry-tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  var tab = document.querySelector('#entry-tabs .tab[onclick*="' + name + '")]');
+  if (tab) tab.classList.add('active');
+  var content = document.getElementById('tab-' + name);
+  if (content) content.classList.add('active');
+}
+</script>
+</body>
+</html>

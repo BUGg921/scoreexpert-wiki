@@ -1,0 +1,80 @@
+# ScoreExpert DB Search Report
+
+- Status: `pass`
+- Run root: `outputs/scoreexpert_db_search_20260613_200434`
+- Database entries: 322
+- DeepSeek enabled: `False`
+- Rounds run: 2
+- Stop reason: `max_rounds`
+- Stop on target gap: `False`
+- Stop on patience: `False`
+- Database best: {'strategy': {'pp': 1, 'tp': 8, 'dp': 4, 'micro_batch_num': 1}, 'total_latency_s': 2.000179116, 'pp_strategy': '1f1b', 'dp_strategy': 'reduce_scatter_allgather_after_backward'}
+- Best found: {'strategy': {'pp': 1, 'tp': 8, 'dp': 1, 'micro_batch_num': 1}, 'total_latency_s': 7.537446331, 'pp_strategy': 'gpipe', 'dp_strategy': 'naive_allreduce_after_backward'}
+- Latency chart: `outputs/scoreexpert_db_search_20260613_200434/latency_trend.png`
+- Score chart: `outputs/scoreexpert_db_search_20260613_200434/score_trend.png`
+- Replacement chart: `outputs/scoreexpert_db_search_20260613_200434/island_replacement_events.png`
+
+## Second Seed Initialization
+
+- `memory_safe`: `continued`, program=`None`, reason=`reset skipped; using current active program bank`
+- `topology_affinity`: `continued`, program=`None`, reason=`reset skipped; using current active program bank`
+- `pipeline_efficiency`: `continued`, program=`None`, reason=`reset skipped; using current active program bank`
+- `balanced_generalist`: `continued`, program=`None`, reason=`reset skipped; using current active program bank`
+
+## Rounds
+
+### Round 1
+
+- Strategy: `{'pp': 1, 'tp': 1, 'dp': 1, 'micro_batch_num': 1}`
+- Evaluation status: `invalid`
+- Latency: `None`
+- Evaluation feedback: `{"strategy": {"pp": 1, "tp": 1, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "invalid", "failure_reason": "strategy_not_found_in_database", "total_latency_s": null, "baseline_latency_s": null, "pp_strategy": null, "dp_strategy": null, "rulecheck": null, "dag_id": null, "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": null, "island_scores": {"memory_safe": {"best_program_id": "v14", "best_score": 1420.013828125}, "topology_affinity": {"best_program_id": "v25", "best_score": 1065.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1354.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1001.0999999999999}}, "score_latency_alignment": {"interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."}}`
+- Adjustment: `{'type': 'repair_illegal', 'changed': 'tp', 'reason': 'strategy_not_found_in_database', 'target': {'pp': 1, 'tp': 8, 'dp': 1, 'micro_batch_num': 1}}`
+- Next strategy: `{'pp': 1, 'tp': 8, 'dp': 1, 'micro_batch_num': 1}`
+
+| Island | Best Program | Score |
+|---|---|---:|
+| `memory_safe` | `v14` | 1420.013828 |
+| `topology_affinity` | `v25` | 1065.000000 |
+| `pipeline_efficiency` | `v18` | 1354.000000 |
+| `balanced_generalist` | `v0` | 1001.100000 |
+
+Evolution:
+- `memory_safe`: `skipped`, program=``, parents=``
+- `topology_affinity`: `skipped`, program=``, parents=``
+- `pipeline_efficiency`: `skipped`, program=``, parents=``
+- `balanced_generalist`: `skipped`, program=``, parents=``
+
+Adaptive context:
+- `memory_safe` guidance: ['Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.', 'Invalid strategy feedback: {"strategy": {"pp": 1, "tp": 1, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "invalid", "failure_reason": "strategy_not_found_in_database", "total_latency_s": null, "baseline_latency_s": null, "pp_strategy": null, "dp_strategy": null, "rulecheck": null, "dag_id": null, "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": null, "island_scores": {"memory_safe": {"best_program_id": "v14", "best_score": 1420.013828125}, "topology_affinity": {"best_program_id": "v25", "best_score": 1065.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1354.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1001.0999999999999}}, "score_latency_alignment": {"interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."}}']
+- `topology_affinity` guidance: ['Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.', 'Invalid strategy feedback: {"strategy": {"pp": 1, "tp": 1, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "invalid", "failure_reason": "strategy_not_found_in_database", "total_latency_s": null, "baseline_latency_s": null, "pp_strategy": null, "dp_strategy": null, "rulecheck": null, "dag_id": null, "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": null, "island_scores": {"memory_safe": {"best_program_id": "v14", "best_score": 1420.013828125}, "topology_affinity": {"best_program_id": "v25", "best_score": 1065.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1354.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1001.0999999999999}}, "score_latency_alignment": {"interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."}}']
+- `pipeline_efficiency` guidance: ['Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.', 'Invalid strategy feedback: {"strategy": {"pp": 1, "tp": 1, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "invalid", "failure_reason": "strategy_not_found_in_database", "total_latency_s": null, "baseline_latency_s": null, "pp_strategy": null, "dp_strategy": null, "rulecheck": null, "dag_id": null, "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": null, "island_scores": {"memory_safe": {"best_program_id": "v14", "best_score": 1420.013828125}, "topology_affinity": {"best_program_id": "v25", "best_score": 1065.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1354.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1001.0999999999999}}, "score_latency_alignment": {"interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."}}']
+- `balanced_generalist` guidance: ['Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.', 'Invalid strategy feedback: {"strategy": {"pp": 1, "tp": 1, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "invalid", "failure_reason": "strategy_not_found_in_database", "total_latency_s": null, "baseline_latency_s": null, "pp_strategy": null, "dp_strategy": null, "rulecheck": null, "dag_id": null, "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": null, "island_scores": {"memory_safe": {"best_program_id": "v14", "best_score": 1420.013828125}, "topology_affinity": {"best_program_id": "v25", "best_score": 1065.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1354.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1001.0999999999999}}, "score_latency_alignment": {"interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."}}']
+
+### Round 2
+
+- Strategy: `{'pp': 1, 'tp': 8, 'dp': 1, 'micro_batch_num': 1}`
+- Evaluation status: `pass`
+- Latency: `7.537446331`
+- Evaluation feedback: `{"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "pass", "failure_reason": null, "total_latency_s": 7.537446331, "baseline_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward", "rulecheck": "pass", "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar", "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "total_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward"}, "island_scores": {"memory_safe": {"best_program_id": "v9", "best_score": 1561.84375}, "topology_affinity": {"best_program_id": "v25", "best_score": 1310.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1361.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1003.1999999999999}}, "gap_to_database_best": 2.7683856764155914, "score_latency_alignment": {"highest_score_island": "memory_safe", "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."}}`
+- Adjustment: `{'type': 'latency_guided', 'changed': 'dp', 'target': {'pp': 1, 'tp': 8, 'dp': 4, 'micro_batch_num': 1}, 'next': {'pp': 1, 'tp': 8, 'dp': 4, 'micro_batch_num': 1}}`
+- Next strategy: `{'pp': 1, 'tp': 8, 'dp': 4, 'micro_batch_num': 1}`
+
+| Island | Best Program | Score |
+|---|---|---:|
+| `memory_safe` | `v9` | 1561.843750 |
+| `topology_affinity` | `v25` | 1310.000000 |
+| `pipeline_efficiency` | `v18` | 1361.000000 |
+| `balanced_generalist` | `v0` | 1003.200000 |
+
+Evolution:
+- `memory_safe`: `skipped`, program=``, parents=``
+- `topology_affinity`: `skipped`, program=``, parents=``
+- `pipeline_efficiency`: `skipped`, program=``, parents=``
+- `balanced_generalist`: `skipped`, program=``, parents=``
+
+Adaptive context:
+- `memory_safe` guidance: ['Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.', 'Current strategy feedback: {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "pass", "failure_reason": null, "total_latency_s": 7.537446331, "baseline_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward", "rulecheck": "pass", "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar", "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "total_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward"}, "island_scores": {"memory_safe": {"best_program_id": "v9", "best_score": 1561.84375}, "topology_affinity": {"best_program_id": "v25", "best_score": 1310.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1361.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1003.1999999999999}}, "gap_to_database_best": 2.7683856764155914, "score_latency_alignment": {"highest_score_island": "memory_safe", "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."}}']
+- `topology_affinity` guidance: ['Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.', 'Current strategy feedback: {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "pass", "failure_reason": null, "total_latency_s": 7.537446331, "baseline_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward", "rulecheck": "pass", "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar", "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "total_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward"}, "island_scores": {"memory_safe": {"best_program_id": "v9", "best_score": 1561.84375}, "topology_affinity": {"best_program_id": "v25", "best_score": 1310.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1361.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1003.1999999999999}}, "gap_to_database_best": 2.7683856764155914, "score_latency_alignment": {"highest_score_island": "memory_safe", "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."}}']
+- `pipeline_efficiency` guidance: ['Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.', 'Current strategy feedback: {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "pass", "failure_reason": null, "total_latency_s": 7.537446331, "baseline_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward", "rulecheck": "pass", "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar", "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "total_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward"}, "island_scores": {"memory_safe": {"best_program_id": "v9", "best_score": 1561.84375}, "topology_affinity": {"best_program_id": "v25", "best_score": 1310.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1361.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1003.1999999999999}}, "gap_to_database_best": 2.7683856764155914, "score_latency_alignment": {"highest_score_island": "memory_safe", "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."}}']
+- `balanced_generalist` guidance: ['Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.', 'Current strategy feedback: {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "evaluation_status": "pass", "failure_reason": null, "total_latency_s": 7.537446331, "baseline_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward", "rulecheck": "pass", "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar", "database_global_best": {"strategy": {"pp": 1, "tp": 8, "dp": 4, "micro_batch_num": 1}, "total_latency_s": 2.000179116, "pp_strategy": "1f1b", "dp_strategy": "reduce_scatter_allgather_after_backward"}, "best_found_so_far": {"strategy": {"pp": 1, "tp": 8, "dp": 1, "micro_batch_num": 1}, "total_latency_s": 7.537446331, "pp_strategy": "gpipe", "dp_strategy": "naive_allreduce_after_backward"}, "island_scores": {"memory_safe": {"best_program_id": "v9", "best_score": 1561.84375}, "topology_affinity": {"best_program_id": "v25", "best_score": 1310.0}, "pipeline_efficiency": {"best_program_id": "v18", "best_score": 1361.0}, "balanced_generalist": {"best_program_id": "v0", "best_score": 1003.1999999999999}}, "gap_to_database_best": 2.7683856764155914, "score_latency_alignment": {"highest_score_island": "memory_safe", "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."}}']

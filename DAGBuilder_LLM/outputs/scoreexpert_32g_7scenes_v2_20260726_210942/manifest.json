@@ -1,0 +1,76 @@
+{
+  "status": "pass",
+  "started_at": "2026-07-26T21:09:42",
+  "finished_at": "2026-07-26T21:27:27",
+  "config_source": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/config/config.py",
+  "rules_source": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/RuleCheck/rules/default_rules.json",
+  "workers": 4,
+  "scenarios": [
+    {
+      "id": "s0_homogeneous",
+      "title": "32卡同构基线",
+      "experience_category": "homogeneous-baseline",
+      "slow_ranks": []
+    },
+    {
+      "id": "s1_single_slow",
+      "title": "单张慢卡",
+      "experience_category": "local-heterogeneity",
+      "slow_ranks": [
+        7
+      ]
+    },
+    {
+      "id": "s3_two_same_node",
+      "title": "两张慢卡同节点",
+      "experience_category": "local-heterogeneity",
+      "slow_ranks": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": "s4_two_same_affinity",
+      "title": "两张慢卡同亲和组跨节点",
+      "experience_category": "local-heterogeneity",
+      "slow_ranks": [
+        7,
+        15
+      ]
+    },
+    {
+      "id": "s5_two_cross_affinity",
+      "title": "两张慢卡跨亲和组",
+      "experience_category": "distributed-heterogeneity",
+      "slow_ranks": [
+        7,
+        23
+      ]
+    },
+    {
+      "id": "s6_four_symmetric",
+      "title": "四张慢卡四节点对称分布",
+      "experience_category": "distributed-heterogeneity",
+      "slow_ranks": [
+        7,
+        15,
+        23,
+        31
+      ]
+    },
+    {
+      "id": "s7_five_2111",
+      "title": "五张慢卡按2-1-1-1分布",
+      "experience_category": "distributed-heterogeneity",
+      "slow_ranks": [
+        6,
+        7,
+        15,
+        23,
+        31
+      ]
+    }
+  ],
+  "summary": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/summary.md",
+  "results": "/Users/cookie/Documents/wiki/DAGBuilder_LLM/outputs/scoreexpert_32g_7scenes_v2_20260726_210942/results.json"
+}

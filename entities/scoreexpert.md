@@ -1,7 +1,7 @@
 ---
 title: ScoreExpert
 created: 2026-07-14
-updated: 2026-07-22
+updated: 2026-07-27
 type: entity
 tags: [scoreexpert, deployment, slow-gpu, evidence]
 sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
@@ -44,4 +44,4 @@ ScoreExpert 在本 Wiki 中用于把 GPU 部署场景、候选 PP/TP/DP/MBN、�
 
 数值策略和总体原因保留在 [[latency-first-experience-summary]]，具体实验条件、Score 推导、映射和结论边界保留在四份 raw 场景来源中。
 
-召回顺序：先核对优化目标、卡数与拓扑，再核对慢卡数量、位置和速度倍率，随后核对模型显存、rank mapping、score 版本和候选空间。命中总览规则和对应 raw 场景边界时直接输出策略；条件不能完整匹配时只复用决策方法，并进入补库流程，不复制参数组合。
+召回顺序：先核对优化目标、卡数与拓扑，再核对慢卡数量、位置和速度倍率，随后核对模型显存、rank mapping、score 版本和候选空间。命中总览规则和对应 raw 场景边界时直接输出策略；资源规模变化但命中总览已准入的换算规则时，按 `PP×TP×DP=active_gpu`、`TP:DP` 比例和完整拓扑约束重新求解，不能复制原实例参数；无法求得合法整数拓扑时进入补库流程。

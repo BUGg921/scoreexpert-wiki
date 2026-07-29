@@ -1,7 +1,7 @@
 ---
 title: 延迟优先型部署经验总览
 created: 2026-07-18
-updated: 2026-07-22
+updated: 2026-07-27
 type: summary
 tags: [scoreexpert, deployment, decision-guide, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence]
 sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
@@ -24,14 +24,14 @@ contradictions: []
 
 ### (2) 并行策略
 
-1. **满卡方案**：在 `idle 的损失 > 通信优化收益` 时，使用满卡，设置 `PP=1, TP=8, DP=4, MBN=1`，即 `TP:DP=2:1`；每节点构造一个 `TP=8` group，四个 group 组成 `DP=4`。
+1. **满卡方案**：在 `idle 的损失 > 通信优化收益` 时，使用全部可用卡；`PP` 取满足模型分层和显存约束的最小可行值，优先取 `PP=1`；在 `PP × TP × DP = active_gpu`、各并行组能够完整构造且不跨越不利通信边界的前提下，按 `TP:DP=2:1` 求解整数 `TP` 和 `DP`；`MBN` 取与所选 `PP` 匹配的最小可行值。每个 TP group 放在带宽最高的局部拓扑内，完整 TP group 组成 DP replica。
 
 ### (3) 原因
 
-- **`PP=1`**：消除流水线 stage 和 pipeline bubble。
-- **`TP=8`**：把高频 TP 通信限制在单个 8 卡节点内，避免跨节点通信。
-- **`DP=4`**：使用四个完整节点扩展计算，同时保持每个 DP replica 的结构一致。
-- **`MBN=1`**：`PP=1` 不需要额外微批填充流水线。^[raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md]
+1. **`PP` 取最小值**：减少流水线 stage 和 pipeline bubble；模型显存允许时优先不切 PP。
+   - **`TP:DP=2:1`**：在当前成熟经验支持的比例上，让 TP 承担更多模型内并行，同时由 DP 扩展完整 replica；具体整数值由可用卡数和完整拓扑共同求解。
+   - **TP group 映射**：把高频 TP 通信限制在带宽最高的局部拓扑内，避免为了满足比例而跨越不利通信边界。
+   - **`MBN` 取最小值**：最小 PP 不需要额外微批填充深流水线。^[raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md]
 
 ### (4) 场景案例
 
@@ -41,20 +41,22 @@ contradictions: []
 
 ### (1) 场景定义
 
-- 异常集中在一个可识别、可控制的局部拓扑范围内，例如一个 TP group、PP stage、节点或 DP replica。
-- 能够识别异常 rank，并通过 group、stage、layer 或计算映射把主要影响限制在这个局部范围内。
-- 局部性的判断依据是异构影响能否被限制，而不是机械地只看慢卡数量；异常跨越多个独立区域且无法收敛到一个局部范围时，属于分布式异构。
+- 部署中存在可重复识别的设备性能差异，例如部分 GPU 的计算速度持续低于其余 GPU；异常 rank、相对速度和所在拓扑位置能够被识别，偶发抖动或暂时性通信拥塞不直接判为局部异构。
+- 异常设备集中在一个可控制的局部拓扑范围内，或者能够通过 rank/group/stage 映射收敛到一个范围内，例如一个 TP group、一个 PP stage、一个节点或一个 DP replica。
+- 局部范围之外的大部分 group、stage 和 replica 不形成持续性的快慢结构；异常造成的同步等待、stage 变慢或负载失衡能够主要限制在少量固定设备和一个局部执行单元内，不会同时污染多个独立拓扑区域。
+- 模型和部署系统能够识别异常设备并调整 rank、group、stage、layer 或计算量映射；慢卡所在 stage 可以减层或减计算，使其预计执行时间接近其他 stage。无法进行这种局部重映射或负载调整时，即使只有一张慢卡，也不能直接套用局部隔离经验。
+- 局部性由“影响是否能够收敛到一个可控范围”决定，而不是由慢卡数量决定：多张异常卡若能被同一局部单元统一承载，仍可属于局部异构；异常卡跨多个独立节点、亲和组、TP group、PP stage 或 DP replica，且无法通过一次局部映射完成隔离时，属于分布式异构；没有持续设备性能差异时属于同构场景。
 
 ### (2) 并行策略
 
-1. 当异构影响能够限制在一个局部 group/stage，且 `保留异构设备并进行局部隔离的算力收益 > 深 PP 引入的流水线与调度成本` 时，在当前 32 卡拓扑下使用满卡，设置 `PP=16, TP=2, DP=1, MBN=64`，即 `TP:DP=2:1`；构造 16 个双卡 stage，将异常卡放入一个 `TP=2` group，并减少异常卡所在 stage 的层数或计算量。
+1. 当异构影响能够限制在一个局部 group/stage，且 `保留异构设备并进行局部隔离的算力收益 > 深 PP 引入的流水线与调度成本` 时，使用全部可用卡；`DP` 取避免快慢 replica 等待的最小可行值，优先取 `DP=1`；按 `TP:DP=2:1` 求解 `TP`，再由 `PP × TP × DP = active_gpu` 求得整数 `PP`，使 `PP` 取能够形成局部隔离的最大可行值；`MBN` 取显存、延迟和调度边界内能够充分填充深流水线的最大可行值。构造完整 TP group 和 PP stage，将异常卡限制在一个 TP group/stage，并减少异常卡所在 stage 的层数或计算量。
 
 ### (3) 原因
 
-- **`TP=2`**：把慢卡引起的同步等待限制在一个双卡 TP group 内，避免污染更多正常卡。
-- **`PP=16`**：用深 PP 把慢卡限制在一个 stage；慢卡 stage 同时减层或减计算，使其预计执行时间接近其他 stage。
-- **`DP=1`**：避免形成纯快 replica 等待含慢卡 replica 的跨副本同步。
-- **`MBN=64`**：为深流水线提供足够微批，降低 pipeline bubble。^[raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md]
+1. **`DP` 取最小值**：避免形成纯快 replica 等待含慢卡 replica 的跨副本同步；优先 `DP=1` 时，`TP:DP=2:1` 对应 `TP=2`。
+   - **`TP:DP=2:1`**：较小的 TP group 把慢卡引起的同步等待限制在局部范围内，避免污染更多正常卡。
+   - **`PP` 取最大可行值**：在使用全部可用卡、`DP` 和 `TP` 已确定后，通过增加 PP 构造更多局部 stage；慢卡 stage 同时减层或减计算，使其预计执行时间接近其他 stage。
+   - **`MBN` 取最大可行值**：深 PP 需要更多微批降低 pipeline bubble，但上限必须由显存、端到端延迟和调度开销约束；32 卡案例中的 `MBN=64` 是搜索上界，不是所有资源规模的固定值。^[raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md]
 
 ### (4) 场景案例
 
@@ -70,15 +72,15 @@ contradictions: []
 
 ### (2) 并行策略
 
-1. 当异常设备跨多个亲和组分布、各 DP replica 的异常结构或预测耗时不一致，且 `局部 PP 隔离收益 < 多个慢 stage 与流水线开销`、`满卡算力收益 > replica 等待与通信成本` 时，在当前 32 卡拓扑下使用满卡，设置 `PP=1, TP=8, DP=4, MBN=1`，即 `TP:DP=2:1`；每节点构造一个 `TP=8` group，四组组成 `DP=4`，并按预测执行时间调整异常卡映射。
-2. 当异常设备能够按数量、速度和位置对称映射到各 DP replica，且 `副本对称收益 > 多个 PP stage 的隔离收益`、`满卡算力收益 > 节点内 TP 通信成本` 时，在当前 32 卡拓扑下使用相同的满卡参数；使每个节点内的 `TP=8` group 具有相同的异常设备结构，从而保持四个 DP replica 对称。
+1. 当异常设备跨多个独立拓扑区域分布，且 `局部 PP 隔离收益 < 多个慢 stage 与流水线开销`、`满卡算力收益 > replica 等待与通信成本` 时，使用全部可用卡；`PP` 取满足模型约束的最小可行值，优先取 `PP=1`；在 `PP × TP × DP = active_gpu` 和完整拓扑约束下，按 `TP:DP=2:1` 求解整数 `TP` 和 `DP`，`MBN` 取与最小 PP 匹配的最小可行值；每个 TP group 放在带宽最高的局部拓扑内。异常卡映射再按 replica 分布选择：
+   - **replica 不对称**：各 replica 的异常设备结构或预测耗时不一致时，按预测执行时间调整异常卡映射，减少快 replica 等待慢 replica。
+   - **replica 可对称**：异常设备能够按数量、速度和位置对称分配，且 `副本对称收益 > 多个 PP stage 的隔离收益` 时，使各 DP replica 中的异常设备数量、速度和相对位置保持一致。
 
 ### (3) 原因
 
-- **`PP=1`**：慢卡跨多个区域时，深 PP 容易形成多个慢 stage；无流水线可以避免多个 stage 瓶颈和 pipeline bubble。
-- **`TP=8`**：把高频 TP 通信限制在单个 8 卡节点内，避免跨节点慢链路。
-- **`DP=4`**：利用四个节点形成四个 replica；分布不对称时按预计执行时间调整映射，分布可对称时保持各 replica 的异常卡数量、速度和位置一致。
-- **`MBN=1`**：`PP=1` 不需要用更多微批填充流水线，因此采用最小 MBN。^[raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md] ^[raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
+1. **共同参数**：慢卡跨多个区域时，深 PP 容易形成多个慢 stage，因此 `PP` 取最小值以避免多个 stage 瓶颈和 pipeline bubble；`TP:DP=2:1` 保留成熟经验中的并行比例，再根据可用卡数求解完整 TP group 和 DP replica；最小 PP 不需要更多微批填充深流水线，因此 `MBN` 也取最小可行值。
+   - **replica 不对称**：各 replica 的异常结构或预计耗时不一致时，固定位置映射会产生快慢 replica 等待；按预测执行时间调整异常卡位置可以缩小 replica step-time 差异。
+   - **replica 可对称**：异常卡能够按数量、速度和位置对称分配时，使各 replica 的异常结构一致，可以让慢卡影响在副本间近似同步，减少由结构差异造成的等待。高频 TP 通信仍留在带宽最高的局部拓扑内。^[raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md] ^[raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
 
 ### (4) 场景案例
 

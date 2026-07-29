@@ -1,0 +1,4205 @@
+{
+  "status": "pass",
+  "run_root": "outputs/scoreexpert_db_search_20260618_155022",
+  "database": "/Users/cookie/Documents/DAGBuilder_LLM/EVALUATION_DATABASE.md",
+  "database_entries": 322,
+  "database_best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 4,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 2.000179116,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward"
+  },
+  "deepseek_enabled": true,
+  "seed_results": [
+    {
+      "island": "memory_safe",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "topology_affinity",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "pipeline_efficiency",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    },
+    {
+      "island": "balanced_generalist",
+      "status": "pass",
+      "program_id": "v1",
+      "parent_ids": [
+        "v0"
+      ]
+    }
+  ],
+  "max_rounds": 1,
+  "stop_on_target_gap": false,
+  "stop_on_patience": false,
+  "rounds_run": 1,
+  "stop_reason": "max_rounds",
+  "best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 4,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 2.000179116,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward"
+  },
+  "latency_chart": "outputs/scoreexpert_db_search_20260618_155022/latency_trend.png",
+  "score_chart": "outputs/scoreexpert_db_search_20260618_155022/score_trend.png",
+  "replacement_chart": "outputs/scoreexpert_db_search_20260618_155022/island_replacement_events.png",
+  "rounds": [
+    {
+      "round": 1,
+      "mode": "full_database_ranking",
+      "strategy": "all_database_strategies",
+      "scores": {
+        "memory_safe": {
+          "best_program_id": "v0",
+          "best_score": 544.5746838122918,
+          "spearman_score_vs_negative_latency": 0.6044362196691762,
+          "top_k_best_latency_s": 2.33016721,
+          "top_k_avg_latency_s": 7.0344755700625
+        },
+        "topology_affinity": {
+          "best_program_id": "v1",
+          "best_score": 323.3729387745967,
+          "spearman_score_vs_negative_latency": 0.3902483916063206,
+          "top_k_best_latency_s": 2.09976721,
+          "top_k_avg_latency_s": 8.4215590025
+        },
+        "pipeline_efficiency": {
+          "best_program_id": "v1",
+          "best_score": 201.71651419124248,
+          "spearman_score_vs_negative_latency": 0.2591749387350947,
+          "top_k_best_latency_s": 2.345143222,
+          "top_k_avg_latency_s": 6.5811631406875
+        },
+        "balanced_generalist": {
+          "best_program_id": "v0",
+          "best_score": 199.86441802695845,
+          "spearman_score_vs_negative_latency": 0.36631342874784917,
+          "top_k_best_latency_s": 2.000179116,
+          "top_k_avg_latency_s": 28.52092762125
+        }
+      },
+      "evaluation": {
+        "status": "pass",
+        "mode": "full_database_ranking"
+      },
+      "evaluation_feedback": {
+        "mode": "full_database_ranking",
+        "database_size": 322,
+        "top_k": 16,
+        "database_global_best": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward"
+        },
+        "best_candidate_found_by_scoring": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "score_rank": 14,
+          "score": 1007.52,
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward",
+          "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag",
+          "island": "balanced_generalist",
+          "program_id": "v0"
+        },
+        "islands": {
+          "memory_safe": {
+            "best_program_id": "v0",
+            "ranking_quality": 544.5746838122918,
+            "spearman_score_vs_negative_latency": 0.6044362196691762,
+            "top_k_avg_latency_s": 7.0344755700625,
+            "top_k_best_latency_s": 2.33016721,
+            "database_best_score_rank": 52,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1048.84,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1048.68,
+                "total_latency_s": 5.724697765,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp2_dp1_tp16_mb32_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1048.42,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 16
+                },
+                "score_rank": 4,
+                "score": 1048.36,
+                "total_latency_s": 3.940176539,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb16_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 5,
+                "score": 1048.34,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1048.84,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1048.42,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 5,
+                "score": 1048.34,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 6,
+                "score": 1048.34,
+                "total_latency_s": 18.474197982,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp16_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 8,
+                "score": 1048.18,
+                "total_latency_s": 11.101397982,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp1_tp16_mb32_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 137,
+                "score": 1009.92,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 154,
+                "score": 1007.92,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 123,
+                "score": 1010.92,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 138,
+                "score": 1009.84,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 16
+                },
+                "score_rank": 158,
+                "score": 1007.84,
+                "total_latency_s": 2.376248643,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb16_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 52,
+                "score": 1021.94,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 18,
+                "score": 1043.38,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 47,
+                "score": 1023.22,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 137,
+                "score": 1009.92,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 154,
+                "score": 1007.92,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              }
+            ]
+          },
+          "topology_affinity": {
+            "best_program_id": "v1",
+            "ranking_quality": 323.3729387745967,
+            "spearman_score_vs_negative_latency": 0.3902483916063206,
+            "top_k_avg_latency_s": 8.4215590025,
+            "top_k_best_latency_s": 2.09976721,
+            "database_best_score_rank": 70,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 1,
+                "score": 1000.0,
+                "total_latency_s": 3.958997982,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp16_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 2,
+                "score": 1000.0,
+                "total_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 3,
+                "score": 1000.0,
+                "total_latency_s": 14.796854127,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 4,
+                "score": 998.0,
+                "total_latency_s": 4.189397982,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp16_mb2_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 5,
+                "score": 998.0,
+                "total_latency_s": 7.644966331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 2,
+                "score": 1000.0,
+                "total_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 3,
+                "score": 1000.0,
+                "total_latency_s": 14.796854127,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 5,
+                "score": 998.0,
+                "total_latency_s": 7.644966331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 6,
+                "score": 998.0,
+                "total_latency_s": 14.842934127,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp4_mb2_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 8,
+                "score": 997.063077,
+                "total_latency_s": 8.989186347,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp4_mb64_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 114,
+                "score": 975.037143,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 122,
+                "score": 973.043797,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 116,
+                "score": 974.815897,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 109,
+                "score": 978.043797,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 4,
+                  "dp": 4,
+                  "micro_batch_num": 8
+                },
+                "score_rank": 123,
+                "score": 972.748889,
+                "total_latency_s": 2.3538404,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp4_tp4_mb8_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 70,
+                "score": 985.0,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 15,
+                "score": 995.0,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 74,
+                "score": 983.0,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 78,
+                "score": 982.993521,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 114,
+                "score": 975.037143,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              }
+            ]
+          },
+          "pipeline_efficiency": {
+            "best_program_id": "v1",
+            "ranking_quality": 201.71651419124248,
+            "spearman_score_vs_negative_latency": 0.2591749387350947,
+            "top_k_avg_latency_s": 6.5811631406875,
+            "top_k_best_latency_s": 2.345143222,
+            "database_best_score_rank": 36,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 32,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1157.142105,
+                "total_latency_s": 2.723263695,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp32_dp1_tp1_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 2,
+                "score": 1065.663291,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1065.363291,
+                "total_latency_s": 4.402162627,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp1_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 4,
+                "score": 1031.904225,
+                "total_latency_s": 2.461189532,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp8_dp1_tp4_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 5,
+                "score": 1031.304225,
+                "total_latency_s": 4.179434563,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp1_tp2_mb64_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 6,
+                "score": 1031.004225,
+                "total_latency_s": 7.843371128,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp8_dp1_tp1_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 9,
+                "score": 1018.21194,
+                "total_latency_s": 7.869589906,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp4_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 10,
+                "score": 1017.91194,
+                "total_latency_s": 14.767493449,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp4_dp1_tp1_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 11,
+                "score": 1017.107692,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 13,
+                "score": 1013.507692,
+                "total_latency_s": 8.989186347,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp4_mb64_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 236,
+                "score": 731.304225,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 281,
+                "score": 697.742857,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 220,
+                "score": 765.363291,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 130,
+                "score": 990.85641,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 4,
+                  "dp": 4,
+                  "micro_batch_num": 8
+                },
+                "score_rank": 137,
+                "score": 965.644444,
+                "total_latency_s": 2.3538404,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp4_tp4_mb8_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 36,
+                "score": 1002.4,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 23,
+                "score": 1004.8,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 37,
+                "score": 1002.4,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 236,
+                "score": 731.304225,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 281,
+                "score": 697.742857,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              }
+            ]
+          },
+          "balanced_generalist": {
+            "best_program_id": "v0",
+            "ranking_quality": 199.86441802695845,
+            "spearman_score_vs_negative_latency": 0.36631342874784917,
+            "top_k_avg_latency_s": 28.52092762125,
+            "top_k_best_latency_s": 2.000179116,
+            "database_best_score_rank": 14,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1016.36,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1016.32,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 16
+                },
+                "score_rank": 3,
+                "score": 1016.24,
+                "total_latency_s": 5.55576721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb16_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 8
+                },
+                "score_rank": 4,
+                "score": 1016.08,
+                "total_latency_s": 3.71256721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb8_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 4
+                },
+                "score_rank": 5,
+                "score": 1015.76,
+                "total_latency_s": 2.79096721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb4_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1016.36,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1016.32,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 8,
+                "score": 1011.504615,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 1,
+                  "dp": 32,
+                  "micro_batch_num": 4
+                },
+                "score_rank": 15,
+                "score": 1007.36,
+                "total_latency_s": 193.238499198,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp32_tp1_mb4_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 1,
+                  "dp": 32,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 16,
+                "score": 1007.32,
+                "total_latency_s": 193.238499198,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp32_tp1_mb2_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 148,
+                "score": 944.397975,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 120,
+                "score": 948.473846,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 142,
+                "score": 945.157975,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 1,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 123,
+                "score": 947.913846,
+                "total_latency_s": 2.441487966,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp4_tp1_mb32_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 14,
+                "score": 1007.52,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 7,
+                "score": 1013.84,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 13,
+                "score": 1008.16,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 57,
+                "score": 972.782535,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 47,
+                "score": 977.045714,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              }
+            ]
+          }
+        },
+        "objective": "Improve the scoring function's ranking quality over the full database: high score should correspond to low total_latency_s, bad high-score/high-latency cases should move down, and missed low-latency cases should move up."
+      },
+      "latency": 2.000179116,
+      "ranking": {
+        "status": "pass",
+        "top_k": 16,
+        "database_size": 322,
+        "database_global_best": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward"
+        },
+        "islands": {
+          "memory_safe": {
+            "programs": [
+              {
+                "program_id": "v0",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 544.5746838122918,
+                "spearman_score_vs_negative_latency": 0.6044362196691762,
+                "top_k_avg_latency_s": 7.0344755700625,
+                "top_k_best_latency_s": 2.33016721,
+                "database_best_score_rank": 52,
+                "score_errors": 0
+              },
+              {
+                "program_id": "v1",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 378.62824022134765,
+                "spearman_score_vs_negative_latency": 0.4384837428957281,
+                "top_k_avg_latency_s": 7.0344755700625,
+                "top_k_best_latency_s": 2.33016721,
+                "database_best_score_rank": 51,
+                "score_errors": 0
+              }
+            ],
+            "best_program": {
+              "program_id": "v0",
+              "status": "pass",
+              "ranking_quality": 544.5746838122918,
+              "spearman_score_vs_negative_latency": 0.6044362196691762,
+              "top_k_avg_latency_s": 7.0344755700625,
+              "top_k_best_latency_s": 2.33016721,
+              "top_candidate": {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 15,
+                "score": 1045.94,
+                "total_latency_s": 2.33016721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb2_rs_ag"
+              },
+              "database_best_score_rank": 52,
+              "bad_cases": [
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 1,
+                  "score": 1048.84,
+                  "total_latency_s": 9.381758378,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 3,
+                  "score": 1048.42,
+                  "total_latency_s": 16.61496721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 5,
+                  "score": 1048.34,
+                  "total_latency_s": 9.24216721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 6,
+                  "score": 1048.34,
+                  "total_latency_s": 18.474197982,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp16_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 8,
+                  "score": 1048.18,
+                  "total_latency_s": 11.101397982,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp1_tp16_mb32_rs_ag"
+                }
+              ],
+              "missed_cases": [
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 137,
+                  "score": 1009.92,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 154,
+                  "score": 1007.92,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 1,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 123,
+                  "score": 1010.92,
+                  "total_latency_s": 2.283072818,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 138,
+                  "score": 1009.84,
+                  "total_latency_s": 2.341963184,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 16
+                  },
+                  "score_rank": 158,
+                  "score": 1007.84,
+                  "total_latency_s": 2.376248643,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb16_rs_ag"
+                }
+              ],
+              "score_errors": 0,
+              "top_score_cases": [
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 1,
+                  "score": 1048.84,
+                  "total_latency_s": 9.381758378,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 2,
+                  "score": 1048.68,
+                  "total_latency_s": 5.724697765,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp2_dp1_tp16_mb32_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 3,
+                  "score": 1048.42,
+                  "total_latency_s": 16.61496721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 16
+                  },
+                  "score_rank": 4,
+                  "score": 1048.36,
+                  "total_latency_s": 3.940176539,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp16_mb16_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 5,
+                  "score": 1048.34,
+                  "total_latency_s": 9.24216721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+                }
+              ],
+              "top_latency_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 52,
+                  "score": 1021.94,
+                  "total_latency_s": 2.000179116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 18,
+                  "score": 1043.38,
+                  "total_latency_s": 2.09976721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 47,
+                  "score": 1023.22,
+                  "total_latency_s": 2.107699116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 137,
+                  "score": 1009.92,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 154,
+                  "score": 1007.92,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                }
+              ],
+              "latency_best_covered_in_top_k": true
+            }
+          },
+          "topology_affinity": {
+            "programs": [
+              {
+                "program_id": "v0",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": -1080.5616127094795,
+                "spearman_score_vs_negative_latency": 0.11423894871267805,
+                "top_k_avg_latency_s": 234.0877415036875,
+                "top_k_best_latency_s": 2.524590585,
+                "database_best_score_rank": 30,
+                "score_errors": 0
+              },
+              {
+                "program_id": "v1",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 323.3729387745967,
+                "spearman_score_vs_negative_latency": 0.3902483916063206,
+                "top_k_avg_latency_s": 8.4215590025,
+                "top_k_best_latency_s": 2.09976721,
+                "database_best_score_rank": 70,
+                "score_errors": 0
+              }
+            ],
+            "best_program": {
+              "program_id": "v1",
+              "status": "pass",
+              "ranking_quality": 323.3729387745967,
+              "spearman_score_vs_negative_latency": 0.3902483916063206,
+              "top_k_avg_latency_s": 8.4215590025,
+              "top_k_best_latency_s": 2.09976721,
+              "top_candidate": {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 15,
+                "score": 995.0,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              "database_best_score_rank": 70,
+              "bad_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 1,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 2,
+                  "score": 1000.0,
+                  "total_latency_s": 7.537446331,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 3,
+                  "score": 1000.0,
+                  "total_latency_s": 14.796854127,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 1,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 5,
+                  "score": 998.0,
+                  "total_latency_s": 7.644966331,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 6,
+                  "score": 998.0,
+                  "total_latency_s": 14.842934127,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp4_mb2_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 8,
+                  "score": 997.063077,
+                  "total_latency_s": 8.989186347,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp4_mb64_rs_ag"
+                }
+              ],
+              "missed_cases": [
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 114,
+                  "score": 975.037143,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 1,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 122,
+                  "score": 973.043797,
+                  "total_latency_s": 2.283072818,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 116,
+                  "score": 974.815897,
+                  "total_latency_s": 2.341963184,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 2,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 109,
+                  "score": 978.043797,
+                  "total_latency_s": 2.345143222,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 4,
+                    "dp": 4,
+                    "micro_batch_num": 8
+                  },
+                  "score_rank": 123,
+                  "score": 972.748889,
+                  "total_latency_s": 2.3538404,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp4_tp4_mb8_rs_ag"
+                }
+              ],
+              "score_errors": 0,
+              "top_score_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 1,
+                  "score": 1000.0,
+                  "total_latency_s": 3.958997982,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp16_mb1_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 1,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 2,
+                  "score": 1000.0,
+                  "total_latency_s": 7.537446331,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 3,
+                  "score": 1000.0,
+                  "total_latency_s": 14.796854127,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 4,
+                  "score": 998.0,
+                  "total_latency_s": 4.189397982,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp16_mb2_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 1,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 5,
+                  "score": 998.0,
+                  "total_latency_s": 7.644966331,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+                }
+              ],
+              "top_latency_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 70,
+                  "score": 985.0,
+                  "total_latency_s": 2.000179116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 15,
+                  "score": 995.0,
+                  "total_latency_s": 2.09976721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 74,
+                  "score": 983.0,
+                  "total_latency_s": 2.107699116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 78,
+                  "score": 982.993521,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 114,
+                  "score": 975.037143,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                }
+              ],
+              "latency_best_covered_in_top_k": true
+            }
+          },
+          "pipeline_efficiency": {
+            "programs": [
+              {
+                "program_id": "v0",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 150.87500963682666,
+                "spearman_score_vs_negative_latency": 0.19208064274350478,
+                "top_k_avg_latency_s": 5.470187905125,
+                "top_k_best_latency_s": 2.000179116,
+                "database_best_score_rank": 14,
+                "score_errors": 0
+              },
+              {
+                "program_id": "v1",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 201.71651419124248,
+                "spearman_score_vs_negative_latency": 0.2591749387350947,
+                "top_k_avg_latency_s": 6.5811631406875,
+                "top_k_best_latency_s": 2.345143222,
+                "database_best_score_rank": 36,
+                "score_errors": 0
+              }
+            ],
+            "best_program": {
+              "program_id": "v1",
+              "status": "pass",
+              "ranking_quality": 201.71651419124248,
+              "spearman_score_vs_negative_latency": 0.2591749387350947,
+              "top_k_avg_latency_s": 6.5811631406875,
+              "top_k_best_latency_s": 2.345143222,
+              "top_candidate": {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 2,
+                "score": 1065.663291,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              },
+              "database_best_score_rank": 36,
+              "bad_cases": [
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 1,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 6,
+                  "score": 1031.004225,
+                  "total_latency_s": 7.843371128,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp8_dp1_tp1_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 9,
+                  "score": 1018.21194,
+                  "total_latency_s": 7.869589906,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp4_dp1_tp2_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 1,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 10,
+                  "score": 1017.91194,
+                  "total_latency_s": 14.767493449,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp4_dp1_tp1_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 11,
+                  "score": 1017.107692,
+                  "total_latency_s": 9.381758378,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 13,
+                  "score": 1013.507692,
+                  "total_latency_s": 8.989186347,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp4_mb64_rs_ag"
+                }
+              ],
+              "missed_cases": [
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 236,
+                  "score": 731.304225,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 281,
+                  "score": 697.742857,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 1,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 220,
+                  "score": 765.363291,
+                  "total_latency_s": 2.283072818,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 130,
+                  "score": 990.85641,
+                  "total_latency_s": 2.341963184,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 4,
+                    "dp": 4,
+                    "micro_batch_num": 8
+                  },
+                  "score_rank": 137,
+                  "score": 965.644444,
+                  "total_latency_s": 2.3538404,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp4_tp4_mb8_rs_ag"
+                }
+              ],
+              "score_errors": 0,
+              "top_score_cases": [
+                {
+                  "strategy": {
+                    "pp": 32,
+                    "tp": 1,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 1,
+                  "score": 1157.142105,
+                  "total_latency_s": 2.723263695,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp32_dp1_tp1_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 2,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 2,
+                  "score": 1065.663291,
+                  "total_latency_s": 2.345143222,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 1,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 3,
+                  "score": 1065.363291,
+                  "total_latency_s": 4.402162627,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp16_dp1_tp1_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 4,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 4,
+                  "score": 1031.904225,
+                  "total_latency_s": 2.461189532,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp8_dp1_tp4_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 5,
+                  "score": 1031.304225,
+                  "total_latency_s": 4.179434563,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp1_tp2_mb64_rs_ag"
+                }
+              ],
+              "top_latency_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 36,
+                  "score": 1002.4,
+                  "total_latency_s": 2.000179116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 23,
+                  "score": 1004.8,
+                  "total_latency_s": 2.09976721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 37,
+                  "score": 1002.4,
+                  "total_latency_s": 2.107699116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 236,
+                  "score": 731.304225,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 281,
+                  "score": 697.742857,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                }
+              ],
+              "latency_best_covered_in_top_k": true
+            }
+          },
+          "balanced_generalist": {
+            "programs": [
+              {
+                "program_id": "v0",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": 199.86441802695845,
+                "spearman_score_vs_negative_latency": 0.36631342874784917,
+                "top_k_avg_latency_s": 28.52092762125,
+                "top_k_best_latency_s": 2.000179116,
+                "database_best_score_rank": 14,
+                "score_errors": 0
+              },
+              {
+                "program_id": "v1",
+                "status": "pass",
+                "reason": null,
+                "ranking_quality": -74.05389403189265,
+                "spearman_score_vs_negative_latency": 0.34832295958197634,
+                "top_k_avg_latency_s": 80.015869475625,
+                "top_k_best_latency_s": 2.000179116,
+                "database_best_score_rank": 6,
+                "score_errors": 0
+              }
+            ],
+            "best_program": {
+              "program_id": "v0",
+              "status": "pass",
+              "ranking_quality": 199.86441802695845,
+              "spearman_score_vs_negative_latency": 0.36631342874784917,
+              "top_k_avg_latency_s": 28.52092762125,
+              "top_k_best_latency_s": 2.000179116,
+              "top_candidate": {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 14,
+                "score": 1007.52,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              "database_best_score_rank": 14,
+              "bad_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 1,
+                  "score": 1016.36,
+                  "total_latency_s": 16.61496721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 2,
+                  "score": 1016.32,
+                  "total_latency_s": 9.24216721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 2,
+                    "tp": 16,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 8,
+                  "score": 1011.504615,
+                  "total_latency_s": 9.381758378,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 1,
+                    "dp": 32,
+                    "micro_batch_num": 4
+                  },
+                  "score_rank": 15,
+                  "score": 1007.36,
+                  "total_latency_s": 193.238499198,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp32_tp1_mb4_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 1,
+                    "dp": 32,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 16,
+                  "score": 1007.32,
+                  "total_latency_s": 193.238499198,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp32_tp1_mb2_rs_ag"
+                }
+              ],
+              "missed_cases": [
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 1,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 148,
+                  "score": 944.397975,
+                  "total_latency_s": 2.283072818,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 120,
+                  "score": 948.473846,
+                  "total_latency_s": 2.341963184,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 16,
+                    "tp": 2,
+                    "dp": 1,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 142,
+                  "score": 945.157975,
+                  "total_latency_s": 2.345143222,
+                  "pp_strategy": "gpipe",
+                  "dp_strategy": "naive_allreduce_after_backward",
+                  "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 1,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 123,
+                  "score": 947.913846,
+                  "total_latency_s": 2.441487966,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp4_tp1_mb32_rs_ag"
+                }
+              ],
+              "score_errors": 0,
+              "top_score_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 1,
+                  "score": 1016.36,
+                  "total_latency_s": 16.61496721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 2,
+                  "score": 1016.32,
+                  "total_latency_s": 9.24216721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 16
+                  },
+                  "score_rank": 3,
+                  "score": 1016.24,
+                  "total_latency_s": 5.55576721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb16_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 8
+                  },
+                  "score_rank": 4,
+                  "score": 1016.08,
+                  "total_latency_s": 3.71256721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb8_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 4
+                  },
+                  "score_rank": 5,
+                  "score": 1015.76,
+                  "total_latency_s": 2.79096721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb4_rs_ag"
+                }
+              ],
+              "top_latency_cases": [
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 14,
+                  "score": 1007.52,
+                  "total_latency_s": 2.000179116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 16,
+                    "dp": 2,
+                    "micro_batch_num": 1
+                  },
+                  "score_rank": 7,
+                  "score": 1013.84,
+                  "total_latency_s": 2.09976721,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 1,
+                    "tp": 8,
+                    "dp": 4,
+                    "micro_batch_num": 2
+                  },
+                  "score_rank": 13,
+                  "score": 1008.16,
+                  "total_latency_s": 2.107699116,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 8,
+                    "tp": 2,
+                    "dp": 2,
+                    "micro_batch_num": 64
+                  },
+                  "score_rank": 57,
+                  "score": 972.782535,
+                  "total_latency_s": 2.198843034,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+                },
+                {
+                  "strategy": {
+                    "pp": 4,
+                    "tp": 2,
+                    "dp": 4,
+                    "micro_batch_num": 32
+                  },
+                  "score_rank": 47,
+                  "score": 977.045714,
+                  "total_latency_s": 2.264867954,
+                  "pp_strategy": "1f1b",
+                  "dp_strategy": "reduce_scatter_allgather_after_backward",
+                  "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+                }
+              ],
+              "latency_best_covered_in_top_k": true
+            }
+          }
+        },
+        "island_scores": {
+          "memory_safe": {
+            "best_program_id": "v0",
+            "best_score": 544.5746838122918,
+            "spearman_score_vs_negative_latency": 0.6044362196691762,
+            "top_k_best_latency_s": 2.33016721,
+            "top_k_avg_latency_s": 7.0344755700625
+          },
+          "topology_affinity": {
+            "best_program_id": "v1",
+            "best_score": 323.3729387745967,
+            "spearman_score_vs_negative_latency": 0.3902483916063206,
+            "top_k_best_latency_s": 2.09976721,
+            "top_k_avg_latency_s": 8.4215590025
+          },
+          "pipeline_efficiency": {
+            "best_program_id": "v1",
+            "best_score": 201.71651419124248,
+            "spearman_score_vs_negative_latency": 0.2591749387350947,
+            "top_k_best_latency_s": 2.345143222,
+            "top_k_avg_latency_s": 6.5811631406875
+          },
+          "balanced_generalist": {
+            "best_program_id": "v0",
+            "best_score": 199.86441802695845,
+            "spearman_score_vs_negative_latency": 0.36631342874784917,
+            "top_k_best_latency_s": 2.000179116,
+            "top_k_avg_latency_s": 28.52092762125
+          }
+        },
+        "best_candidate": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "score_rank": 14,
+          "score": 1007.52,
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward",
+          "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag",
+          "island": "balanced_generalist",
+          "program_id": "v0"
+        }
+      },
+      "diversity": {
+        "avg_top_strategy_overlap": 0.041666666666666664,
+        "avg_recent_program_similarity": 0.26421347812316737
+      },
+      "adjustment": {
+        "type": "none",
+        "reason": "full database ranking feedback"
+      },
+      "next_strategy": "all_database_strategies",
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v1",
+            "v0"
+          ]
+        },
+        {
+          "island": "topology_affinity",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v1",
+            "v0"
+          ]
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "pass",
+          "program_id": "v2",
+          "parent_ids": [
+            "v0",
+            "v1"
+          ]
+        }
+      ],
+      "experience_events": [
+        {
+          "action": "add",
+          "kind": "global_experience",
+          "description": "global_experience: PP=8, TP=1, DP=1, MB=64, pp_strategy=gpipe, dp_strategy=naive_allreduce_after_backward",
+          "evidence": "round=1, island=pipeline_efficiency, latency=7.843371128, score_rank=6, score=1031.004225",
+          "recommendation": "High score selected a high-latency strategy; reduce this pattern unless an island-specific reason explains it.",
+          "applies_to": {
+            "pp": 8,
+            "tp": 1,
+            "dp": 1,
+            "micro_batch_num": 64
+          },
+          "source_islands": [
+            "pipeline_efficiency"
+          ],
+          "confidence": 0.6,
+          "last_seen_round": 1
+        },
+        {
+          "action": "add",
+          "kind": "global_experience",
+          "description": "global_experience: PP=4, TP=2, DP=1, MB=64, pp_strategy=gpipe, dp_strategy=naive_allreduce_after_backward",
+          "evidence": "round=1, island=pipeline_efficiency, latency=7.869589906, score_rank=9, score=1018.21194",
+          "recommendation": "High score selected a high-latency strategy; reduce this pattern unless an island-specific reason explains it.",
+          "applies_to": {
+            "pp": 4,
+            "tp": 2,
+            "dp": 1,
+            "micro_batch_num": 64
+          },
+          "source_islands": [
+            "pipeline_efficiency"
+          ],
+          "confidence": 0.6,
+          "last_seen_round": 1
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "score_rank": 52,
+              "score": 1021.94,
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "score_rank": 18,
+              "score": 1043.38,
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "score_rank": 47,
+              "score": 1023.22,
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 2,
+                "tp": 16,
+                "dp": 1,
+                "micro_batch_num": 64
+              },
+              "score_rank": 1,
+              "score": 1048.84,
+              "total_latency_s": 9.381758378,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "score_rank": 3,
+              "score": 1048.42,
+              "total_latency_s": 16.61496721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 32
+              },
+              "score_rank": 5,
+              "score": 1048.34,
+              "total_latency_s": 9.24216721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+            }
+          ],
+          "mutation_guidance": [
+            "Optimize the explanation/ranking behavior of score_strategy over the full database, not a single strategy path.",
+            "Increase scores for missed low-latency cases and reduce scores for bad high-score/high-latency cases."
+          ],
+          "last_evaluation_feedback": {
+            "best_program_id": "v0",
+            "ranking_quality": 544.5746838122918,
+            "spearman_score_vs_negative_latency": 0.6044362196691762,
+            "top_k_avg_latency_s": 7.0344755700625,
+            "top_k_best_latency_s": 2.33016721,
+            "database_best_score_rank": 52,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1048.84,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1048.68,
+                "total_latency_s": 5.724697765,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp2_dp1_tp16_mb32_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1048.42,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1048.84,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1048.42,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 5,
+                "score": 1048.34,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 137,
+                "score": 1009.92,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 154,
+                "score": 1007.92,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 123,
+                "score": 1010.92,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 52,
+                "score": 1021.94,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 18,
+                "score": 1043.38,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 47,
+                "score": 1023.22,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              }
+            ]
+          },
+          "stable_findings": [
+            "good: PP=1, TP=8, DP=4, MB=1, latency=2.000179116, score_rank=52",
+            "good: PP=1, TP=16, DP=2, MB=1, latency=2.09976721, score_rank=18"
+          ],
+          "open_issues": [
+            "bad: PP=2, TP=16, DP=1, MB=64, latency=9.381758378, score_rank=1",
+            "bad: PP=1, TP=16, DP=2, MB=64, latency=16.61496721, score_rank=3",
+            "missed: PP=8, TP=2, DP=2, MB=64, latency=2.198843034, score_rank=137"
+          ]
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "score_rank": 70,
+              "score": 985.0,
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "score_rank": 15,
+              "score": 995.0,
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "score_rank": 74,
+              "score": 983.0,
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "score_rank": 2,
+              "score": 1000.0,
+              "total_latency_s": 7.537446331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 4,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "score_rank": 3,
+              "score": 1000.0,
+              "total_latency_s": 14.796854127,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 2
+              },
+              "score_rank": 5,
+              "score": 998.0,
+              "total_latency_s": 7.644966331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+            }
+          ],
+          "mutation_guidance": [
+            "Optimize the explanation/ranking behavior of score_strategy over the full database, not a single strategy path.",
+            "Increase scores for missed low-latency cases and reduce scores for bad high-score/high-latency cases."
+          ],
+          "last_evaluation_feedback": {
+            "best_program_id": "v1",
+            "ranking_quality": 323.3729387745967,
+            "spearman_score_vs_negative_latency": 0.3902483916063206,
+            "top_k_avg_latency_s": 8.4215590025,
+            "top_k_best_latency_s": 2.09976721,
+            "database_best_score_rank": 70,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 1,
+                "score": 1000.0,
+                "total_latency_s": 3.958997982,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp16_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 2,
+                "score": 1000.0,
+                "total_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 3,
+                "score": 1000.0,
+                "total_latency_s": 14.796854127,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 2,
+                "score": 1000.0,
+                "total_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 4,
+                  "dp": 1,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 3,
+                "score": 1000.0,
+                "total_latency_s": 14.796854127,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp4_mb1_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 1,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 5,
+                "score": 998.0,
+                "total_latency_s": 7.644966331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb2_naive_ar"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 114,
+                "score": 975.037143,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 122,
+                "score": 973.043797,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 116,
+                "score": 974.815897,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 70,
+                "score": 985.0,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 15,
+                "score": 995.0,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 74,
+                "score": 983.0,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              }
+            ]
+          },
+          "stable_findings": [
+            "good: PP=1, TP=8, DP=4, MB=1, latency=2.000179116, score_rank=70",
+            "good: PP=1, TP=16, DP=2, MB=1, latency=2.09976721, score_rank=15"
+          ],
+          "open_issues": [
+            "bad: PP=1, TP=8, DP=1, MB=1, latency=7.537446331, score_rank=2",
+            "bad: PP=1, TP=4, DP=1, MB=1, latency=14.796854127, score_rank=3",
+            "missed: PP=4, TP=2, DP=4, MB=32, latency=2.264867954, score_rank=114"
+          ]
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "score_rank": 36,
+              "score": 1002.4,
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "score_rank": 23,
+              "score": 1004.8,
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "score_rank": 37,
+              "score": 1002.4,
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 64
+              },
+              "score_rank": 6,
+              "score": 1031.004225,
+              "total_latency_s": 7.843371128,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp8_dp1_tp1_mb64_naive_ar"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 1,
+                "micro_batch_num": 64
+              },
+              "score_rank": 9,
+              "score": 1018.21194,
+              "total_latency_s": 7.869589906,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp4_dp1_tp2_mb64_naive_ar"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 64
+              },
+              "score_rank": 10,
+              "score": 1017.91194,
+              "total_latency_s": 14.767493449,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward",
+              "dag_id": "gpipe_pp4_dp1_tp1_mb64_naive_ar"
+            }
+          ],
+          "mutation_guidance": [
+            "Optimize the explanation/ranking behavior of score_strategy over the full database, not a single strategy path.",
+            "Increase scores for missed low-latency cases and reduce scores for bad high-score/high-latency cases."
+          ],
+          "last_evaluation_feedback": {
+            "best_program_id": "v1",
+            "ranking_quality": 201.71651419124248,
+            "spearman_score_vs_negative_latency": 0.2591749387350947,
+            "top_k_avg_latency_s": 6.5811631406875,
+            "top_k_best_latency_s": 2.345143222,
+            "database_best_score_rank": 36,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 32,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1157.142105,
+                "total_latency_s": 2.723263695,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp32_dp1_tp1_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 2,
+                "score": 1065.663291,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 3,
+                "score": 1065.363291,
+                "total_latency_s": 4.402162627,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp1_tp1_mb64_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 6,
+                "score": 1031.004225,
+                "total_latency_s": 7.843371128,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp8_dp1_tp1_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 9,
+                "score": 1018.21194,
+                "total_latency_s": 7.869589906,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp4_dp1_tp2_mb64_naive_ar"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 1,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 10,
+                "score": 1017.91194,
+                "total_latency_s": 14.767493449,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp4_dp1_tp1_mb64_naive_ar"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 236,
+                "score": 731.304225,
+                "total_latency_s": 2.198843034,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 4,
+                  "tp": 2,
+                  "dp": 4,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 281,
+                "score": 697.742857,
+                "total_latency_s": 2.264867954,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp4_dp4_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 220,
+                "score": 765.363291,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 36,
+                "score": 1002.4,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 23,
+                "score": 1004.8,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 37,
+                "score": 1002.4,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              }
+            ]
+          },
+          "stable_findings": [
+            "good: PP=1, TP=8, DP=4, MB=1, latency=2.000179116, score_rank=36",
+            "good: PP=1, TP=16, DP=2, MB=1, latency=2.09976721, score_rank=23"
+          ],
+          "open_issues": [
+            "bad: PP=8, TP=1, DP=1, MB=64, latency=7.843371128, score_rank=6",
+            "bad: PP=4, TP=2, DP=1, MB=64, latency=7.869589906, score_rank=9",
+            "missed: PP=8, TP=2, DP=2, MB=64, latency=2.198843034, score_rank=236"
+          ]
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "score_rank": 14,
+              "score": 1007.52,
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "score_rank": 7,
+              "score": 1013.84,
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "score_rank": 13,
+              "score": 1008.16,
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "score_rank": 1,
+              "score": 1016.36,
+              "total_latency_s": 16.61496721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 32
+              },
+              "score_rank": 2,
+              "score": 1016.32,
+              "total_latency_s": 9.24216721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+            },
+            {
+              "strategy": {
+                "pp": 2,
+                "tp": 16,
+                "dp": 1,
+                "micro_batch_num": 64
+              },
+              "score_rank": 8,
+              "score": 1011.504615,
+              "total_latency_s": 9.381758378,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward",
+              "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+            }
+          ],
+          "mutation_guidance": [
+            "Optimize the explanation/ranking behavior of score_strategy over the full database, not a single strategy path.",
+            "Increase scores for missed low-latency cases and reduce scores for bad high-score/high-latency cases."
+          ],
+          "last_evaluation_feedback": {
+            "best_program_id": "v0",
+            "ranking_quality": 199.86441802695845,
+            "spearman_score_vs_negative_latency": 0.36631342874784917,
+            "top_k_avg_latency_s": 28.52092762125,
+            "top_k_best_latency_s": 2.000179116,
+            "database_best_score_rank": 14,
+            "top_score_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1016.36,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1016.32,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 16
+                },
+                "score_rank": 3,
+                "score": 1016.24,
+                "total_latency_s": 5.55576721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb16_rs_ag"
+              }
+            ],
+            "bad_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 1,
+                "score": 1016.36,
+                "total_latency_s": 16.61496721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 2,
+                "score": 1016.32,
+                "total_latency_s": 9.24216721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 2,
+                  "tp": 16,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 8,
+                "score": 1011.504615,
+                "total_latency_s": 9.381758378,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp2_dp1_tp16_mb64_rs_ag"
+              }
+            ],
+            "missed_cases": [
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 1,
+                  "dp": 2,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 148,
+                "score": 944.397975,
+                "total_latency_s": 2.283072818,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp16_dp2_tp1_mb64_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 8,
+                  "tp": 2,
+                  "dp": 2,
+                  "micro_batch_num": 32
+                },
+                "score_rank": 120,
+                "score": 948.473846,
+                "total_latency_s": 2.341963184,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp8_dp2_tp2_mb32_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 16,
+                  "tp": 2,
+                  "dp": 1,
+                  "micro_batch_num": 64
+                },
+                "score_rank": 142,
+                "score": 945.157975,
+                "total_latency_s": 2.345143222,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "dag_id": "gpipe_pp16_dp1_tp2_mb64_naive_ar"
+              }
+            ],
+            "top_latency_cases": [
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 14,
+                "score": 1007.52,
+                "total_latency_s": 2.000179116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 16,
+                  "dp": 2,
+                  "micro_batch_num": 1
+                },
+                "score_rank": 7,
+                "score": 1013.84,
+                "total_latency_s": 2.09976721,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp2_tp16_mb1_rs_ag"
+              },
+              {
+                "strategy": {
+                  "pp": 1,
+                  "tp": 8,
+                  "dp": 4,
+                  "micro_batch_num": 2
+                },
+                "score_rank": 13,
+                "score": 1008.16,
+                "total_latency_s": 2.107699116,
+                "pp_strategy": "1f1b",
+                "dp_strategy": "reduce_scatter_allgather_after_backward",
+                "dag_id": "1f1b_pp1_dp4_tp8_mb2_rs_ag"
+              }
+            ]
+          },
+          "stable_findings": [
+            "good: PP=1, TP=8, DP=4, MB=1, latency=2.000179116, score_rank=14",
+            "good: PP=1, TP=16, DP=2, MB=1, latency=2.09976721, score_rank=7"
+          ],
+          "open_issues": [
+            "bad: PP=1, TP=16, DP=2, MB=64, latency=16.61496721, score_rank=1",
+            "bad: PP=1, TP=16, DP=2, MB=32, latency=9.24216721, score_rank=2",
+            "missed: PP=16, TP=1, DP=2, MB=64, latency=2.283072818, score_rank=148"
+          ]
+        }
+      },
+      "replacements": [],
+      "best_so_far": {
+        "strategy": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        },
+        "total_latency_s": 2.000179116
+      }
+    }
+  ],
+  "replacements": [],
+  "llm_usage": [
+    {
+      "round": 0,
+      "island": "balanced_generalist",
+      "call_type": "second_seed",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 167.284,
+      "input_chars": 7682,
+      "output_chars": 1422,
+      "input_tokens": 2415,
+      "output_tokens": 8134,
+      "total_tokens": 10549,
+      "token_source": "api",
+      "estimated_cost": 0.00812711
+    },
+    {
+      "round": 0,
+      "island": "memory_safe",
+      "call_type": "second_seed",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 109.454,
+      "input_chars": 7104,
+      "output_chars": 2352,
+      "input_tokens": 2222,
+      "output_tokens": 5082,
+      "total_tokens": 7304,
+      "token_source": "api",
+      "estimated_cost": 0.00538791
+    },
+    {
+      "round": 0,
+      "island": "pipeline_efficiency",
+      "call_type": "second_seed",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 66.986,
+      "input_chars": 7390,
+      "output_chars": 1764,
+      "input_tokens": 2343,
+      "output_tokens": 3388,
+      "total_tokens": 5731,
+      "token_source": "api",
+      "estimated_cost": 0.00396677
+    },
+    {
+      "round": 0,
+      "island": "topology_affinity",
+      "call_type": "second_seed",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 478.62,
+      "input_chars": 7448,
+      "output_chars": 1838,
+      "input_tokens": 2336,
+      "output_tokens": 29073,
+      "total_tokens": 31409,
+      "token_source": "api",
+      "estimated_cost": 0.02630967
+    },
+    {
+      "round": 1,
+      "island": "memory_safe",
+      "call_type": "score_evolution",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 158.346,
+      "input_chars": 21300,
+      "output_chars": 2634,
+      "input_tokens": 7485,
+      "output_tokens": 8494,
+      "total_tokens": 15979,
+      "token_source": "api",
+      "estimated_cost": 0.01064575
+    },
+    {
+      "round": 1,
+      "island": "topology_affinity",
+      "call_type": "score_evolution",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 205.411,
+      "input_chars": 20841,
+      "output_chars": 1761,
+      "input_tokens": 7287,
+      "output_tokens": 10409,
+      "total_tokens": 17696,
+      "token_source": "api",
+      "estimated_cost": 0.01222567
+    },
+    {
+      "round": 1,
+      "island": "balanced_generalist",
+      "call_type": "score_evolution",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 214.608,
+      "input_chars": 20723,
+      "output_chars": 1160,
+      "input_tokens": 7312,
+      "output_tokens": 10605,
+      "total_tokens": 17917,
+      "token_source": "api",
+      "estimated_cost": 0.01240707
+    },
+    {
+      "round": 1,
+      "island": "pipeline_efficiency",
+      "call_type": "score_evolution",
+      "model": "deepseek-v4-pro",
+      "status": "pass",
+      "reason": "",
+      "elapsed_s": 321.226,
+      "input_chars": 20892,
+      "output_chars": 1600,
+      "input_tokens": 7299,
+      "output_tokens": 16456,
+      "total_tokens": 23755,
+      "token_source": "api",
+      "estimated_cost": 0.01749178
+    }
+  ],
+  "llm_usage_csv": "outputs/scoreexpert_db_search_20260618_155022/llm_usage_by_round.csv",
+  "llm_usage_summary": {
+    "0": {
+      "calls": 4,
+      "failures": 0,
+      "input_tokens": 9316,
+      "output_tokens": 45677,
+      "total_tokens": 54993,
+      "elapsed_s": 822.344,
+      "estimated_cost": 0.04379146
+    },
+    "1": {
+      "calls": 4,
+      "failures": 0,
+      "input_tokens": 29383,
+      "output_tokens": 45964,
+      "total_tokens": 75347,
+      "elapsed_s": 899.591,
+      "estimated_cost": 0.052770269999999994
+    }
+  },
+  "llm_timing": [
+    {
+      "round": 0,
+      "island": "memory_safe",
+      "call_type": "second_seed",
+      "start_time": "2026-06-18T15:50:22.632",
+      "end_time": "2026-06-18T15:52:12.089",
+      "elapsed_s": 109.455,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 0,
+      "island": "topology_affinity",
+      "call_type": "second_seed",
+      "start_time": "2026-06-18T15:50:22.633",
+      "end_time": "2026-06-18T15:58:21.262",
+      "elapsed_s": 478.621,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 0,
+      "island": "pipeline_efficiency",
+      "call_type": "second_seed",
+      "start_time": "2026-06-18T15:50:22.634",
+      "end_time": "2026-06-18T15:51:29.622",
+      "elapsed_s": 66.987,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 0,
+      "island": "balanced_generalist",
+      "call_type": "second_seed",
+      "start_time": "2026-06-18T15:50:22.636",
+      "end_time": "2026-06-18T15:53:09.923",
+      "elapsed_s": 167.284,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 1,
+      "island": "memory_safe",
+      "call_type": "score_evolution",
+      "start_time": "2026-06-18T15:58:21.331",
+      "end_time": "2026-06-18T16:00:59.680",
+      "elapsed_s": 158.346,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 1,
+      "island": "topology_affinity",
+      "call_type": "score_evolution",
+      "start_time": "2026-06-18T15:58:21.331",
+      "end_time": "2026-06-18T16:01:46.746",
+      "elapsed_s": 205.411,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 1,
+      "island": "pipeline_efficiency",
+      "call_type": "score_evolution",
+      "start_time": "2026-06-18T15:58:21.332",
+      "end_time": "2026-06-18T16:03:42.564",
+      "elapsed_s": 321.226,
+      "status": "pass",
+      "reason": ""
+    },
+    {
+      "round": 1,
+      "island": "balanced_generalist",
+      "call_type": "score_evolution",
+      "start_time": "2026-06-18T15:58:21.333",
+      "end_time": "2026-06-18T16:01:55.946",
+      "elapsed_s": 214.609,
+      "status": "pass",
+      "reason": ""
+    }
+  ],
+  "llm_timing_csv": "outputs/scoreexpert_db_search_20260618_155022/island_api_timing.csv",
+  "report_md": "outputs/scoreexpert_db_search_20260618_155022/scoreexpert_db_search_report.md"
+}

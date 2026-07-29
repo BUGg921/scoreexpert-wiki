@@ -1,0 +1,9 @@
+round,island,call_type,model,status,reason,elapsed_s,input_tokens,output_tokens,total_tokens,token_source,estimated_cost,input_chars,output_chars
+0,balanced_generalist,second_seed,deepseek-v4-pro,pass,,93.604,2415,7420,9835,api,0.00750593,7682,1210
+0,memory_safe,second_seed,deepseek-v4-pro,pass,,88.969,2222,6719,8941,api,0.0068121,7104,1921
+0,pipeline_efficiency,second_seed,deepseek-v4-pro,pass,,100.504,2343,7480,9823,api,0.0075268,7390,2124
+0,topology_affinity,second_seed,deepseek-v4-pro,pass,,122.037,2336,9829,12165,api,0.00956739,7448,1214
+1,memory_safe,score_evolution,deepseek-v4-pro,pass,,90.831,7408,7293,14701,api,0.00956739,20849,2175
+1,balanced_generalist,score_evolution,deepseek-v4-pro,pass,,102.363,7263,7809,15072,api,0.00995323,20517,1001
+1,topology_affinity,score_evolution,deepseek-v4-pro,pass,,130.585,7115,10094,17209,api,0.01187681,20158,1859
+1,pipeline_efficiency,score_evolution,deepseek-v4-pro,pass,,197.049,7435,15794,23229,api,0.016975,21241,1777

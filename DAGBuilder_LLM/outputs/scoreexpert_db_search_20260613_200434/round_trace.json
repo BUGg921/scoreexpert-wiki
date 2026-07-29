@@ -1,0 +1,2314 @@
+{
+  "status": "pass",
+  "run_root": "outputs/scoreexpert_db_search_20260613_200434",
+  "database": "EVALUATION_DATABASE.md",
+  "database_entries": 322,
+  "database_best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 4,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 2.000179116,
+    "pp_strategy": "1f1b",
+    "dp_strategy": "reduce_scatter_allgather_after_backward"
+  },
+  "deepseek_enabled": false,
+  "seed_results": [
+    {
+      "island": "memory_safe",
+      "status": "continued",
+      "program_id": null,
+      "program_count": 15,
+      "reason": "reset skipped; using current active program bank"
+    },
+    {
+      "island": "topology_affinity",
+      "status": "continued",
+      "program_id": null,
+      "program_count": 20,
+      "reason": "reset skipped; using current active program bank"
+    },
+    {
+      "island": "pipeline_efficiency",
+      "status": "continued",
+      "program_id": null,
+      "program_count": 20,
+      "reason": "reset skipped; using current active program bank"
+    },
+    {
+      "island": "balanced_generalist",
+      "status": "continued",
+      "program_id": null,
+      "program_count": 14,
+      "reason": "reset skipped; using current active program bank"
+    }
+  ],
+  "max_rounds": 2,
+  "stop_on_target_gap": false,
+  "stop_on_patience": false,
+  "rounds_run": 2,
+  "stop_reason": "max_rounds",
+  "best": {
+    "strategy": {
+      "pp": 1,
+      "tp": 8,
+      "dp": 1,
+      "micro_batch_num": 1
+    },
+    "total_latency_s": 7.537446331,
+    "pp_strategy": "gpipe",
+    "dp_strategy": "naive_allreduce_after_backward"
+  },
+  "latency_chart": "outputs/scoreexpert_db_search_20260613_200434/latency_trend.png",
+  "score_chart": "outputs/scoreexpert_db_search_20260613_200434/score_trend.png",
+  "replacement_chart": "outputs/scoreexpert_db_search_20260613_200434/island_replacement_events.png",
+  "rounds": [
+    {
+      "round": 1,
+      "strategy": {
+        "pp": 1,
+        "tp": 1,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "scores": {
+        "memory_safe": {
+          "scores": [
+            {
+              "program_id": "v9",
+              "score": 1189.75
+            },
+            {
+              "program_id": "v10",
+              "score": 1321.4375
+            },
+            {
+              "program_id": "v0",
+              "score": 1025.0
+            },
+            {
+              "program_id": "v7",
+              "score": 1071.875
+            },
+            {
+              "program_id": "v1",
+              "score": 1013.975
+            },
+            {
+              "program_id": "v4",
+              "score": 1069.875
+            },
+            {
+              "program_id": "v5",
+              "score": 1013.975
+            },
+            {
+              "program_id": "v12",
+              "score": 1104.6503125
+            },
+            {
+              "program_id": "v3",
+              "score": 1039.9375
+            },
+            {
+              "program_id": "v8",
+              "score": 1104.7503124999998
+            },
+            {
+              "program_id": "v6",
+              "score": 1037.9375
+            },
+            {
+              "program_id": "v2",
+              "score": 1018.975
+            },
+            {
+              "program_id": "v13",
+              "score": 1261.12578125
+            },
+            {
+              "program_id": "v11",
+              "score": 1104.1503125
+            },
+            {
+              "program_id": "v14",
+              "score": 1420.013828125
+            }
+          ],
+          "best_program_id": "v14",
+          "best_score": 1420.013828125
+        },
+        "topology_affinity": {
+          "scores": [
+            {
+              "program_id": "v34",
+              "score": 825.0
+            },
+            {
+              "program_id": "v32",
+              "score": 895.0
+            },
+            {
+              "program_id": "v29",
+              "score": 1001.25
+            },
+            {
+              "program_id": "v14",
+              "score": 720.0
+            },
+            {
+              "program_id": "v30",
+              "score": 893.0
+            },
+            {
+              "program_id": "v23",
+              "score": 1013.0
+            },
+            {
+              "program_id": "v3",
+              "score": 1010.0
+            },
+            {
+              "program_id": "v9",
+              "score": 1017.5
+            },
+            {
+              "program_id": "v15",
+              "score": 1015.0
+            },
+            {
+              "program_id": "v25",
+              "score": 1065.0
+            },
+            {
+              "program_id": "v4",
+              "score": 1025.0
+            },
+            {
+              "program_id": "v10",
+              "score": 1015.0
+            },
+            {
+              "program_id": "v11",
+              "score": 1020.0
+            },
+            {
+              "program_id": "v0",
+              "score": 1000.2
+            },
+            {
+              "program_id": "v1",
+              "score": 995.0
+            },
+            {
+              "program_id": "v6",
+              "score": 1010.0
+            },
+            {
+              "program_id": "v8",
+              "score": 1010.0
+            },
+            {
+              "program_id": "v16",
+              "score": 1010.0
+            },
+            {
+              "program_id": "v5",
+              "score": -1.375
+            },
+            {
+              "program_id": "v36",
+              "score": 1020.0
+            }
+          ],
+          "best_program_id": "v25",
+          "best_score": 1065.0
+        },
+        "pipeline_efficiency": {
+          "scores": [
+            {
+              "program_id": "v25",
+              "score": 1095.0
+            },
+            {
+              "program_id": "v29",
+              "score": -14406.0
+            },
+            {
+              "program_id": "v18",
+              "score": 1354.0
+            },
+            {
+              "program_id": "v14",
+              "score": 1103.0
+            },
+            {
+              "program_id": "v7",
+              "score": 1050.5
+            },
+            {
+              "program_id": "v17",
+              "score": 1012.0
+            },
+            {
+              "program_id": "v23",
+              "score": 681.2
+            },
+            {
+              "program_id": "v10",
+              "score": 1083.0
+            },
+            {
+              "program_id": "v6",
+              "score": -99000.0
+            },
+            {
+              "program_id": "v3",
+              "score": 1000.0
+            },
+            {
+              "program_id": "v1",
+              "score": 1000.9
+            },
+            {
+              "program_id": "v0",
+              "score": 1001.0999999999999
+            },
+            {
+              "program_id": "v12",
+              "score": 1007.0
+            },
+            {
+              "program_id": "v11",
+              "score": 1004.0
+            },
+            {
+              "program_id": "v2",
+              "score": -98999.8
+            },
+            {
+              "program_id": "v5",
+              "score": -99000.0
+            },
+            {
+              "program_id": "v32",
+              "score": 986.0
+            },
+            {
+              "program_id": "v4",
+              "score": -98986.6
+            },
+            {
+              "program_id": "v20",
+              "score": 714.3
+            },
+            {
+              "program_id": "v35",
+              "score": 1123.0
+            }
+          ],
+          "best_program_id": "v18",
+          "best_score": 1354.0
+        },
+        "balanced_generalist": {
+          "scores": [
+            {
+              "program_id": "v7",
+              "score": -1735.0
+            },
+            {
+              "program_id": "v1",
+              "score": -1915.0
+            },
+            {
+              "program_id": "v0",
+              "score": 1001.0999999999999
+            },
+            {
+              "program_id": "v2",
+              "score": -1602.0
+            },
+            {
+              "program_id": "v11",
+              "score": -4480.0
+            },
+            {
+              "program_id": "v4",
+              "score": -1775.05
+            },
+            {
+              "program_id": "v6",
+              "score": -1620.0
+            },
+            {
+              "program_id": "v3",
+              "score": -1930.5
+            },
+            {
+              "program_id": "v9",
+              "score": -1537.0
+            },
+            {
+              "program_id": "v10",
+              "score": -2030.0
+            },
+            {
+              "program_id": "v12",
+              "score": -1767.0
+            },
+            {
+              "program_id": "v5",
+              "score": -1620.0
+            },
+            {
+              "program_id": "v8",
+              "score": -1445.0
+            },
+            {
+              "program_id": "v13",
+              "score": -5209.0
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 1001.0999999999999
+        }
+      },
+      "evaluation": {
+        "status": "invalid",
+        "reason": "strategy_not_found_in_database",
+        "total_latency_s": null
+      },
+      "evaluation_feedback": {
+        "strategy": {
+          "pp": 1,
+          "tp": 1,
+          "dp": 1,
+          "micro_batch_num": 1
+        },
+        "evaluation_status": "invalid",
+        "failure_reason": "strategy_not_found_in_database",
+        "total_latency_s": null,
+        "baseline_latency_s": null,
+        "pp_strategy": null,
+        "dp_strategy": null,
+        "rulecheck": null,
+        "dag_id": null,
+        "database_global_best": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward"
+        },
+        "best_found_so_far": null,
+        "island_scores": {
+          "memory_safe": {
+            "best_program_id": "v14",
+            "best_score": 1420.013828125
+          },
+          "topology_affinity": {
+            "best_program_id": "v25",
+            "best_score": 1065.0
+          },
+          "pipeline_efficiency": {
+            "best_program_id": "v18",
+            "best_score": 1354.0
+          },
+          "balanced_generalist": {
+            "best_program_id": "v0",
+            "best_score": 1001.0999999999999
+          }
+        },
+        "score_latency_alignment": {
+          "interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."
+        }
+      },
+      "latency": null,
+      "adjustment": {
+        "type": "repair_illegal",
+        "changed": "tp",
+        "reason": "strategy_not_found_in_database",
+        "target": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 1,
+          "micro_batch_num": 1
+        }
+      },
+      "next_strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "topology_affinity",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.",
+            "Invalid strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 1, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"invalid\", \"failure_reason\": \"strategy_not_found_in_database\", \"total_latency_s\": null, \"baseline_latency_s\": null, \"pp_strategy\": null, \"dp_strategy\": null, \"rulecheck\": null, \"dag_id\": null, \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": null, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v14\", \"best_score\": 1420.013828125}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1065.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1354.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1001.0999999999999}}, \"score_latency_alignment\": {\"interpretation\": \"This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 1,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "invalid",
+            "failure_reason": "strategy_not_found_in_database",
+            "total_latency_s": null,
+            "baseline_latency_s": null,
+            "pp_strategy": null,
+            "dp_strategy": null,
+            "rulecheck": null,
+            "dag_id": null,
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": null,
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v14",
+                "best_score": 1420.013828125
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1065.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1354.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1001.0999999999999
+              }
+            },
+            "score_latency_alignment": {
+              "interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."
+            }
+          }
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.",
+            "Invalid strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 1, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"invalid\", \"failure_reason\": \"strategy_not_found_in_database\", \"total_latency_s\": null, \"baseline_latency_s\": null, \"pp_strategy\": null, \"dp_strategy\": null, \"rulecheck\": null, \"dag_id\": null, \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": null, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v14\", \"best_score\": 1420.013828125}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1065.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1354.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1001.0999999999999}}, \"score_latency_alignment\": {\"interpretation\": \"This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 1,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "invalid",
+            "failure_reason": "strategy_not_found_in_database",
+            "total_latency_s": null,
+            "baseline_latency_s": null,
+            "pp_strategy": null,
+            "dp_strategy": null,
+            "rulecheck": null,
+            "dag_id": null,
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": null,
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v14",
+                "best_score": 1420.013828125
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1065.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1354.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1001.0999999999999
+              }
+            },
+            "score_latency_alignment": {
+              "interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."
+            }
+          }
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.",
+            "Invalid strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 1, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"invalid\", \"failure_reason\": \"strategy_not_found_in_database\", \"total_latency_s\": null, \"baseline_latency_s\": null, \"pp_strategy\": null, \"dp_strategy\": null, \"rulecheck\": null, \"dag_id\": null, \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": null, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v14\", \"best_score\": 1420.013828125}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1065.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1354.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1001.0999999999999}}, \"score_latency_alignment\": {\"interpretation\": \"This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 1,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "invalid",
+            "failure_reason": "strategy_not_found_in_database",
+            "total_latency_s": null,
+            "baseline_latency_s": null,
+            "pp_strategy": null,
+            "dp_strategy": null,
+            "rulecheck": null,
+            "dag_id": null,
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": null,
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v14",
+                "best_score": 1420.013828125
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1065.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1354.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1001.0999999999999
+              }
+            },
+            "score_latency_alignment": {
+              "interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."
+            }
+          }
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.33016721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Avoid scoring invalid or database-missing strategy shapes too highly, but keep one-parameter repairs visible.",
+            "Invalid strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 1, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"invalid\", \"failure_reason\": \"strategy_not_found_in_database\", \"total_latency_s\": null, \"baseline_latency_s\": null, \"pp_strategy\": null, \"dp_strategy\": null, \"rulecheck\": null, \"dag_id\": null, \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": null, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v14\", \"best_score\": 1420.013828125}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1065.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1354.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1001.0999999999999}}, \"score_latency_alignment\": {\"interpretation\": \"This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 1,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "invalid",
+            "failure_reason": "strategy_not_found_in_database",
+            "total_latency_s": null,
+            "baseline_latency_s": null,
+            "pp_strategy": null,
+            "dp_strategy": null,
+            "rulecheck": null,
+            "dag_id": null,
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": null,
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v14",
+                "best_score": 1420.013828125
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1065.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1354.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1001.0999999999999
+              }
+            },
+            "score_latency_alignment": {
+              "interpretation": "This strategy is illegal or missing in the database; reduce score for nearby shapes unless one parameter repair makes it valid."
+            }
+          }
+        }
+      },
+      "replacements": [],
+      "best_so_far": null
+    },
+    {
+      "round": 2,
+      "strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 1,
+        "micro_batch_num": 1
+      },
+      "scores": {
+        "memory_safe": {
+          "scores": [
+            {
+              "program_id": "v9",
+              "score": 1561.84375
+            },
+            {
+              "program_id": "v10",
+              "score": 1405.65625
+            },
+            {
+              "program_id": "v0",
+              "score": 1095.0
+            },
+            {
+              "program_id": "v7",
+              "score": 1082.921875
+            },
+            {
+              "program_id": "v1",
+              "score": 1013.975
+            },
+            {
+              "program_id": "v4",
+              "score": 1080.921875
+            },
+            {
+              "program_id": "v5",
+              "score": 1016.1625
+            },
+            {
+              "program_id": "v12",
+              "score": 1151.9669970703126
+            },
+            {
+              "program_id": "v3",
+              "score": 1045.4609375
+            },
+            {
+              "program_id": "v8",
+              "score": 1152.7669970703125
+            },
+            {
+              "program_id": "v6",
+              "score": 1064.40625
+            },
+            {
+              "program_id": "v2",
+              "score": 1021.184375
+            },
+            {
+              "program_id": "v13",
+              "score": 1358.4174926757812
+            },
+            {
+              "program_id": "v11",
+              "score": 1161.613203125
+            },
+            {
+              "program_id": "v14",
+              "score": 1561.609737548828
+            }
+          ],
+          "best_program_id": "v9",
+          "best_score": 1561.84375
+        },
+        "topology_affinity": {
+          "scores": [
+            {
+              "program_id": "v34",
+              "score": 1140.0
+            },
+            {
+              "program_id": "v32",
+              "score": 1280.0
+            },
+            {
+              "program_id": "v29",
+              "score": 1080.0
+            },
+            {
+              "program_id": "v14",
+              "score": 930.0
+            },
+            {
+              "program_id": "v30",
+              "score": 1264.0
+            },
+            {
+              "program_id": "v23",
+              "score": 1104.0
+            },
+            {
+              "program_id": "v3",
+              "score": 1080.0
+            },
+            {
+              "program_id": "v9",
+              "score": 1105.0
+            },
+            {
+              "program_id": "v15",
+              "score": 1120.0
+            },
+            {
+              "program_id": "v25",
+              "score": 1310.0
+            },
+            {
+              "program_id": "v4",
+              "score": 1095.0
+            },
+            {
+              "program_id": "v10",
+              "score": 1120.0
+            },
+            {
+              "program_id": "v11",
+              "score": 1090.0
+            },
+            {
+              "program_id": "v0",
+              "score": 1000.2
+            },
+            {
+              "program_id": "v1",
+              "score": 995.0
+            },
+            {
+              "program_id": "v6",
+              "score": 1080.0
+            },
+            {
+              "program_id": "v8",
+              "score": 1080.0
+            },
+            {
+              "program_id": "v16",
+              "score": 1080.0
+            },
+            {
+              "program_id": "v5",
+              "score": 3.0
+            },
+            {
+              "program_id": "v36",
+              "score": 1020.0
+            }
+          ],
+          "best_program_id": "v25",
+          "best_score": 1310.0
+        },
+        "pipeline_efficiency": {
+          "scores": [
+            {
+              "program_id": "v25",
+              "score": 1182.5
+            },
+            {
+              "program_id": "v29",
+              "score": -10837.75
+            },
+            {
+              "program_id": "v18",
+              "score": 1361.0
+            },
+            {
+              "program_id": "v14",
+              "score": 1115.0
+            },
+            {
+              "program_id": "v7",
+              "score": 215.25
+            },
+            {
+              "program_id": "v17",
+              "score": 696.0
+            },
+            {
+              "program_id": "v23",
+              "score": 671.95
+            },
+            {
+              "program_id": "v10",
+              "score": 1085.0
+            },
+            {
+              "program_id": "v6",
+              "score": -99000.0
+            },
+            {
+              "program_id": "v3",
+              "score": 200.0
+            },
+            {
+              "program_id": "v1",
+              "score": 1004.4
+            },
+            {
+              "program_id": "v0",
+              "score": 1003.1999999999999
+            },
+            {
+              "program_id": "v12",
+              "score": 207.0
+            },
+            {
+              "program_id": "v11",
+              "score": 204.0
+            },
+            {
+              "program_id": "v2",
+              "score": -98998.4
+            },
+            {
+              "program_id": "v5",
+              "score": -99000.0
+            },
+            {
+              "program_id": "v32",
+              "score": 1077.0
+            },
+            {
+              "program_id": "v4",
+              "score": -98978.2
+            },
+            {
+              "program_id": "v20",
+              "score": 723.4
+            },
+            {
+              "program_id": "v35",
+              "score": 1304.0
+            }
+          ],
+          "best_program_id": "v18",
+          "best_score": 1361.0
+        },
+        "balanced_generalist": {
+          "scores": [
+            {
+              "program_id": "v7",
+              "score": -1525.0
+            },
+            {
+              "program_id": "v1",
+              "score": -1705.0
+            },
+            {
+              "program_id": "v0",
+              "score": 1003.1999999999999
+            },
+            {
+              "program_id": "v2",
+              "score": -1443.625
+            },
+            {
+              "program_id": "v11",
+              "score": -2030.0
+            },
+            {
+              "program_id": "v4",
+              "score": -1581.675
+            },
+            {
+              "program_id": "v6",
+              "score": -1480.0
+            },
+            {
+              "program_id": "v3",
+              "score": -1720.5
+            },
+            {
+              "program_id": "v9",
+              "score": -1383.0
+            },
+            {
+              "program_id": "v10",
+              "score": -1865.0
+            },
+            {
+              "program_id": "v12",
+              "score": -1606.0
+            },
+            {
+              "program_id": "v5",
+              "score": -1480.0
+            },
+            {
+              "program_id": "v8",
+              "score": -1340.0
+            },
+            {
+              "program_id": "v13",
+              "score": -1639.0
+            }
+          ],
+          "best_program_id": "v0",
+          "best_score": 1003.1999999999999
+        }
+      },
+      "evaluation": {
+        "strategy": [
+          1,
+          8,
+          1,
+          1
+        ],
+        "status": "pass",
+        "total_latency_s": 7.537446331,
+        "baseline_latency_s": 7.537446331,
+        "pp_strategy": "gpipe",
+        "dp_strategy": "naive_allreduce_after_backward",
+        "overlap_ratio": "0.000000%",
+        "events": 0,
+        "rulecheck": "pass",
+        "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+      },
+      "evaluation_feedback": {
+        "strategy": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 1,
+          "micro_batch_num": 1
+        },
+        "evaluation_status": "pass",
+        "failure_reason": null,
+        "total_latency_s": 7.537446331,
+        "baseline_latency_s": 7.537446331,
+        "pp_strategy": "gpipe",
+        "dp_strategy": "naive_allreduce_after_backward",
+        "rulecheck": "pass",
+        "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar",
+        "database_global_best": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 4,
+            "micro_batch_num": 1
+          },
+          "total_latency_s": 2.000179116,
+          "pp_strategy": "1f1b",
+          "dp_strategy": "reduce_scatter_allgather_after_backward"
+        },
+        "best_found_so_far": {
+          "strategy": {
+            "pp": 1,
+            "tp": 8,
+            "dp": 1,
+            "micro_batch_num": 1
+          },
+          "total_latency_s": 7.537446331,
+          "pp_strategy": "gpipe",
+          "dp_strategy": "naive_allreduce_after_backward"
+        },
+        "island_scores": {
+          "memory_safe": {
+            "best_program_id": "v9",
+            "best_score": 1561.84375
+          },
+          "topology_affinity": {
+            "best_program_id": "v25",
+            "best_score": 1310.0
+          },
+          "pipeline_efficiency": {
+            "best_program_id": "v18",
+            "best_score": 1361.0
+          },
+          "balanced_generalist": {
+            "best_program_id": "v0",
+            "best_score": 1003.1999999999999
+          }
+        },
+        "gap_to_database_best": 2.7683856764155914,
+        "score_latency_alignment": {
+          "highest_score_island": "memory_safe",
+          "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."
+        }
+      },
+      "latency": 7.537446331,
+      "adjustment": {
+        "type": "latency_guided",
+        "changed": "dp",
+        "target": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        },
+        "next": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 4,
+          "micro_batch_num": 1
+        }
+      },
+      "next_strategy": {
+        "pp": 1,
+        "tp": 8,
+        "dp": 4,
+        "micro_batch_num": 1
+      },
+      "evolution": [
+        {
+          "island": "memory_safe",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "topology_affinity",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "pipeline_efficiency",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        },
+        {
+          "island": "balanced_generalist",
+          "status": "skipped",
+          "reason": "DEEPSEEK_API_KEY is not set"
+        }
+      ],
+      "adaptive_context": {
+        "memory_safe": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1561.84375
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.",
+            "Current strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"pass\", \"failure_reason\": null, \"total_latency_s\": 7.537446331, \"baseline_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\", \"rulecheck\": \"pass\", \"dag_id\": \"gpipe_pp1_dp1_tp8_mb1_naive_ar\", \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"total_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\"}, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v9\", \"best_score\": 1561.84375}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1310.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1361.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1003.1999999999999}}, \"gap_to_database_best\": 2.7683856764155914, \"score_latency_alignment\": {\"highest_score_island\": \"memory_safe\", \"interpretation\": \"Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 8,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "pass",
+            "failure_reason": null,
+            "total_latency_s": 7.537446331,
+            "baseline_latency_s": 7.537446331,
+            "pp_strategy": "gpipe",
+            "dp_strategy": "naive_allreduce_after_backward",
+            "rulecheck": "pass",
+            "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar",
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 7.537446331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward"
+            },
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v9",
+                "best_score": 1561.84375
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1310.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1361.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1003.1999999999999
+              }
+            },
+            "gap_to_database_best": 2.7683856764155914,
+            "score_latency_alignment": {
+              "highest_score_island": "memory_safe",
+              "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."
+            }
+          }
+        },
+        "topology_affinity": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1310.0
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.",
+            "Current strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"pass\", \"failure_reason\": null, \"total_latency_s\": 7.537446331, \"baseline_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\", \"rulecheck\": \"pass\", \"dag_id\": \"gpipe_pp1_dp1_tp8_mb1_naive_ar\", \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"total_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\"}, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v9\", \"best_score\": 1561.84375}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1310.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1361.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1003.1999999999999}}, \"gap_to_database_best\": 2.7683856764155914, \"score_latency_alignment\": {\"highest_score_island\": \"memory_safe\", \"interpretation\": \"Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 8,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "pass",
+            "failure_reason": null,
+            "total_latency_s": 7.537446331,
+            "baseline_latency_s": 7.537446331,
+            "pp_strategy": "gpipe",
+            "dp_strategy": "naive_allreduce_after_backward",
+            "rulecheck": "pass",
+            "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar",
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 7.537446331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward"
+            },
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v9",
+                "best_score": 1561.84375
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1310.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1361.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1003.1999999999999
+              }
+            },
+            "gap_to_database_best": 2.7683856764155914,
+            "score_latency_alignment": {
+              "highest_score_island": "memory_safe",
+              "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."
+            }
+          }
+        },
+        "pipeline_efficiency": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1361.0
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.",
+            "Current strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"pass\", \"failure_reason\": null, \"total_latency_s\": 7.537446331, \"baseline_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\", \"rulecheck\": \"pass\", \"dag_id\": \"gpipe_pp1_dp1_tp8_mb1_naive_ar\", \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"total_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\"}, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v9\", \"best_score\": 1561.84375}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1310.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1361.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1003.1999999999999}}, \"gap_to_database_best\": 2.7683856764155914, \"score_latency_alignment\": {\"highest_score_island\": \"memory_safe\", \"interpretation\": \"Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 8,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "pass",
+            "failure_reason": null,
+            "total_latency_s": 7.537446331,
+            "baseline_latency_s": 7.537446331,
+            "pp_strategy": "gpipe",
+            "dp_strategy": "naive_allreduce_after_backward",
+            "rulecheck": "pass",
+            "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar",
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 7.537446331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward"
+            },
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v9",
+                "best_score": 1561.84375
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1310.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1361.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1003.1999999999999
+              }
+            },
+            "gap_to_database_best": 2.7683856764155914,
+            "score_latency_alignment": {
+              "highest_score_island": "memory_safe",
+              "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."
+            }
+          }
+        },
+        "balanced_generalist": {
+          "good_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "strategy": [
+                  1,
+                  8,
+                  1,
+                  1
+                ],
+                "status": "pass",
+                "total_latency_s": 7.537446331,
+                "baseline_latency_s": 7.537446331,
+                "pp_strategy": "gpipe",
+                "dp_strategy": "naive_allreduce_after_backward",
+                "overlap_ratio": "0.000000%",
+                "events": 0,
+                "rulecheck": "pass",
+                "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar"
+              },
+              "score": 1003.1999999999999
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 16,
+                "dp": 2,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.09976721,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 2
+              },
+              "total_latency_s": 2.107699116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 8,
+                "tp": 2,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.198843034,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 4,
+                "tp": 2,
+                "dp": 4,
+                "micro_batch_num": 32
+              },
+              "total_latency_s": 2.264867954,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 16,
+                "tp": 1,
+                "dp": 2,
+                "micro_batch_num": 64
+              },
+              "total_latency_s": 2.283072818,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 4
+              },
+              "total_latency_s": 2.322739116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            }
+          ],
+          "bad_patterns": [
+            {
+              "strategy": {
+                "pp": 1,
+                "tp": 1,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "evaluation": {
+                "status": "invalid",
+                "reason": "strategy_not_found_in_database",
+                "total_latency_s": null
+              }
+            }
+          ],
+          "mutation_guidance": [
+            "Use database total_latency_s as the direct feedback signal; score should become a better explanation of why latency is low.",
+            "Current strategy feedback: {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"evaluation_status\": \"pass\", \"failure_reason\": null, \"total_latency_s\": 7.537446331, \"baseline_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\", \"rulecheck\": \"pass\", \"dag_id\": \"gpipe_pp1_dp1_tp8_mb1_naive_ar\", \"database_global_best\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 4, \"micro_batch_num\": 1}, \"total_latency_s\": 2.000179116, \"pp_strategy\": \"1f1b\", \"dp_strategy\": \"reduce_scatter_allgather_after_backward\"}, \"best_found_so_far\": {\"strategy\": {\"pp\": 1, \"tp\": 8, \"dp\": 1, \"micro_batch_num\": 1}, \"total_latency_s\": 7.537446331, \"pp_strategy\": \"gpipe\", \"dp_strategy\": \"naive_allreduce_after_backward\"}, \"island_scores\": {\"memory_safe\": {\"best_program_id\": \"v9\", \"best_score\": 1561.84375}, \"topology_affinity\": {\"best_program_id\": \"v25\", \"best_score\": 1310.0}, \"pipeline_efficiency\": {\"best_program_id\": \"v18\", \"best_score\": 1361.0}, \"balanced_generalist\": {\"best_program_id\": \"v0\", \"best_score\": 1003.1999999999999}}, \"gap_to_database_best\": 2.7683856764155914, \"score_latency_alignment\": {\"highest_score_island\": \"memory_safe\", \"interpretation\": \"Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes.\"}}"
+          ],
+          "last_evaluation_feedback": {
+            "strategy": {
+              "pp": 1,
+              "tp": 8,
+              "dp": 1,
+              "micro_batch_num": 1
+            },
+            "evaluation_status": "pass",
+            "failure_reason": null,
+            "total_latency_s": 7.537446331,
+            "baseline_latency_s": 7.537446331,
+            "pp_strategy": "gpipe",
+            "dp_strategy": "naive_allreduce_after_backward",
+            "rulecheck": "pass",
+            "dag_id": "gpipe_pp1_dp1_tp8_mb1_naive_ar",
+            "database_global_best": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 4,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 2.000179116,
+              "pp_strategy": "1f1b",
+              "dp_strategy": "reduce_scatter_allgather_after_backward"
+            },
+            "best_found_so_far": {
+              "strategy": {
+                "pp": 1,
+                "tp": 8,
+                "dp": 1,
+                "micro_batch_num": 1
+              },
+              "total_latency_s": 7.537446331,
+              "pp_strategy": "gpipe",
+              "dp_strategy": "naive_allreduce_after_backward"
+            },
+            "island_scores": {
+              "memory_safe": {
+                "best_program_id": "v9",
+                "best_score": 1561.84375
+              },
+              "topology_affinity": {
+                "best_program_id": "v25",
+                "best_score": 1310.0
+              },
+              "pipeline_efficiency": {
+                "best_program_id": "v18",
+                "best_score": 1361.0
+              },
+              "balanced_generalist": {
+                "best_program_id": "v0",
+                "best_score": 1003.1999999999999
+              }
+            },
+            "gap_to_database_best": 2.7683856764155914,
+            "score_latency_alignment": {
+              "highest_score_island": "memory_safe",
+              "interpretation": "Use this as direct supervision: high score should increasingly mean low total_latency_s for similar strategy shapes."
+            }
+          }
+        }
+      },
+      "replacements": [],
+      "best_so_far": {
+        "strategy": {
+          "pp": 1,
+          "tp": 8,
+          "dp": 1,
+          "micro_batch_num": 1
+        },
+        "total_latency_s": 7.537446331
+      }
+    }
+  ],
+  "replacements": [],
+  "report_md": "outputs/scoreexpert_db_search_20260613_200434/scoreexpert_db_search_report.md"
+}

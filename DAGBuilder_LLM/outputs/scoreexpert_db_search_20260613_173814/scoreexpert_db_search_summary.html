@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScoreExpert DB Search — 实验结果总结报告</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d2991d;
+    --purple: #a371f7;
+    --cyan: #39d353;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.75rem; color: #f0f6fc; margin-bottom: 0.25rem; }
+  h2 {
+    font-size: 1.25rem; color: #f0f6fc; margin: 2rem 0 0.75rem;
+    padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.05rem; color: #e6edf3; margin: 1.25rem 0 0.5rem; }
+
+  .meta-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .meta-item { }
+  .meta-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-value { font-size: 0.95rem; font-weight: 600; }
+  .badge {
+    display: inline-block; padding: 0.15em 0.55em; border-radius: 12px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .badge-pass  { background: #1b3a1b; color: var(--green); }
+  .badge-fail  { background: #3a1b1b; color: var(--red); }
+  .badge-warn  { background: #3a2e0a; color: var(--yellow); }
+  .badge-info  { background: #1b2a3a; color: var(--accent); }
+
+  .hero-strategy {
+    background: linear-gradient(135deg, #1a2332 0%, #0f1922 100%);
+    border: 1px solid var(--accent); border-radius: 10px;
+    padding: 1.5rem; text-align: center; margin: 1.5rem 0;
+  }
+  .hero-strategy .latency { font-size: 2.5rem; font-weight: 800; color: var(--cyan); font-variant-numeric: tabular-nums; }
+  .hero-strategy .params { font-size: 1.1rem; color: var(--text); margin: 0.5rem 0; }
+  .hero-strategy .detail { font-size: 0.85rem; color: var(--muted); }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem;
+    font-size: 0.9rem;
+  }
+  th, td {
+    padding: 0.5rem 0.75rem; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+  tr:hover { background: rgba(88,166,255,0.04); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .round-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .round-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .round-num { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
+  .round-status { font-size: 0.75rem; }
+
+  .evolution-chain {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+    margin: 0.5rem 0; font-size: 0.85rem;
+  }
+  .evo-node {
+    background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2);
+    border-radius: 4px; padding: 0.15em 0.5em; font-weight: 600;
+  }
+  .evo-arrow { color: var(--muted); }
+
+  .guidance {
+    background: rgba(163,113,247,0.08); border-left: 3px solid var(--purple);
+    border-radius: 0 4px 4px 0; padding: 0.5rem 0.75rem; margin: 0.5rem 0;
+    font-size: 0.85rem; color: var(--muted);
+    font-style: italic;
+  }
+
+  .footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+  .chart-placeholder {
+    background: var(--surface); border: 1px dashed var(--border);
+    border-radius: 8px; padding: 1rem; margin: 1rem 0;
+    text-align: center; color: var(--muted); font-size: 0.85rem;
+  }
+  .chart-placeholder strong { color: var(--accent); }
+
+  .score-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ScoreExpert DB Search — 实验总结报告</h1>
+<p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">
+  运行时间: <strong>2026-06-13 17:38:14</strong> &nbsp;|&nbsp;
+  运行目录: <code style="color:var(--accent)">scoreexpert_db_search_20260613_173814</code>
+</p>
+
+<!-- ── 概览卡片 ── -->
+<div class="meta-card">
+  <h3 style="margin-top:0;">运行概览</h3>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">最终状态</div>
+      <div class="meta-value"><span class="badge badge-pass">PASS</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">停止原因</div>
+      <div class="meta-value">target_gap_reached</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">搜索轮次</div>
+      <div class="meta-value">3 / 100</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">数据库条目</div>
+      <div class="meta-value">322</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">DeepSeek 增强</div>
+      <div class="meta-value"><span class="badge badge-info">Enabled</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Seed 初始化</div>
+      <div class="meta-value">4/4 <span class="badge badge-pass">passed</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 最优策略 ── -->
+<div class="hero-strategy">
+  <div style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">🏆 全局最优策略</div>
+  <div class="latency">2.000s</div>
+  <div class="params">
+    <strong>PP=1</strong> &nbsp;·&nbsp; <strong>TP=8</strong> &nbsp;·&nbsp; <strong>DP=4</strong> &nbsp;·&nbsp; <strong>MicroBatch=1</strong>
+  </div>
+  <div class="detail">
+    Pipeline: <code>1f1b</code>&ensp;|&ensp;
+    Data Parallel: <code>reduce_scatter_allgather_after_backward</code>&ensp;|&ensp;
+    Overlap: <span style="color:var(--cyan)">1.04%</span>&ensp;|&ensp;
+    Events: 2&ensp;|&ensp;
+    DAG: <code style="font-size:0.8rem;">1f1b_pp1_dp4_tp8_mb1_rs_ag</code>
+  </div>
+  <div style="margin-top:0.6rem; font-size:0.8rem; color:var(--muted);">
+    vs Baseline <strong>2.021s</strong> (提升 1.05%)
+  </div>
+</div>
+
+<!-- ── 搜索轨迹 ── -->
+<h2>搜索轨迹</h2>
+
+<!-- Round 1 -->
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 1</span>
+    <span class="badge badge-fail">INVALID</span>
+    <span style="font-size:0.85rem; color:var(--muted);">→ 非法策略修复</span>
+  </div>
+  <table style="margin-bottom:0.5rem;">
+    <tr><th>候选策略</th><td><code>{pp:1, tp:1, dp:1, mb:1}</code></td></tr>
+    <tr><th>评估结果</th><td style="color:var(--red);">策略不在数据库中 (strategy_not_found_in_database)</td></tr>
+    <tr><th>延迟</th><td>—</td></tr>
+    <tr><th>调整类型</th><td><span class="badge badge-warn">repair_illegal</span> · 修正 tp: 1→8</td></tr>
+    <tr><th>下一轮策略</th><td><code>{pp:1, tp:8, dp:1, mb:1}</code></td></tr>
+  </table>
+
+  <h3>Island 评分快照 (Round 1)</h3>
+  <table class="score-table">
+    <tr><th>Island</th><th>最佳 Program</th><th>Score</th></tr>
+    <tr><td>memory_safe</td><td><span class="evo-node">v0</span></td><td class="num">993.26</td></tr>
+    <tr><td>topology_affinity</td><td><span class="evo-node">v1</span></td><td class="num">1000.50</td></tr>
+    <tr><td>pipeline_efficiency</td><td><span class="evo-node">v0</span></td><td class="num">1001.10</td></tr>
+    <tr><td>balanced_generalist</td><td><span class="evo-node">v0</span></td><td class="num">934.08</td></tr>
+  </table>
+
+  <div style="margin-top:0.5rem;">
+    <strong style="font-size:0.8rem; color:var(--muted);">演化 → v2:</strong>
+    <div class="evolution-chain">
+      <span class="evo-node">v0</span><span class="evo-arrow">+</span><span class="evo-node">v1</span><span class="evo-arrow">→</span><span class="evo-node" style="border-color:var(--accent);">v2</span>
+      <span style="color:var(--muted); font-size:0.8rem; margin-left:0.5rem;">(全部 4 个 Island)</span>
+    </div>
+  </div>
+
+  <div class="guidance">
+    自适应上下文: "避免对数据库缺失的策略形状给出过高评分"
+  </div>
+</div>
+
+<!-- Round 2 -->
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 2</span>
+    <span class="badge badge-pass">PASS</span>
+    <span style="font-size:0.85rem; color:var(--muted);">→ 延迟引导调整 (dp: 1→4)</span>
+  </div>
+  <table style="margin-bottom:0.5rem;">
+    <tr><th>候选策略</th><td><code>{pp:1, tp:8, dp:1, mb:1}</code></td></tr>
+    <tr><th>评估结果</th><td style="color:var(--green);">通过 (rulecheck: pass)</td></tr>
+    <tr><th>延迟</th><td style="color:var(--yellow) font-weight:700;">7.537s</td></tr>
+    <tr><th>Pipeline 策略</th><td>GPipe &ensp;|&ensp; DP: naive_allreduce_after_backward &ensp;|&ensp; Overlap: 0.00%</td></tr>
+    <tr><th>调整类型</th><td><span class="badge badge-info">latency_guided</span> · dp: 1→4 (基于数据库低延迟参考)</td></tr>
+    <tr><th>下一轮策略</th><td><code>{pp:1, tp:8, dp:4, mb:1}</code></td></tr>
+  </table>
+
+  <h3>Island 评分快照 (Round 2)</h3>
+  <table class="score-table">
+    <tr><th>Island</th><th>最佳 Program</th><th>Score</th></tr>
+    <tr><td>memory_safe</td><td><span class="evo-node">v0</span></td><td class="num">1014.26</td></tr>
+    <tr><td>topology_affinity</td><td><span class="evo-node">v1</span></td><td class="num">1000.50</td></tr>
+    <tr><td>pipeline_efficiency</td><td><span class="evo-node">v0</span></td><td class="num">1003.20</td></tr>
+    <tr><td>balanced_generalist</td><td><span class="evo-node">v0</span></td><td class="num">955.08</td></tr>
+  </table>
+
+  <div style="margin-top:0.5rem;">
+    <strong style="font-size:0.8rem; color:var(--muted);">演化 → v3:</strong>
+    <div class="evolution-chain">
+      <span class="evo-node">v2</span><span class="evo-arrow">+</span><span class="evo-node">v0</span><span class="evo-arrow">→</span><span class="evo-node" style="border-color:var(--accent);">v3</span>
+      <span style="color:var(--muted); font-size:0.8rem; margin-left:0.5rem;">(全部 4 个 Island)</span>
+    </div>
+  </div>
+
+  <div class="guidance">
+    自适应上下文: "优先选择能降低数据库总延迟的策略形状，同时保留 Island 核心方向"
+  </div>
+</div>
+
+<!-- Round 3 -->
+<div class="round-block">
+  <div class="round-header">
+    <span class="round-num">Round 3</span>
+    <span class="badge badge-pass">PASS</span>
+    <span style="font-size:0.85rem; color:var(--muted);">→ 最优发现，停止搜索</span>
+  </div>
+  <table style="margin-bottom:0.5rem;">
+    <tr><th>候选策略</th><td><code>{pp:1, tp:8, dp:4, mb:1}</code></td></tr>
+    <tr><th>评估结果</th><td style="color:var(--green);">通过 (rulecheck: pass)</td></tr>
+    <tr><th>延迟</th><td style="color:var(--cyan); font-size:1.2rem; font-weight:700;">2.000s</td></tr>
+    <tr><th>Pipeline 策略</th><td>1F1B &ensp;|&ensp; DP: reduce_scatter_allgather_after_backward &ensp;|&ensp; Overlap: 1.04%</td></tr>
+    <tr><th>DAG ID</th><td><code>1f1b_pp1_dp4_tp8_mb1_rs_ag</code></td></tr>
+    <tr><th>调整类型</th><td><span class="badge badge-info">latency_guided</span> · 跳转到数据库中候选 (multi_parameter_jump)</td></tr>
+    <tr><th>下一轮策略(未执行)</th><td><code>{pp:1, tp:16, dp:2, mb:1}</code></td></tr>
+  </table>
+
+  <h3>Island 评分快照 (Round 3, 最终)</h3>
+  <table class="score-table">
+    <tr><th>Island</th><th>最佳 Program</th><th>Score</th></tr>
+    <tr><td>memory_safe</td><td><span class="evo-node">v2</span></td><td class="num">1027.03</td></tr>
+    <tr><td>topology_affinity</td><td><span class="evo-node">v3</span></td><td class="num">1007.00</td></tr>
+    <tr><td>pipeline_efficiency</td><td><span class="evo-node">v0</span></td><td class="num">1003.20</td></tr>
+    <tr><td>balanced_generalist</td><td><span class="evo-node">v0</span></td><td class="num">1007.52</td></tr>
+  </table>
+
+  <div style="margin-top:0.5rem;">
+    <strong style="font-size:0.8rem; color:var(--muted);">演化 → v4:</strong>
+    <div class="evolution-chain">
+      <span style="color:var(--muted);">memory_safe / topology_affinity:</span>
+      <span class="evo-node">v3</span><span class="evo-arrow">+</span><span class="evo-node">v1</span><span class="evo-arrow">→</span><span class="evo-node" style="border-color:var(--accent);">v4</span>
+    </div>
+    <div class="evolution-chain">
+      <span style="color:var(--muted);">pipeline_efficiency / balanced_generalist:</span>
+      <span class="evo-node">v2</span><span class="evo-arrow">+</span><span class="evo-node">v0</span><span class="evo-arrow">→</span><span class="evo-node" style="border-color:var(--accent);">v4</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Island 演化全景 ── -->
+<h2>Island Program 演化全景</h2>
+<table>
+  <tr><th>Island</th><th>v0→v1</th><th>v1→v2</th><th>v2→v3</th><th>v3→v4</th></tr>
+  <tr>
+    <td><strong>memory_safe</strong></td>
+    <td>v0 → v1</td>
+    <td>v0+v1 → v2</td>
+    <td>v2+v0 → v3</td>
+    <td>v3+v1 → v4</td>
+  </tr>
+  <tr>
+    <td><strong>topology_affinity</strong></td>
+    <td>v0 → v1</td>
+    <td>v0+v1 → v2</td>
+    <td>v2+v0 → v3</td>
+    <td>v3+v1 → v4</td>
+  </tr>
+  <tr>
+    <td><strong>pipeline_efficiency</strong></td>
+    <td>v0 → v1</td>
+    <td>v0+v1 → v2</td>
+    <td>v2+v0 → v3</td>
+    <td>v2+v0 → v4</td>
+  </tr>
+  <tr>
+    <td><strong>balanced_generalist</strong></td>
+    <td>v0 → v1</td>
+    <td>v0+v1 → v2</td>
+    <td>v0+v2 → v3</td>
+    <td>v2+v0 → v4</td>
+  </tr>
+</table>
+
+<!-- ── 延迟对比 ── -->
+<h2>延迟与评分趋势</h2>
+<div class="chart-placeholder">
+  📈 <strong>latency_trend.png</strong> — 各轮延迟变化 &emsp;
+  📊 <strong>score_trend.png</strong> — Island 评分变化 &emsp;
+  🔄 <strong>island_replacement_events.png</strong> — Program 替换事件<br>
+  <span style="color:var(--muted); font-size:0.8rem;">以上图表已生成于运行目录，可用看图工具打开</span>
+</div>
+
+<table>
+  <tr><th>轮次</th><th>策略 (pp/tp/dp/mb)</th><th>延迟</th><th>Pipeline 策略</th><th>DP 策略</th><th>结果</th></tr>
+  <tr>
+    <td>1</td>
+    <td><code>1 / 1 / 1 / 1</code></td>
+    <td style="color:var(--muted);">—</td>
+    <td>—</td>
+    <td>—</td>
+    <td><span class="badge badge-fail">INVALID</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>1 / 8 / 1 / 1</code></td>
+    <td style="color:var(--yellow);">7.537s</td>
+    <td>GPipe</td>
+    <td>naive AR</td>
+    <td><span class="badge badge-warn">HIGH</span></td>
+  </tr>
+  <tr style="background:rgba(57,211,80,0.06);">
+    <td>3 🏆</td>
+    <td><code>1 / 8 / 4 / 1</code></td>
+    <td style="color:var(--cyan); font-weight:700;">2.000s</td>
+    <td>1F1B</td>
+    <td>RS+AG</td>
+    <td><span class="badge badge-pass">OPTIMAL</span></td>
+  </tr>
+</table>
+
+<!-- ── 关键结论 ── -->
+<h2>关键结论</h2>
+
+<div class="meta-card">
+  <ol style="padding-left:1.25rem;">
+    <li style="margin-bottom:0.6rem;">
+      <strong>3 轮搜索即收敛</strong>：从 322 条数据库记录中，系统通过 <em>repair → explore → exploit</em> 三阶段快速找到全局最优，比最大允许的 100 轮少 97%。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>DP=4 是关键调优维度</strong>：Round 2 将 dp 从 1 调整到 4，延迟从 7.54s 骤降至 2.00s（<strong>降幅 73.5%</strong>），同时将 Pipeline 策略从 GPipe 自动切换为 1F1B + RS/AG 通信原语。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>DeepSeek 增强生效</strong>：自适应上下文从 Round 1 的 "避免数据库缺失策略" 到 Round 2/3 的 "优先低延迟策略"，表明 LLM 能够从历史经验中学习并调整评分方向。
+    </li>
+    <li style="margin-bottom:0.6rem;">
+      <strong>Island 评分持续上升</strong>：四个 Island 的最高分随演化迭代逐步增长（memory_safe: 993→1027, balanced_generalist: 934→1007），验证了遗传演化机制的有效性。
+    </li>
+    <li>
+      <strong>计算通信重叠仍有空间</strong>：当前最优策略重叠率仅 1.04%，说明进一步优化微批次调度可能带来额外收益。
+    </li>
+  </ol>
+</div>
+
+<!-- ── 输出文件 ── -->
+<h2>实验输出产物</h2>
+<table>
+  <tr><th>文件</th><th>说明</th></tr>
+  <tr><td><code>round_trace.json</code></td><td>完整轮次跟踪数据 (2066 行)</td></tr>
+  <tr><td><code>scoreexpert_db_search_report.md</code></td><td>Markdown 格式报告</td></tr>
+  <tr><td><code>latency_trend.png</code></td><td>延迟变化趋势图</td></tr>
+  <tr><td><code>score_trend.png</code></td><td>Island 评分变化趋势图</td></tr>
+  <tr><td><code>island_replacement_events.png</code></td><td>Program 替换事件图</td></tr>
+  <tr><td><code>scoreexpert_db_search_summary.html</code> ←</td><td><strong>本报告</strong></td></tr>
+</table>
+
+<div class="footer">
+  Generated by Hermes Agent · ScoreExpert DB Search Experiment · 2026-06-13
+</div>
+
+</div>
+</body>
+</html>
