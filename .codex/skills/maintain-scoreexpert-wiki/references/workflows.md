@@ -11,6 +11,15 @@
 
 ## 导入来源
 
+### Evolve 场景报告人工门禁
+
+Evolve 生成场景报告时固定分两步：
+
+1. 仿真结束后只在运行目录生成 `scenario_analysis.md` 待审草稿，向用户返回路径并停止；不得写入 `raw/` 或 `concepts/`。
+2. 用户手动修改并明确回复审核完成、授权放入 raw 和更新 concepts 后，重新读取该文件的当前内容，把它原样导入不可变 raw 快照；随后只根据该 raw 更新 concepts。
+
+如果用户只说“仿真”“跑一下”或“生成报告”，只执行第 1 步。不得把先前版本、生成时缓存或其他 JSON 证据替代用户审核后的文件。若用户只授权放入 raw、没有授权更新 concepts，则完成 raw 导入后停止。
+
 1. 判断来源类型：网页或文本放入 `raw/articles/`，论文或 PDF 放入 `raw/papers/`，会议或访谈放入 `raw/transcripts/`，图片放入 `raw/assets/`。
 2. 保存完整来源内容并加入 raw frontmatter。URL 记录 `source_url`；本地文件记录 `source_path` 和原文件 SHA-256。
 3. 计算第二个 `---` 之后正文的 SHA-256，写入 `sha256`。可用：

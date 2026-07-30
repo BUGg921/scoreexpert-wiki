@@ -753,3 +753,61 @@
 - Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
 - Confirmed the local definition records stable anomaly detection, rank/speed/location, local topology scope, remapping capability, unaffected external structure, and boundaries to homogeneous and distributed heterogeneity.
 - Confirmed the immutable single-slow-GPU raw source was not modified.
+
+## [2026-07-30] ingest | S7 five-slow 2/1/1/1 Evolve evidence
+
+- Created immutable source snapshot: `raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md`.
+- Created candidate review: `outputs/s7-five-slow-2-1-1-1-candidate-review-2026-07-30.md`.
+- Updated: `entities/scoreexpert.md`, `concepts/deployment-objective-knowledge-framework.md`, `concepts/latency-first-experience-summary.md`, and `index.md`.
+- Admission result: `KEEP_FOR_VALIDATION`; the run evaluated `65/873` candidates and has no real-training Evaluation, so mature deployment rules were not changed.
+
+## [2026-07-30] governance | Restore Wiki as the formal experience authority
+
+- Confirmed the formal authority chain is `entities/scoreexpert.md` → `concepts/deployment-objective-knowledge-framework.md` → `concepts/latency-first-experience-summary.md` → `raw/articles/*.md`.
+- Updated the global `scoreexpert-scenario-analysis` Skill so the default Evolve pipeline no longer writes `/Users/cookie/Documents/clc/DAG_build/scoreexpert_kb/data/experiences.json`.
+- Reclassified the JSON project as a historical structured MVP/compatibility store and retired its mistakenly active S7 record.
+
+## [2026-07-30] lint | S7 Wiki authority correction
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the S7 raw body hash matches the immutable snapshot and its upstream `original_sha256`.
+- Confirmed the revised Skill pipeline exposes no JSON-KB write option; Python compilation, Skill frontmatter validation, and all 12 legacy JSON compatibility tests passed.
+
+## [2026-07-30] governance | Add manual review gate before raw and concepts
+
+- Changed the Evolve workflow to stop after producing `scenario_analysis.md` in the run directory; simulation completion no longer imports raw or updates concepts.
+- Added an explicit owner gate: the user edits and reviews the draft, then separately authorizes raw import and concepts update.
+- Required raw to snapshot the exact user-reviewed file and required all subsequent concepts changes to derive from that raw source rather than unreviewed simulation artifacts.
+- Updated `SCHEMA.md`, the Wiki maintenance Skill/workflow, and the global `scoreexpert-scenario-analysis` Skill, workflow, pipeline output, and UI metadata.
+
+## [2026-07-30] lint | Manual review gate
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed the pipeline reports `awaiting_manual_user_review` and `wiki_written: false` after simulation.
+- Confirmed Skill and UI YAML through the system Ruby/YAML parser; the bundled Python validator could not start because this environment lacks `PyYAML`.
+
+## [2026-07-30] update | Add simulation gaps and next-run recommendations
+
+- Extended generated `scenario_analysis.md` drafts with two required sections after the five-part body: `未仿真的场景` and `下一步仿真建议`.
+- Added explicit completed-scenario context to the 32-GPU four-node scenario factory; coverage is based on registered completed runs plus the current run, never config-file existence.
+- Added prioritized controls for dual-slow-GPU placement and slow-card counts 3, 4, 6, 7 and 8 while keeping slow-card speed and other workload dimensions fixed.
+- Updated Evolve tests, README, and the global scenario-analysis Skill/workflow. No raw snapshot or concepts experience was changed.
+
+## [2026-07-30] lint | Simulation gap report sections
+
+- Result: all 5 Evolve tests passed in 34.284 seconds.
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the 32-GPU scenario config preserves the user-confirmed coverage context through config load/serialization, and Skill frontmatter remains valid.
+
+## [2026-07-30] fix | Derive simulation coverage from the experience library
+
+- Removed the user-confirmed hard-coded coverage list from the 32-GPU scenario factory.
+- Made report generation read `concepts/latency-first-experience-summary.md`, follow its raw scenario links, and distinguish mature experience from `KEEP_FOR_VALIDATION`.
+- Changed count and dual-slow topology recommendations to subtract experience-library coverage plus the current run; user-spoken lists and config-file existence are no longer coverage authorities.
+- Added a parser test for summary-to-raw coverage extraction. No raw snapshot or concepts experience content was changed.
+
+## [2026-07-30] lint | Experience-library-derived coverage
+
+- Result: all 6 Evolve tests passed in 34.044 seconds.
+- Confirmed the current Wiki resolves four mature scenarios (normal, single slow, cross-affinity dual slow, symmetric four slow) and one `KEEP_FOR_VALIDATION` five-slow scenario.
+- Confirmed the generated gap now recommends dual-slow same-node/same-affinity variants and slow-card counts 3, 6, 7 and 8; it no longer recommends the already summarized cross-affinity dual-slow or four-slow cases.

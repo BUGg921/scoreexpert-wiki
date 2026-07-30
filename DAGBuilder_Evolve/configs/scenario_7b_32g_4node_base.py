@@ -1,6 +1,10 @@
 from copy import deepcopy
+from pathlib import Path
 
 from configs.scenario_7b_32g_flash import CONFIG as BASE_CONFIG
+
+
+PROJECT = Path(__file__).resolve().parents[1]
 
 
 def make_config(name: str, slow_ranks: list[int]) -> dict:
@@ -34,4 +38,13 @@ def make_config(name: str, slow_ranks: list[int]) -> dict:
     config["search"]["nominations_per_program"] = 2
     config["evolution"]["rounds"] = 10
     config["evolution"]["migration_rounds"] = []
+    config["analysis"] = {
+        "experience_summary_path": str(
+            PROJECT.parent / "concepts" / "latency-first-experience-summary.md"
+        ),
+        "fixed_dimensions": [
+            "慢卡倍率保持当前值，不在下一批中改变",
+            "模型、batch、显存和网络参数保持不变",
+        ],
+    }
     return config

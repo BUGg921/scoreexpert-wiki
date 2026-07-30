@@ -4,7 +4,7 @@ import copy
 import hashlib
 import importlib.util
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +22,7 @@ class ScenarioConfig:
     search: dict[str, Any]
     evolution: dict[str, Any]
     deepseek: dict[str, Any]
+    analysis: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, value: dict[str, Any], *, source: Path) -> "ScenarioConfig":
@@ -58,7 +59,7 @@ class ScenarioConfig:
             key: copy.deepcopy(getattr(self, key))
             for key in (
                 "name", "repository_root", "output_root", "model", "workload", "memory",
-                "topology", "network", "search", "evolution", "deepseek",
+                "topology", "network", "search", "evolution", "deepseek", "analysis",
             )
         }
         value["repository_root"] = str(value["repository_root"])
@@ -79,4 +80,3 @@ def load_scenario(path: Path) -> ScenarioConfig:
     spec.loader.exec_module(module)
     value = module.get_config() if hasattr(module, "get_config") else module.CONFIG
     return ScenarioConfig.from_dict(value, source=path)
-

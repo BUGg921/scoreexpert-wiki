@@ -62,10 +62,14 @@ DAG/关键路径，以及：
 - `best_score_program.py`：实际提名或关联最终最优策略的完整打分公式；
 - `score_program_evidence.json`：公式的 program、island、代数、候选 score 和完整排名；
 - `deployment_experience.json/md`：最优部署策略，以及分别来自打分公式和数值仿真的推理；
-- `scenario_analysis.md`：自动生成的五段场景、最优性、经验、未验证项和后续仿真报告。
+- `scenario_analysis.md`：按 Wiki `raw/articles` 风格自动生成“实验场景、最优解、打分策略代码、经验总结”四段主体；经验总结内分离并行策略、原因和结论边界，主体后固定追加“未仿真的场景”和“下一步仿真建议”。覆盖差集从正式 Wiki 的目标总览及其 raw 场景链接读取，并与本轮结果合并；不采用用户口头清单，也不把仅存在的配置文件算作已仿真。
 
 最终策略按数值仿真的最长路径选择，score 只负责解释候选为何进入仿真。部署经验中的
 策略、公式归因和数值证据均由确定性模板生成，语言模型不得修改这些结构化事实。
+
+直接运行 Evolve 时保留上述结构化产物；通过 `scoreexpert-scenario-analysis` 流水线运行时，
+流水线会先用完整产物完成一致性校验，再删除支持文件，最终每个成功运行目录只保留
+自包含的 `scenario_analysis.md`。只有调试时显式使用 `--keep-candidates` 才保留完整产物。
 
 ## 测试
 

@@ -1,10 +1,10 @@
 ---
 title: ScoreExpert
 created: 2026-07-14
-updated: 2026-07-27
+updated: 2026-07-30
 type: entity
 tags: [scoreexpert, deployment, slow-gpu, evidence]
-sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
+sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md]
 confidence: high
 contested: false
 contradictions: []
@@ -16,9 +16,9 @@ contradictions: []
 
 ScoreExpert 在本 Wiki 中用于把 GPU 部署场景、候选 PP/TP/DP/MBN、打分函数、拓扑解释、Evaluation 和适用边界组织成可追溯经验。
 
-目标使用方式是“离线沉淀、在线推理”：四份场景来源已经把实验条件、数值策略、原因和边界沉淀下来；后续新场景只要同时命中 [[latency-first-experience-summary]] 中的场景规则和对应 raw 来源的边界，就直接输出部署策略，不再强制运行新的真实 Evaluation。
+目标使用方式是“离线沉淀、在线推理”：成熟场景来源已经把实验条件、数值策略、原因和边界沉淀下来；后续新场景只要同时命中 [[latency-first-experience-summary]] 中的成熟场景规则和对应 raw 来源的边界，就直接输出部署策略。待验证来源不能进入这条直接推理路径。
 
-当前经验库保存四份独立的 32 卡场景来源，全部属于**延迟优先型**，总体经验汇总见 [[latency-first-experience-summary]]。知识入口仍先分为延迟优先型、稳定优先型，再按同构基线、局部异构、分布式异构组织；完整结构见 [[deployment-objective-knowledge-framework]]。
+当前经验库保存五份独立的 32 卡场景来源：四份成熟延迟优先场景和一份五慢卡 Evolve 待验证场景，总体经验汇总见 [[latency-first-experience-summary]]。知识入口仍先分为延迟优先型、稳定优先型，再按同构基线、局部异构、分布式异构组织；完整结构见 [[deployment-objective-knowledge-framework]]。
 
 标准 32 卡、单慢卡、两张跨亲和组慢卡和四张均匀慢卡均作为成熟的延迟优先场景经验保留；稳定优先目前仍没有部署经验。
 
@@ -41,7 +41,8 @@ ScoreExpert 在本 Wiki 中用于把 GPU 部署场景、候选 PP/TP/DP/MBN、�
 
 - [两张慢卡场景](../raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md)：两张慢卡跨亲和组时使用无 PP、节点内 TP 和节点间 DP。
 - [四张慢卡场景](../raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md)：四张慢卡一节点一张且速度接近时使用对称 DP replica。
+- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)：保持 `KEEP_FOR_VALIDATION`，只作为仿真证据和补库输入。
 
-数值策略和总体原因保留在 [[latency-first-experience-summary]]，具体实验条件、Score 推导、映射和结论边界保留在四份 raw 场景来源中。
+数值策略和总体原因保留在 [[latency-first-experience-summary]]，具体实验条件、Score 推导、映射和结论边界保留在 raw 场景来源中；待验证来源不自动获得成熟经验状态。
 
 召回顺序：先核对优化目标、卡数与拓扑，再核对慢卡数量、位置和速度倍率，随后核对模型显存、rank mapping、score 版本和候选空间。命中总览规则和对应 raw 场景边界时直接输出策略；资源规模变化但命中总览已准入的换算规则时，按 `PP×TP×DP=active_gpu`、`TP:DP` 比例和完整拓扑约束重新求解，不能复制原实例参数；无法求得合法整数拓扑时进入补库流程。

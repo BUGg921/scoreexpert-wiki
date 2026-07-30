@@ -1,10 +1,10 @@
 ---
 title: ScoreExpert 部署经验总库
 created: 2026-07-18
-updated: 2026-07-27
+updated: 2026-07-30
 type: summary
 tags: [scoreexpert, deployment, decision-guide, governance, evidence]
-sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
+sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md]
 confidence: high
 contested: false
 contradictions: []
@@ -32,7 +32,7 @@ contradictions: []
 - “延迟优先 / 稳定优先”回答：**这次部署首先优化什么**。
 - “同构基线 / 局部异构 / 分布式异构”回答：**硬件异常以什么范围分布，为什么需要改变策略**。
 - 每个场景只保留一份 raw 来源；不同优化目标可以引用同一场景，但必须分别写出目标、指标和成立原因，不能复制一套结论。
-- 本文件永久保留延迟优先和稳定优先的完整三类框架；当前四个成熟场景均属于延迟优先，稳定优先暂时没有部署经验，但其结构和知识缺口不能删除。
+- 本文件永久保留延迟优先和稳定优先的完整三类框架；当前四个成熟场景均属于延迟优先，另有一个五慢卡 Evolve 场景处于验证队列；稳定优先暂时没有部署经验，但其结构和知识缺口不能删除。
 
 总库采用“离线沉淀、在线推理”：新场景同时命中 [[latency-first-experience-summary]] 的规则和对应 raw 场景边界时，直接复用策略，不强制重新 Evaluation。
 
@@ -96,6 +96,7 @@ contradictions: []
 
 - [两张慢卡场景](../raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md)：两张慢卡跨亲和组的非对称分布。
 - [四张慢卡场景](../raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md)：四张慢卡一节点一张的对称分布。
+- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)：当前 `PP16/TP1/DP2/MBN64` 只作为 `KEEP_FOR_VALIDATION` 证据，不进入成熟策略。
 
 ## 3. 稳定优先型
 
@@ -164,6 +165,6 @@ contradictions: []
 ## 4. 场景来源与直接推理
 
 1. [[latency-first-experience-summary]] 保存三类场景的定义、数值并行策略、原因和场景案例。
-2. 四份 raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界。
+2. raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界；其中四份支撑成熟场景，一份 S7 Evolve 来源保留在验证队列。
 3. 新场景同时命中总览规则和对应 raw 来源边界时，可以直接输出 `PP/TP/DP/MBN` 与映射，无需新的真实 Evaluation；总览明确给出卡数换算规则时，允许按 `PP × TP × DP = active_gpu`、`TP:DP=2:1` 和完整拓扑约束求解新资源规模。
 4. 无法得到整数参数、并行组不完整、映射跨越不利通信边界，或拓扑、慢卡分布、模型约束和搜索空间不匹配时，停止直接复用，进入仿真、Evaluation 或人工补库流程。

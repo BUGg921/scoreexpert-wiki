@@ -10,6 +10,7 @@ from dagbuilder_evolve.config import ScenarioConfig, load_scenario
 from dagbuilder_evolve.engine import EvolutionEngine
 from dagbuilder_evolve.evaluator import StrategyEvaluator, estimate_memory_gb
 from dagbuilder_evolve.programs import SEED_SOURCES, score_program, validate_source
+from dagbuilder_evolve.reporting import _load_wiki_experience_coverage
 from dagbuilder_evolve.strategy import communication_groups, enumerate_strategies, rank_mapping
 
 
@@ -50,6 +51,31 @@ class StrategyTests(unittest.TestCase):
         self.assertGreater(complexity, 0)
         with self.assertRaises(ValueError):
             validate_source("import os\ndef score_strategy(strategy, model_cfg, topology_cfg, workload_cfg):\n return 0")
+
+    def test_wiki_experience_coverage_comes_from_summary_links(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            concepts = root / "concepts"
+            raw = root / "raw" / "articles"
+            concepts.mkdir()
+            raw.mkdir(parents=True)
+            (raw / "two-slow-example.md").write_text(
+                "两张慢卡分别位于两个亲和组，属于跨亲和组场景。\\n",
+                encoding="utf-8",
+            )
+            summary = concepts / "latency-first-experience-summary.md"
+            summary.write_text(
+                "- **两慢卡经验**：[场景来源]"
+                "(../raw/articles/two-slow-example.md)已形成成熟经验。\\n",
+                encoding="utf-8",
+            )
+            coverage = _load_wiki_experience_coverage(summary)
+            self.assertEqual(len(coverage), 1)
+            self.assertEqual(coverage[0]["slow_count"], 2)
+            self.assertEqual(coverage[0]["status"], "MATURE")
+            self.assertEqual(
+                coverage[0]["distribution_variant"], "cross_affinity"
+            )
 
 
 class IntegrationTests(unittest.TestCase):
@@ -138,13 +164,36 @@ class IntegrationTests(unittest.TestCase):
             self.assertEqual(
                 headings,
                 [
-                    "## 1. 场景设置",
-                    "## 2. 为什么能得到最优解",
-                    "## 3. 经验总结",
-                    "## 4. 未验证的经验",
-                    "## 5. 下一步仿真场景建议（为了验证第 4 部分）",
+                    "## 实验场景",
+                    "## 最优解",
+                    "## 打分策略代码",
+                    "## 经验总结",
+                    "## 未仿真的场景",
+                    "## 下一步仿真建议",
                 ],
             )
+            self.assertNotIn('## <span style="color:red;">任务</span>', analysis)
+            self.assertIn(
+                '### <span style="color:blue;">(1) 并行策略</span>',
+                analysis,
+            )
+            self.assertIn(
+                '### <span style="color:blue;">(2) 原因</span>',
+                analysis,
+            )
+            self.assertIn(
+                '### <span style="color:blue;">(3) 结论边界</span>',
+                analysis,
+            )
+            self.assertIn("参数按以下规则求解", analysis)
+            self.assertIn("PP=active_gpu/(TP×DP)", analysis)
+            self.assertIn("1. **", analysis)
+            self.assertIn("双慢卡拓扑差集", analysis)
+            self.assertIn("慢卡数量差集", analysis)
+            self.assertIn("P0—补齐双慢卡拓扑对照", analysis)
+            self.assertIn("从经验库目标总览读取", analysis)
+            self.assertIn("不读取用户口头清单", analysis)
+            self.assertIn("不在同一批同时改变慢卡速度", analysis)
             database = json.loads(
                 (run_dir / "program_database.json").read_text(encoding="utf-8")
             )

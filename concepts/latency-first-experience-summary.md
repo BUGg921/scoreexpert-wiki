@@ -1,10 +1,10 @@
 ---
 title: 延迟优先型部署经验总览
 created: 2026-07-18
-updated: 2026-07-27
+updated: 2026-07-30
 type: summary
 tags: [scoreexpert, deployment, decision-guide, gpu, topology, slow-gpu, pp, tp, dp, mbn, evidence]
-sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md]
+sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md]
 confidence: high
 contested: false
 contradictions: []
@@ -86,3 +86,4 @@ contradictions: []
 
 - **两慢卡非对称均衡**：[场景来源](../raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md)在两张慢卡跨亲和组时，使用 `PP=1, TP=8, DP=4, MBN=1`，重点处理快慢 replica 等待。
 - **四慢卡对称副本**：[场景来源](../raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md)在四张速度接近的慢卡一节点一张时，使用相同参数构造慢卡结构对称的 DP replica。
+- **五慢卡 2/1/1/1 待验证证据**：[场景来源](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)的当前已仿真候选最优为 `PP=16, TP=1, DP=2, MBN=64`，但只覆盖 `65/873` 个候选，且两个 replica 的慢卡数为 1/4、不满足现有对称映射分支；因此只进入 `KEEP_FOR_VALIDATION`，不改变上面的成熟并行策略。
