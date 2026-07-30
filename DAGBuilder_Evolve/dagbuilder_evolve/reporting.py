@@ -53,7 +53,7 @@ def _slow_count_from_source(path: Path, text: str) -> int | None:
 def _distribution_variant(text: str) -> str | None:
     if "跨亲和组" in text or "分别位于两个亲和组" in text:
         return "cross_affinity"
-    if "同亲和组" in text and "不同节点" in text:
+    if "同亲和组" in text and ("不同节点" in text or "跨节点" in text):
         return "same_affinity_different_nodes"
     if "同一节点" in text or "同节点" in text:
         return "same_node"
@@ -66,7 +66,7 @@ def _load_wiki_experience_coverage(summary_path: Path) -> list[dict[str, Any]]:
     summary = summary_path.read_text(encoding="utf-8")
     pattern = re.compile(
         r"^- \*\*(?P<label>[^*]+)\*\*："
-        r"\[场景来源\]\((?P<href>[^)]+)\)(?P<tail>.*)$",
+        r"\[(?:审核后)?场景来源\]\((?P<href>[^)]+)\)(?P<tail>.*)$",
         flags=re.MULTILINE,
     )
     coverage: list[dict[str, Any]] = []
@@ -81,6 +81,10 @@ def _load_wiki_experience_coverage(summary_path: Path) -> list[dict[str, Any]]:
         if slow_count is None:
             continue
         tail = match.group("tail")
+        scene_text = source_text.split("## 最优解", 1)[0]
+        distribution_evidence = (
+            f"{match.group('label')}\n{source.name}\n{scene_text}"
+        )
         coverage.append(
             {
                 "label": match.group("label"),
@@ -91,7 +95,9 @@ def _load_wiki_experience_coverage(summary_path: Path) -> list[dict[str, Any]]:
                     else "MATURE"
                 ),
                 "distribution_variant": (
-                    _distribution_variant(source_text) if slow_count >= 2 else None
+                    _distribution_variant(distribution_evidence)
+                    if slow_count >= 2
+                    else None
                 ),
                 "source": str(source),
             }

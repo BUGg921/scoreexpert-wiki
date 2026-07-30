@@ -77,6 +77,57 @@ class StrategyTests(unittest.TestCase):
                 coverage[0]["distribution_variant"], "cross_affinity"
             )
 
+    def test_wiki_coverage_accepts_reviewed_link_and_ignores_future_suggestions(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            concepts = root / "concepts"
+            raw = root / "raw" / "articles"
+            concepts.mkdir()
+            raw.mkdir(parents=True)
+            (raw / "five-slow-reviewed.md").write_text(
+                "# 五慢卡 2/1/1/1\n"
+                "## 实验场景\n共有5张慢卡，按节点2/1/1/1分布。\n"
+                "## 最优解\n"
+                "## 未仿真的场景\n建议继续仿真跨亲和组双慢卡。\n",
+                encoding="utf-8",
+            )
+            summary = concepts / "latency-first-experience-summary.md"
+            summary.write_text(
+                "- **五慢卡 2/1/1/1 深 PP**：[审核后场景来源]"
+                "(../raw/articles/five-slow-reviewed.md)已形成成熟经验。\n",
+                encoding="utf-8",
+            )
+            coverage = _load_wiki_experience_coverage(summary)
+            self.assertEqual(len(coverage), 1)
+            self.assertEqual(coverage[0]["slow_count"], 5)
+            self.assertEqual(coverage[0]["status"], "MATURE")
+            self.assertIsNone(coverage[0]["distribution_variant"])
+
+    def test_distribution_variant_recognizes_same_affinity_cross_node(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            concepts = root / "concepts"
+            raw = root / "raw" / "articles"
+            concepts.mkdir()
+            raw.mkdir(parents=True)
+            (raw / "two-slow-same-affinity.md").write_text(
+                "共有2张慢卡。\n## 最优解\n",
+                encoding="utf-8",
+            )
+            summary = concepts / "latency-first-experience-summary.md"
+            summary.write_text(
+                "- **同亲和组跨节点双慢卡**：[场景来源]"
+                "(../raw/articles/two-slow-same-affinity.md)已形成成熟经验。\n",
+                encoding="utf-8",
+            )
+            coverage = _load_wiki_experience_coverage(summary)
+            self.assertEqual(
+                coverage[0]["distribution_variant"],
+                "same_affinity_different_nodes",
+            )
+
 
 class IntegrationTests(unittest.TestCase):
     def test_single_strategy_numerical_evaluation_and_cache(self) -> None:

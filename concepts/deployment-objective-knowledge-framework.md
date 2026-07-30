@@ -4,7 +4,7 @@ created: 2026-07-18
 updated: 2026-07-30
 type: summary
 tags: [scoreexpert, deployment, decision-guide, governance, evidence]
-sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md]
+sources: [raw/articles/homogeneous-32gpu-deployment-analysis-2026-07-22.md, raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md, raw/articles/two-slow-gpu-same-node-evolve-analysis-2026-07-30.md, raw/articles/two-slow-gpu-same-affinity-evolve-analysis-2026-07-30.md, raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-reviewed-2026-07-30.md]
 confidence: high
 contested: false
 contradictions: []
@@ -32,7 +32,7 @@ contradictions: []
 - “延迟优先 / 稳定优先”回答：**这次部署首先优化什么**。
 - “同构基线 / 局部异构 / 分布式异构”回答：**硬件异常以什么范围分布，为什么需要改变策略**。
 - 每个场景只保留一份 raw 来源；不同优化目标可以引用同一场景，但必须分别写出目标、指标和成立原因，不能复制一套结论。
-- 本文件永久保留延迟优先和稳定优先的完整三类框架；当前四个成熟场景均属于延迟优先，另有一个五慢卡 Evolve 场景处于验证队列；稳定优先暂时没有部署经验，但其结构和知识缺口不能删除。
+- 本文件永久保留延迟优先和稳定优先的完整三类框架；当前七个成熟场景均属于延迟优先；稳定优先暂时没有部署经验，但其结构和知识缺口不能删除。
 
 总库采用“离线沉淀、在线推理”：新场景同时命中 [[latency-first-experience-summary]] 的规则和对应 raw 场景边界时，直接复用策略，不强制重新 Evaluation。
 
@@ -69,14 +69,17 @@ contradictions: []
 #### (2) 并行策略
 
 1. 当异构影响能够限制在一个局部 group/stage，且 `保留异构设备并进行局部隔离的算力收益 > 深 PP 引入的流水线与调度成本` 时，使用全部可用卡；`DP` 取避免快慢 replica 等待的最小可行值，优先取 `DP=1`；按 `TP:DP=2:1` 求解 `TP`，再由 `PP × TP × DP = active_gpu` 求得整数 `PP`，使 `PP` 取能够形成局部隔离的最大可行值；`MBN` 取显存、延迟和调度边界内能够充分填充深流水线的最大可行值。构造完整 TP group 和 PP stage，并减少异常卡所在 stage 的层数或计算量。
+2. 多张异常卡位于同一节点并能收敛到一个节点内 TP group/stage，且较大节点内 TP 的收益更高时，取 `DP=1`，TP 取不跨节点且容纳该异常集合的最大已验证值，由 `PP=active_gpu/(TP×DP)` 反推 PP，MBN 取边界内最大可行值；映射变化后重新仿真。
 
 #### (3) 原因
 
 1. `DP` 取最小值以避免快 replica 等待含慢卡 replica；`TP:DP=2:1` 将同步污染限制在较小 TP group；满卡条件下由两者反推最大可行 PP，以形成更多局部 stage 并通过 stage 重平衡削弱瓶颈；`MBN` 取边界内最大可行值以降低深流水线的 bubble，32 卡案例中的 `MBN=64` 只表示当前搜索上界。
+2. 同节点多慢卡已经处于一个局部范围，`DP=1` 避免 replica skew，节点内 TP 保留张量并行收益，满卡约束下反推 PP；S3 的 `TP=8,PP=4,MBN=8` 只在其审核后 raw 边界内召回。
 
 #### (4) 场景案例
 
 - [单张慢卡场景](../raw/articles/single-slow-gpu-deployment-analysis-2026-07-22.md)：32 卡单慢卡场景使用 `PP=16, TP=2, DP=1, MBN=64`。
+- [同节点双慢卡场景](../raw/articles/two-slow-gpu-same-node-evolve-analysis-2026-07-30.md)：两张约 0.5× 慢卡同节点时使用 `PP=4, TP=8, DP=1, MBN=8`。
 
 ### 2.3 分布式异构处理知识
 #### (1) 场景定义
@@ -87,16 +90,19 @@ contradictions: []
 #### (2) 并行策略
 
 1. 异常设备跨多个独立拓扑区域分布，且 `局部 PP 隔离收益 < 多个慢 stage 与流水线开销`、`满卡算力收益 > replica 等待与通信成本` 时，使用全部可用卡；`PP` 取满足模型约束的最小可行值，优先取 `PP=1`；在 `PP × TP × DP = active_gpu` 和完整拓扑约束下，按 `TP:DP=2:1` 求解整数 `TP` 和 `DP`，`MBN` 取与最小 PP 匹配的最小可行值；TP group 留在带宽最高的局部拓扑内。各 replica 的异常结构或预测耗时不一致时，按预测执行时间均衡异常卡映射；异常设备能够按数量、速度和位置对称分配，且 `副本对称收益 > 多个 PP stage 的隔离收益` 时，使各 DP replica 的异常设备结构保持一致。
+2. 异常跨节点或亲和组且无法局部收敛，而消除 TP 集合通信和保留两路 DP 的收益大于深 PP、replica skew 与通信成本时，取 `TP=1,DP=2`，由 `PP=active_gpu/(TP×DP)` 反推 PP，MBN 取深流水线边界内最大可行值；只在审核后 raw 的固定映射边界内召回。
 
 #### (3) 原因
 
 1. `PP` 取最小值以避免多个慢 stage 和流水线气泡；`TP:DP=2:1` 保留成熟经验中的并行比例，具体整数值由可用卡数和完整拓扑求解；最小 `MBN` 与最小 PP 匹配。TP group 留在带宽最高的局部拓扑内；replica 不对称时按预测执行时间调整映射以缩小快慢副本差异，replica 可对称时保持各副本的异常卡数量、速度和位置一致以减少结构性等待。
+2. `TP=1` 消除 TP 集合通信，`DP=2` 保留满卡数据并行，反推得到的深 PP 用较大 MBN 降低气泡；S4 与 S7 参数规则相同但场景映射不同，必须分别命中对应 raw。
 
 #### (4) 场景案例
 
 - [两张慢卡场景](../raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md)：两张慢卡跨亲和组的非对称分布。
+- [同亲和组跨节点双慢卡场景](../raw/articles/two-slow-gpu-same-affinity-evolve-analysis-2026-07-30.md)：使用 `PP16/TP1/DP2/MBN64`。
 - [四张慢卡场景](../raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md)：四张慢卡一节点一张的对称分布。
-- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)：知识库所有者已撤回正式准入；当前 `PP16/TP1/DP2/MBN64` 恢复为 `KEEP_FOR_VALIDATION`，不进入成熟策略。
+- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-reviewed-2026-07-30.md)：重新审核准入 `PP16/TP1/DP2/MBN64`。
 
 ## 3. 稳定优先型
 
@@ -165,6 +171,6 @@ contradictions: []
 ## 4. 场景来源与直接推理
 
 1. [[latency-first-experience-summary]] 保存三类场景的定义、数值并行策略、原因和场景案例。
-2. raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界；其中四份支撑成熟场景，一份 S7 Evolve 来源因准入撤回而保留在验证队列。
+2. raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界；当前七个场景已经审核准入，S7 的旧快照只保留历史审计。
 3. 新场景同时命中总览规则和对应 raw 来源边界时，可以直接输出 `PP/TP/DP/MBN` 与映射，无需新的真实 Evaluation；总览明确给出卡数换算规则时，允许按 `PP × TP × DP = active_gpu`、`TP:DP=2:1` 和完整拓扑约束求解新资源规模。
 4. 无法得到整数参数、并行组不完整、映射跨越不利通信边界，或拓扑、慢卡分布、模型约束和搜索空间不匹配时，停止直接复用，进入仿真、Evaluation 或人工补库流程。

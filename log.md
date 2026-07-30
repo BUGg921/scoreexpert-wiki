@@ -839,3 +839,39 @@
 - After successful validation, the pipeline now moves the sole review draft to `DAGBuilder_Evolve/outputs/<scenario-id>_<timestamp>_scenario_analysis.md` and removes the temporary directory and supporting artifacts.
 - Flattened the existing S3, S4, S7 and S12 review drafts into the `outputs/` root; no scenario subdirectories remain.
 - Updated the Evolve README, Wiki schema, maintenance workflow and global scenario-analysis Skill. Existing immutable raw `source_path` fields remain historical and were not rewritten.
+
+## [2026-07-30] ingest | Admit reviewed S3, S4 and S7 experiences
+
+- The knowledge-base owner explicitly approved the current flat S3, S4 and S7 reports; under the owner policy, all three were admitted as `ACCEPT_EXPERIENCE`.
+- Created immutable raw snapshots for S3 same-node dual slow GPUs, S4 same-affinity cross-node dual slow GPUs, and the newly reviewed S7 five-slow 2/1/1/1 report. S7 received a new snapshot because the current reviewed file differs from its historical raw source.
+- Added one mature local-heterogeneity branch from S3 and one shared mature distributed-heterogeneity branch from S4/S7. The shared branch uses `TP=1,DP=2`, derives PP from `active_gpu/(TP×DP)`, and keeps MBN within deep-pipeline boundaries.
+- Updated both objective concepts, the ScoreExpert entity, index, candidate review and maintenance workflow. Partial candidate coverage, fixed mapping boundaries, equivalent optima and missing real-training Evaluation remain explicit source limitations.
+
+## [2026-07-30] lint | S3, S4 and S7 mature admission
+
+- Result: Wiki lint passed with 3 pages, 0 errors and 0 review items; `git diff --check` and maintenance-Skill YAML parsing also passed.
+- Verified all three immutable raw body hashes and all three reviewed-source `original_sha256` values.
+- Updated Evolve coverage parsing to recognize reviewed source links and to classify topology from the current scene section rather than future-simulation suggestions.
+- Result: all 8 Evolve tests passed in 33.879 seconds; coverage now resolves seven mature scenarios, including S3 `same_node`, S4 `same_affinity_different_nodes` and S7 five-slow 2/1/1/1.
+
+## [2026-07-30] format | Align latency-first reason lists
+
+- Reformatted all three `原因` sections in `concepts/latency-first-experience-summary.md` so each numbered reason has a bold branch label and consistently indented detail bullets.
+- Preserved the strategy numbering, deployment semantics, source citations and evidence boundaries; no raw source was modified.
+
+## [2026-07-30] format | Remove applicability bullets from reasons
+
+- Removed the two `适用边界` bullets from the latency-first `原因` sections at the knowledge-base owner's request.
+- Kept the raw source citations on the adjacent PP/MBN explanations; detailed applicability conditions remain in the raw sources and scene cases.
+
+## [2026-07-30] format | Keep source links in scene cases only
+
+- Removed all raw source markers from the three latency-first `原因` sections.
+- Source links remain in the corresponding `场景案例` entries, keeping the reason lists visually focused on deployment mechanisms.
+
+## [2026-07-30] skill | Refine scenario-to-Wiki automation
+
+- Clarified that a knowledge-base owner's named-report “审核通过” authorizes importing the report's exact current version and admitting it as a mature experience unless writing is explicitly deferred.
+- Removed the stale rule that missing real-training Evaluation automatically forces `KEEP_FOR_VALIDATION`; Evaluation gaps remain evidence boundaries while owner review controls maturity.
+- Added explicit category routing, same-rule merge criteria, immutable raw handling, and the agreed concepts formatting contract: aligned reason bullets, no applicability bullets or raw links in reasons, and source links in scene cases.
+- Synchronized the global scenario-analysis Skill, its workflow/UI metadata, and the project Wiki-maintenance Skill.
