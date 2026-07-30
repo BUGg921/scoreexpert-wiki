@@ -807,26 +807,10 @@ def _write_raw_article_style_analysis(
             f"比最终候选慢`{slower:.2%}`。因此公式负责提名，"
             "不能直接替代数值仿真结论。"
         )
-    slow_mapping = "；".join(
-        (
-            f"Rank {item['global_rank']}→节点{item['server_id']}/"
-            f"亲和组{item['affinity_group_id']}/stage{item['pp_stage']}/"
-            f"DP副本{item['dp_rank']}/TP lane{item['tp_rank']}"
-        )
-        for item in placement["slow_rank_mapping"]
-    )
-    if not slow_mapping:
-        slow_mapping = "无慢卡，采用同构连续 Rank 映射"
     replica_counts = placement.get("replica_slow_counts", {})
     replica_text = "、".join(
         f"副本{key}含{value}张慢卡"
         for key, value in sorted(replica_counts.items())
-    )
-    max_mbn = max(int(value) for value in config.search["micro_batch_num_values"])
-    mbn_boundary = (
-        "，它是当前搜索空间上界，不能外推为微批数越大越好"
-        if int(strategy["micro_batch_num"]) == max_mbn
-        else ""
     )
     schedule_reason = (
         f"相对误差`1e-6`内存在{len(equivalent)}个等价最优："
@@ -866,26 +850,18 @@ def _write_raw_article_style_analysis(
             "没有稳定设备快慢差异，且`空闲卡损失 > 增加通信或减少并行规模的收益`"
         )
         experience_category = "同构基线"
-        mapping_action = (
-            f"按完整节点构造并行组，保持TP不跨单节点{cards_per_server}卡边界"
-        )
     elif len(affected_affinities) == 1 and len(affected_servers) == 1:
         reusable_condition = (
             "异常设备能够收敛到一个局部执行单元，且"
             "`保留异常卡并局部隔离的算力收益 > 深流水线与重映射成本`"
         )
         experience_category = "局部异构"
-        mapping_action = "把异常卡限制在少量固定group/stage，并对该执行单元减载"
     else:
         reusable_condition = (
             "异常设备跨多个节点或亲和组、无法通过一个局部执行单元完成隔离，且"
             "`保留满卡与数据并行的收益 > replica等待和DP通信成本`"
         )
         experience_category = "分布式异构"
-        mapping_action = (
-            "当前证据只支持下述固定Rank映射；若要按各DP replica的预测执行时间"
-            "重新均衡异常卡，必须把新映射作为独立场景复仿"
-        )
     parameter_rule = (
         f"先取能够限制异常同步扩散的最小已验证`TP={strategy['tp']}`；"
         f"再保留本轮仿真有收益的`DP={strategy['dp']}`；"
@@ -1060,14 +1036,7 @@ def _write_raw_article_style_analysis(
         "",
         (
             f"1. 当{reusable_condition}时，优先采用满卡方案。参数按以下规则求解："
-            f"{parameter_rule}。当前实例得到"
-            f"`PP={strategy['pp']}, TP={strategy['tp']}, DP={strategy['dp']}, "
-            f"MBN={strategy['micro_batch_num']}`，即"
-            f"`{strategy['pp']}×{strategy['tp']}×{strategy['dp']}="
-            f"{strategy['active_gpus']}`；{mapping_action}。当前代表解为"
-            f"`{strategy['schedule']}/{strategy['dp_communication']}`；"
-            f"{'MBN处于搜索上界，不能外推为越大越好；' if mbn_boundary else ''}"
-            f"具体Rank映射为：{slow_mapping}。"
+            f"{parameter_rule}。"
         ),
         "",
         '### <span style="color:blue;">(2) 原因</span>',

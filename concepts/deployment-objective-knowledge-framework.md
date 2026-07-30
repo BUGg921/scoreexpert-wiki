@@ -96,7 +96,7 @@ contradictions: []
 
 - [两张慢卡场景](../raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md)：两张慢卡跨亲和组的非对称分布。
 - [四张慢卡场景](../raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md)：四张慢卡一节点一张的对称分布。
-- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)：当前 `PP16/TP1/DP2/MBN64` 只作为 `KEEP_FOR_VALIDATION` 证据，不进入成熟策略。
+- [五张慢卡 2/1/1/1 Evolve 场景](../raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md)：知识库所有者已撤回正式准入；当前 `PP16/TP1/DP2/MBN64` 恢复为 `KEEP_FOR_VALIDATION`，不进入成熟策略。
 
 ## 3. 稳定优先型
 
@@ -165,6 +165,6 @@ contradictions: []
 ## 4. 场景来源与直接推理
 
 1. [[latency-first-experience-summary]] 保存三类场景的定义、数值并行策略、原因和场景案例。
-2. raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界；其中四份支撑成熟场景，一份 S7 Evolve 来源保留在验证队列。
+2. raw 场景来源保存卡数、拓扑、慢卡数量/位置/速度、Score 代码、映射方式和结论边界；其中四份支撑成熟场景，一份 S7 Evolve 来源因准入撤回而保留在验证队列。
 3. 新场景同时命中总览规则和对应 raw 来源边界时，可以直接输出 `PP/TP/DP/MBN` 与映射，无需新的真实 Evaluation；总览明确给出卡数换算规则时，允许按 `PP × TP × DP = active_gpu`、`TP:DP=2:1` 和完整拓扑约束求解新资源规模。
 4. 无法得到整数参数、并行组不完整、映射跨越不利通信边界，或拓扑、慢卡分布、模型约束和搜索空间不匹配时，停止直接复用，进入仿真、Evaluation 或人工补库流程。

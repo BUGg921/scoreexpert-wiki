@@ -5,11 +5,11 @@
 
 ## 当前状态
 
-`raw/articles/` 当前保存 5 份场景来源：同构、单慢卡、两慢卡和四慢卡共 4 份成熟场景来源，以及五慢卡 2/1/1/1 分布的 Evolve 待验证来源。成熟场景都属于**延迟优先型**；稳定优先型目前没有场景经验。延迟优先入口下再按 **同构基线、局部异构、分布式异构** 选择场景知识。
+`raw/articles/` 当前保存 5 份场景来源：同构、单慢卡、两慢卡和四慢卡共 4 份成熟场景来源，以及正式准入已撤回的五慢卡 2/1/1/1 Evolve 待验证来源。成熟场景都属于**延迟优先型**；稳定优先型目前没有场景经验。延迟优先入口下再按 **同构基线、局部异构、分布式异构** 选择场景知识。
 
 新场景同时命中延迟优先总览规则和对应 raw 场景边界后，直接推理部署策略，无需重新运行真实 Evaluation；只有未命中、越界或冲突时才进入补库流程。
 
-当前正式知识页为 ScoreExpert 入口、部署经验总库和延迟优先经验总览；5 个具体场景来源保存在 `raw/articles/`，其中 S7 只进入验证队列，未改写成熟部署规则。
+当前正式知识页为 ScoreExpert 入口、部署经验总库和延迟优先经验总览；5 个具体场景来源保存在 `raw/articles/`，其中 S7 因审核撤回只进入验证队列，不再改写成熟部署规则。
 
 四场景统一源文档、初始库和两次增量更新的筛选前后过程见 [经验库增量演示](outputs/experience-evolution-demo/README.md)。演示快照位于 `outputs/`，不计入正式知识页总数。
 
@@ -37,7 +37,7 @@
 
 - [两张慢卡场景](raw/articles/two-slow-gpu-deployment-analysis-2026-07-22.md) — 两张慢卡跨亲和组时使用 `PP=1,TP=8,DP=4,MBN=1`，处理快慢 replica 等待。
 - [四张慢卡场景](raw/articles/four-slow-gpu-deployment-analysis-2026-07-22.md) — 四张慢卡一节点一张时使用相同参数构造对称 replica。
-- [五张慢卡 2/1/1/1 Evolve 场景](raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md) — 当前已仿真候选最优为 `PP=16,TP=1,DP=2,MBN=64`；覆盖率 `65/873` 且缺少真实训练 Evaluation，保持 `KEEP_FOR_VALIDATION`，不作为默认部署经验。
+- [五张慢卡 2/1/1/1 Evolve 场景](raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md) — 正式准入已撤回；当前已仿真候选最优为 `PP=16,TP=1,DP=2,MBN=64`，但覆盖率仅 `65/873` 且缺少真实训练 Evaluation，因此恢复为 `KEEP_FOR_VALIDATION`，不作为默认部署经验。
 
 ## Comparisons
 

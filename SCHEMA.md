@@ -13,7 +13,7 @@
 - 每个知识页至少包含 2 个指向其他知识页的 `[[wikilinks]]`。
 - 每个新知识页都必须加入 `index.md`，每次操作都必须追加到 `log.md`。
 - 更新知识页时必须更新 `updated` 日期；原始来源只读，不在 `raw/` 内直接修订。
-- Evolve 仿真生成的 `scenario_analysis.md` 在运行目录中属于待审草稿。仿真完成后不得自动写入 `raw/` 或更新 `concepts/`；只有知识库所有者手动修改、审核并明确授权后，才把该文件的当前版本导入不可变 raw 快照。
+- Evolve 仿真完成后只在 `DAGBuilder_Evolve/outputs/` 根目录保留带场景名和时间戳的 `*_scenario_analysis.md` 待审草稿，不保留成功运行的场景子目录。仿真完成后不得自动写入 `raw/` 或更新 `concepts/`；只有知识库所有者手动修改、审核并明确授权后，才把该平铺文件的当前版本导入不可变 raw 快照。
 - `concepts/` 的经验更新必须以用户审核后的 raw 快照为唯一文本来源，不得直接从未审核草稿、`deployment_experience.json` 或 `final_report.json` 生成正式经验。
 - 综合 3 个及以上来源时，在关键段落末尾追加 `^[raw/articles/source-file.md]` 来源标记。
 - 若以后因独立治理需要重新建立具体经验页，其正文使用 `1. 场景描述` 和 `2. 具体的并行策略`；当前四个场景不创建重复经验页，直接由目标总览与 raw 来源共同承载。

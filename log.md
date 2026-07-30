@@ -811,3 +811,31 @@
 - Result: all 6 Evolve tests passed in 34.044 seconds.
 - Confirmed the current Wiki resolves four mature scenarios (normal, single slow, cross-affinity dual slow, symmetric four slow) and one `KEEP_FOR_VALIDATION` five-slow scenario.
 - Confirmed the generated gap now recommends dual-slow same-node/same-affinity variants and slow-card counts 3, 6, 7 and 8; it no longer recommends the already summarized cross-affinity dual-slow or four-slow cases.
+
+## [2026-07-30] review | Approve S7 five-slow source and concepts
+
+- The knowledge-base owner confirmed that `DAGBuilder_Evolve/outputs/s7-five-slow-2-1-1-1_20260730_144533/scenario_analysis.md` passed manual review and authorized raw/concepts admission.
+- The reviewed file SHA-256 is `3896fd84269edf7701961cf5968700af02f25cc9c072024f6615556fc95e6c48`, exactly matching `original_sha256` in the existing immutable snapshot `raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-2026-07-30.md`; no duplicate raw snapshot was created.
+- Revalidated the two concepts against that raw source. Their existing S7 case and source link already match the reviewed report, so no semantic rewrite was needed.
+- Admission remains `KEEP_FOR_VALIDATION`: manual source review authorizes Wiki inclusion but does not replace the missing real-training Evaluation or the unassessed `808/873` candidates, and no mature-experience promotion was authorized.
+
+## [2026-07-30] admission | Promote approved S7 to formal experience
+
+- Clarified the owner policy: “审核通过并授权入库” means formal mature admission, not merely source-content review.
+- Changed S7 from `KEEP_FOR_VALIDATION` to `ACCEPT_EXPERIENCE` and added its distinct distributed-heterogeneity rule to both objective concepts: use `TP=1,DP=2`, derive integer PP from `PP=active_gpu/(TP×DP)`, and choose MBN within deep-pipeline memory, bubble and scheduling boundaries.
+- Kept direct reuse restricted to the reviewed raw source's 32-card topology, model, workload, five-slow 2/1/1/1 placement and fixed Rank mapping. The `65/873` search coverage, four equivalent optima and missing real-training Evaluation remain explicit evidence limitations.
+- Updated the ScoreExpert entity, index, candidate review and both maintenance Skills so future owner-approved reports default to `ACCEPT_EXPERIENCE`; no immutable raw source was modified.
+
+## [2026-07-30] retract | Withdraw S7 formal experience admission
+
+- The knowledge-base owner explicitly withdrew the prior S7 approval after identifying an audit mistake.
+- Removed the S7 `TP=1,DP=2` deep-PP rule and its corresponding reason from both objective concepts, so it is no longer available for direct deployment inference.
+- Restored S7 to `KEEP_FOR_VALIDATION` in the candidate review, entity and index. The existing raw snapshot remains immutable as historical simulation evidence; no source file was deleted or rewritten.
+- Kept the general owner policy unchanged: a future “审核通过并授权入库” still means `ACCEPT_EXPERIENCE`, unless that approval is later explicitly withdrawn as in this case.
+
+## [2026-07-30] workflow | Flatten Evolve review-draft outputs
+
+- Changed the scenario-analysis pipeline to use a temporary run directory only while simulation and evidence validation are active.
+- After successful validation, the pipeline now moves the sole review draft to `DAGBuilder_Evolve/outputs/<scenario-id>_<timestamp>_scenario_analysis.md` and removes the temporary directory and supporting artifacts.
+- Flattened the existing S3, S4, S7 and S12 review drafts into the `outputs/` root; no scenario subdirectories remain.
+- Updated the Evolve README, Wiki schema, maintenance workflow and global scenario-analysis Skill. Existing immutable raw `source_path` fields remain historical and were not rewritten.

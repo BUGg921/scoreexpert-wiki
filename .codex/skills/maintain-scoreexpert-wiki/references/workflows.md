@@ -15,8 +15,8 @@
 
 Evolve 生成场景报告时固定分两步：
 
-1. 仿真结束后只在运行目录生成 `scenario_analysis.md` 待审草稿，向用户返回路径并停止；不得写入 `raw/` 或 `concepts/`。
-2. 用户手动修改并明确回复审核完成、授权放入 raw 和更新 concepts 后，重新读取该文件的当前内容，把它原样导入不可变 raw 快照；随后只根据该 raw 更新 concepts。
+1. 仿真结束后把报告平铺为 `DAGBuilder_Evolve/outputs/<scenario-id>_<timestamp>_scenario_analysis.md` 待审草稿，删除成功运行的临时场景目录，向用户返回文件路径并停止；不得写入 `raw/` 或 `concepts/`。
+2. 用户手动修改并明确回复审核完成、授权放入 raw 和更新 concepts 后，重新读取该平铺文件的当前内容，把它原样导入不可变 raw 快照；随后只根据该 raw 更新 concepts。
 
 如果用户只说“仿真”“跑一下”或“生成报告”，只执行第 1 步。不得把先前版本、生成时缓存或其他 JSON 证据替代用户审核后的文件。若用户只授权放入 raw、没有授权更新 concepts，则完成 raw 导入后停止。
 
