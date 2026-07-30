@@ -875,3 +875,21 @@
 - Removed the stale rule that missing real-training Evaluation automatically forces `KEEP_FOR_VALIDATION`; Evaluation gaps remain evidence boundaries while owner review controls maturity.
 - Added explicit category routing, same-rule merge criteria, immutable raw handling, and the agreed concepts formatting contract: aligned reason bullets, no applicability bullets or raw links in reasons, and source links in scene cases.
 - Synchronized the global scenario-analysis Skill, its workflow/UI metadata, and the project Wiki-maintenance Skill.
+
+## [2026-07-30] report | Hide formula candidate rank
+
+- Removed `formula candidate rank` from future `scenario_analysis.md` reports and from the unapproved S12, S14 and S15 review drafts.
+- Kept candidate rank in internal score-program evidence for attribution and debugging, while changing visible formula/simulation comparisons to avoid numeric formula ranks.
+- Left the already approved S3, S4 and S7 reports and immutable raw snapshots unchanged to preserve reviewed-source hashes.
+
+## [2026-07-30] skill | Add one automatic follow-up simulation round
+
+- Changed the default scenario-analysis campaign from one simulation to an initial scene plus one automatically selected highest-priority follow-up from the first report.
+- Bounded automation to one follow-up round and one scene per round unless the user explicitly expands it; the follow-up must be a valid single-variable control and must not repeat formal Wiki or current-campaign coverage.
+- Kept both reports in the flat Evolve outputs directory as independent review drafts. Automatic follow-up execution still does not authorize raw import or concepts changes.
+
+## [2026-07-30] skill | Parameterize simulation campaign limits
+
+- Replaced the fixed one-follow-up behavior with `analysis.campaign` controls for follow-up rounds, scenes per round, total scenes, wall time and convergence.
+- Required at least one explicit hard bound before automatic execution and removed fixed numeric defaults from the Skill workflow.
+- Defined any-enabled-limit stopping, configurable convergence modes, campaign-local duplicate prevention and between-scene wall-time enforcement.

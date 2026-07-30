@@ -757,11 +757,6 @@ def _write_raw_article_style_analysis(
         if score["candidate_score"] is None
         else f"{score['candidate_score']:.6f}"
     )
-    score_rank = (
-        "未记录"
-        if score["candidate_rank"] is None
-        else str(score["candidate_rank"])
-    )
     top_rows = [
         (
             f"| {index} | `{_strategy_label(item['strategy'])}` | "
@@ -806,9 +801,8 @@ def _write_raw_article_style_analysis(
             - 1.0
         )
         counterexample_text = (
-            f"公式把`{_strategy_label(score_counterexample['strategy'])}`排在第"
-            f"{score_counterexample['candidate_rank']}，高于最终候选的第"
-            f"{score_rank}；但其仿真时延为"
+            f"公式更偏好`{_strategy_label(score_counterexample['strategy'])}`；"
+            f"但其仿真时延为"
             f"`{score_counterexample['simulation_latency_s']:.6f} s`，"
             f"比最终候选慢`{slower:.2%}`。因此公式负责提名，"
             "不能直接替代数值仿真结论。"
@@ -1016,7 +1010,6 @@ def _write_raw_article_style_analysis(
         f"active GPUs = {strategy['active_gpus']}",
         f"simulated critical-path latency = {best['latency_s']:.6f} s",
         f"formula candidate score = {score_value}",
-        f"formula candidate rank = {score_rank}",
         "```",
         "",
         "",

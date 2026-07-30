@@ -240,6 +240,7 @@ class IntegrationTests(unittest.TestCase):
             self.assertIn("PP=active_gpu/(TP×DP)", analysis)
             self.assertNotIn("当前实例得到", analysis)
             self.assertNotIn("具体Rank映射为", analysis)
+            self.assertNotIn("formula candidate rank", analysis)
             self.assertIn("1. **", analysis)
             self.assertIn("双慢卡拓扑差集", analysis)
             self.assertIn("慢卡数量差集", analysis)
