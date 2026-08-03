@@ -1100,3 +1100,30 @@
 - Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
 - Confirmed `concepts/`, `entities/` and `index.md` contain no standalone score, scoring, 评分, 打分 or idle-penalty explanation; the ScoreExpert proper name remains unchanged.
 - Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
+
+## [2026-08-03] correction | Express applicability without fixed-card vectors
+
+- Removed `s/a` symbols and fixed-length node/affinity distribution tuples from formal experience rules.
+- Rephrased the merged distributed rule as equal slow-card counts across affected nodes and equal totals across affinity groups, with comparable effective slowdown when speed ratios differ.
+- Rephrased the asymmetric distributed rule as one node carrying twice the slow-card count of every other equal nonzero node, with its affinity group carrying the larger total.
+- Updated schema, maintenance Skill, workflow, template and ScoreExpert entry so future applicability rules use card-count-independent text relationships. Raw sources remain unchanged.
+
+## [2026-08-03] lint | Card-count-independent applicability wording
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed formal experience content contains no `s/a` notation, slow-card vectors or fixed-length distribution tuples.
+- Confirmed applicability rules use only relative textual relationships across affected nodes and affinity groups, while total resource size is reserved for later parameter solving.
+- Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
+
+## [2026-08-03] correction | Generalize asymmetric routing from twice to more
+
+- Replaced the exact twice-as-many trigger with a strict textual comparison: one node has more slow GPUs than every other node, while all remaining nodes have the same positive count.
+- Kept the affinity-group imbalance and comparable slow-GPU speed conditions so the asymmetric branch remains directly distinguishable from the balanced distributed branch.
+- Updated schema, maintenance Skill, workflow and template to allow exact greater-than/less-than relationships without requiring a fixed ratio. Raw sources remain unchanged.
+
+## [2026-08-03] lint | Greater-than asymmetric routing
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed formal experience and maintenance rules no longer require a twice-as-many slow-GPU ratio.
+- Confirmed the asymmetric rule remains a strict hit condition through one uniquely denser node, equal positive counts on all other nodes, affinity-group imbalance and comparable slow-GPU speeds.
+- Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
