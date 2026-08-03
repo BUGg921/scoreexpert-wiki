@@ -50,6 +50,17 @@ class ScenarioConfig:
                 all_ranks.extend(int(rank) for rank in server["ranks"])
         if sorted(all_ranks) != list(range(total)):
             raise ValueError("Physical topology must cover every rank exactly once")
+        overrides: dict[int, Any] = {}
+        for raw_rank, override in data["topology"].get(
+            "device_overrides", {}
+        ).items():
+            rank = int(raw_rank)
+            if rank < 0 or rank >= total:
+                raise ValueError(f"Device override rank is out of range: {rank}")
+            if rank in overrides:
+                raise ValueError(f"Duplicate device override rank: {rank}")
+            overrides[rank] = override
+        data["topology"]["device_overrides"] = overrides
         if int(data["model"]["num_layers"]) <= 0 or int(data["workload"]["global_batch_size"]) <= 0:
             raise ValueError("Model layers and global batch size must be positive")
         return cls(**data)

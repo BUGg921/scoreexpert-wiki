@@ -1,0 +1,15 @@
+interface:
+  display_name: "ScoreExpert 场景路由"
+  short_description: "使用 DeepWiki 召回并按需完成仿真与经验准入"
+  default_prompt: "使用 $route-scoreexpert-scenario 输入一个 GPU 部署场景，先查经验库，未命中时再仿真补库。"
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "deepwiki"
+      description: "召回 BUGg921/scoreexpert-wiki 中的候选成熟经验与 raw 来源"
+      transport: "streamable_http"
+      url: "https://mcp.deepwiki.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

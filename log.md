@@ -893,3 +893,210 @@
 - Replaced the fixed one-follow-up behavior with `analysis.campaign` controls for follow-up rounds, scenes per round, total scenes, wall time and convergence.
 - Required at least one explicit hard bound before automatic execution and removed fixed numeric defaults from the Skill workflow.
 - Defined any-enabled-limit stopping, configurable convergence modes, campaign-local duplicate prevention and between-scene wall-time enforcement.
+
+## [2026-08-02] delete | Remove July 30 experience-library additions
+
+- Removed the four raw snapshots added on 2026-07-30: S3 same-node dual slow GPUs, S4 same-affinity cross-node dual slow GPUs, and both S7 five-slow 2/1/1/1 snapshots.
+- Removed the two 2026-07-30 candidate-review outputs associated with those snapshots.
+- Removed all corresponding sources, mature strategy branches, scene cases and counts from the ScoreExpert entity, both objective concepts, the index, schema and project maintenance workflow.
+- Preserved the four 2026-07-22 raw sources and their mature latency-first rules: homogeneous, single-slow, cross-affinity dual-slow and symmetric four-slow.
+- Preserved `DAGBuilder_Evolve/outputs/` review drafts and unrelated uncommitted Evolve code/configuration changes because they are outside the formal experience library.
+- The deleted tracked files remain recoverable from Git history; no commit or push was performed.
+
+## [2026-08-02] lint | July 22-only experience library
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; structural checks and `git diff --check` passed.
+- Confirmed no maintained Wiki page, schema or project maintenance rule links to the removed 2026-07-30 raw snapshots or candidate reviews.
+- Confirmed `raw/articles/` contains only the four retained 2026-07-22 scenario sources.
+
+## [2026-08-03] update | Make applicability conditions input-observable
+
+- Replaced vague benefit inequalities and pre-assumed group/stage conditions in all three mature latency-first strategy branches with hard conditions available before parameter selection: available GPUs, node and affinity topology, physical slow-card distribution, model/memory constraints, mapping capability and raw boundaries.
+- Defined node and affinity slow-card vectors as the physical classification inputs; TP groups, PP stages, DP replicas, bubble, skew and predicted execution time are now generated and checked only after selecting `PP/TP/DP/MBN` and rank mapping.
+- Synchronized the objective framework, ScoreExpert entry, index, schema, maintenance Skill, workflow and templates. No raw source or pending Evolve report was modified.
+
+## [2026-08-03] lint | Input-observable applicability conditions
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed the maintained concepts no longer use vague benefit inequalities or pre-existing group/stage membership as strategy applicability conditions.
+
+## [2026-08-03] update | Make local-heterogeneity deployment executable
+
+- Expanded the mature local-heterogeneity strategy from parameter selection into an executable deployment: `DP=1`, node-local two-rank TP groups, one TP group per PP stage, the slow rank paired with one same-node normal rank, and integer layer redistribution that minimizes predicted stage-time spread.
+- Restricted direct reuse to the admitted single approximately half-speed slow-GPU boundary; changed slow-card count, speed or placement now requires a new raw-supported branch rather than inheriting the single-card mapping.
+- Required future formal experience to include rank grouping, stage/replica construction and layer or compute allocation actions in addition to `PP/TP/DP/MBN`.
+
+## [2026-08-03] lint | Executable local-heterogeneity deployment
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed the local-heterogeneity entry now states parameter solving, node-local TP grouping, PP-stage construction, layer rebalancing, deployment checks and fallback conditions.
+
+## [2026-08-03] update | Separate scene classification from deployment execution
+
+- Removed repeated physical heterogeneity conditions from the parallel-strategy sections; scene definitions now own physical classification, while scene cases and raw sources own concrete resource and quantitative boundaries.
+- Kept local-heterogeneity deployment executable by retaining mapping capability as an execution prerequisite, followed by parameter solving, node-local TP grouping, PP-stage construction, layer redistribution and deployment checks.
+- Synchronized the objective summaries, schema, index, maintenance Skill, workflow and templates so future experience does not duplicate scene definitions inside parallel strategies.
+
+## [2026-08-03] lint | Scene and strategy responsibility split
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed no maintained objective summary repeats physical scene-matching conditions as parallel-strategy applicability text.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+
+## [2026-08-03] format | Shorten local-heterogeneity strategy
+
+- Reduced the local-heterogeneity strategy to four operational fields: parameters, node-local grouping, slow-stage load reduction and fallback.
+- Moved detailed topology and layer-allocation reasoning out of the strategy wording while preserving the executable deployment actions and raw boundary.
+
+## [2026-08-03] lint | Concise local-heterogeneity strategy
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the concise strategy still contains parameters, concrete group/stage mapping, load rebalancing and a failure fallback.
+
+## [2026-08-03] update | Restrict parallel strategy to four parameters
+
+- Corrected the experience format so “并行策略” contains only `PP`, `TP`, `DP` and `MBN` selection rules.
+- Removed rank grouping, stage/replica mapping, layer redistribution and runtime checks from all three objective-summary strategy branches; those details remain in immutable raw sources.
+- Synchronized the complete framework, ScoreExpert entry, index, schema, maintenance Skill, workflow and templates with the four-parameter contract.
+
+## [2026-08-03] lint | Four-parameter parallel strategies
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed the maintained parallel-strategy sections contain only `PP`, `TP`, `DP` and `MBN` rules.
+
+## [2026-08-03] update | Rebuild parameter strategies from raw sources
+
+- Re-read all four immutable 2026-07-22 raw sources and replaced over-generalized parameter formulas with the exact `PP`, `TP`, `DP` and `MBN` conclusions supported by each 32-card scene.
+- Restored two-slow and four-slow distributed heterogeneity as separate strategies despite their shared `PP=1,TP=8,DP=4,MBN=1` tuple: the former addresses fast/slow replica waiting, while the latter depends on symmetric slow-card distribution across replicas.
+- Removed the unsupported assumption that current fixed 32-card results can be automatically converted to other resource sizes; future scaling requires a newly admitted raw rule.
+- Synchronized the complete framework, index, schema, maintenance Skill, workflow and templates. No raw source was modified.
+
+## [2026-08-03] lint | Raw-faithful parameter strategies
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed each maintained strategy tuple matches its immutable raw source and the maintenance Skill frontmatter parses successfully.
+- Confirmed the distributed section retains separate two-slow and four-slow parameter strategies and reasons.
+
+## [2026-08-03] update | Normalize experience without fixed parameter numbers
+
+- Replaced fixed `PP/TP/DP/MBN` tuples in maintained experience summaries, framework, entity and index with concrete variable relationships: `N` for active GPUs, `G` for GPUs per node, `PP×TP×DP=N`, topology-aligned TP, full-card DP and bounded minimum/maximum PP or MBN.
+- Kept scenario-specific differences from raw: local heterogeneity uses minimum local TP, minimum DP, full-card deep PP and bounded maximum MBN; two-slow distributed heterogeneity retains fast/slow replica waiting; four-slow distributed heterogeneity adds replica-symmetry constraints.
+- Restricted fixed parameter numbers to immutable raw sources and clarified that symbolic normalization does not automatically admit new resource sizes or topologies.
+- Synchronized schema, maintenance Skill, workflow and templates with this contract. No raw source was modified.
+
+## [2026-08-03] lint | Variable parameter relationships
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed maintained concepts, entity, index, schema and maintenance instructions contain no fixed numeric `PP/TP/DP/MBN` assignments.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+
+## [2026-08-03] correction | Remove unsupported homogeneous TP rule
+
+- Corrected the over-generalization that homogeneous deployment should choose `TP=G`; the homogeneous raw source only shows that its fixed-scene optimum happens to align TP with the per-node GPU count.
+- Replaced that rule with joint TP/DP candidate selection under `TP≤G`, `TP×DP=N/PP` and the matching raw scoring boundary; `G` is now only a TP candidate limit.
+- Applied the same correction to the distributed-heterogeneity summaries where the current optimum also happens to remain node-local. No raw source was modified.
+
+## [2026-08-03] correction | Preserve raw TP-to-DP ratio
+
+- Restored the explicit `TP:DP=2:1` quantitative relationship from the homogeneous, two-slow and four-slow raw sources instead of reducing it to an unspecified TP/DP joint optimum.
+- Kept the ratio scoped to each matching raw boundary; it does not independently admit a different resource scale or topology.
+- Retained the two-slow and four-slow experiences as separate branches because their heterogeneity mechanisms differ despite sharing the same parameter ratio. No raw source was modified.
+
+## [2026-08-03] lint | Raw TP-to-DP ratio
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed the maintained experience keeps `TP:DP=2:1` while containing no fixed numeric `PP/TP/DP/MBN` assignments.
+
+## [2026-08-03] correction | State the ratio as experience
+
+- Rewrote `TP:DP=2:1` as a direct deployment rule, `TP=2×DP`, instead of saying that parameters merely satisfy a value supplied by raw.
+- Kept raw references in evidence and boundary text rather than in the four-field parallel strategy.
+- Added an integer-feasibility boundary: if the ratio and full-card equation have no positive integer solution for the input scale, the experience cannot be applied directly. No raw source was modified.
+
+## [2026-08-03] lint | Direct ratio experience
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the parallel-strategy sections state `TP=2×DP` directly and contain no evidence-source wording.
+
+## [2026-08-03] correction | Treat full-card use as parallel strategy
+
+- Added resource use as a first-class parallel-strategy field before `PP/TP/DP/MBN` rather than leaving full-card deployment implicit in the product equation or parameter reasons.
+- Recorded `active_gpu=N` for all four mature raw-backed branches; heterogeneous branches explicitly retain slow GPUs.
+- Updated schema, maintenance Skill, templates and query workflow so future experience states either full-card use or a computable card-selection rule. No raw source was modified.
+
+## [2026-08-03] lint | Resource use in parallel strategy
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed all four mature strategy branches explicitly state `active_gpu=N` before `PP/TP/DP/MBN`.
+
+## [2026-08-03] ingest | Approve five-slow 2/1/1/1 Evolve experience
+
+- Approved source: `DAGBuilder_Evolve/outputs/s7-five-slow-2-1-1-1_20260730_144533_scenario_analysis.md`; SHA-256 `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
+- Created immutable exact snapshot: `raw/articles/five-slow-gpu-2-1-1-1-evolve-analysis-reviewed-2026-08-03.md`; verified that its body is byte-for-byte equal to the approved report.
+- Candidate audit `s7-five-slow-2111-20260803`: source traceable=yes; trigger conditions=yes; deployment action=yes; non-score mechanism=yes; observable outcome=yes; failure boundary=yes; new value=yes; decision=`ACCEPT_EXPERIENCE` by explicit knowledge-base owner approval.
+- Admitted a separate distributed-heterogeneity branch for the node slow-card vector `2/1/1/1`: full-card use, minimum TP, `TP:DP=1:2`, `PP=N/(TP×DP)`, and unit-microbatch relation `MBN=B/DP` under the reviewed boundary.
+- Preserved the report's low search coverage, equivalent schedule/communication winners, absent real-training P50/P99/throughput/memory-peak/variance evidence, and original pre-approval `KEEP_FOR_VALIDATION` text in raw. Owner approval controls mature Wiki admission; the evidence gaps continue to constrain direct reuse.
+- Updated the latency-first overview, complete objective framework, ScoreExpert entity, index, schema, maintenance Skill and query workflow. The previously deleted July 30 raw snapshots and candidate reviews were not restored.
+
+## [2026-08-03] lint | Approved five-slow 2/1/1/1 experience
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the approved source SHA-256 and imported raw body SHA-256 are both `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`, with exact body equality.
+- Confirmed the project maintenance Skill frontmatter parses successfully and the five-slow branch contains no fixed individual `PP/TP/DP/MBN` assignments outside raw.
+
+## [2026-08-03] refactor | Merge identical parallel strategies by parameter characteristics
+
+- Changed the parallel-strategy merge key to the five variable relationships: resource use, `PP`, `TP`, `DP` and `MBN`.
+- Merged the two-cross-affinity-slow and four-symmetric-slow scenes into one “minimum-PP, TP-dominant full-card” strategy because all five relationships match; retained fast/slow replica waiting and symmetric-replica behavior separately in reasons and scene cases.
+- Kept the five-slow 2/1/1/1 scene separate as a “deep-PP, minimum-TP dual-replica” strategy because its TP/DP direction, PP solving rule and MBN relation differ.
+- Updated schema, project maintenance Skill, templates, query workflow, framework, entity and index. All raw sources remain unchanged.
+
+## [2026-08-03] lint | Parameter-characteristic strategy merge
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the project maintenance Skill frontmatter parses successfully.
+- Confirmed the distributed-heterogeneity overview now has two parameter-distinct strategies and three separately linked raw scene cases; the approved five-slow raw hash remains unchanged.
+
+## [2026-08-03] update | Add decidable applicability rules to every parallel strategy
+
+- Added one input-decidable applicability rule before the resource/PP/TP/DP/MBN actions of every mature latency-first strategy.
+- Separated category classification from within-category strategy selection: scene definitions classify homogeneous/local/distributed heterogeneity, while applicability rules select a strategy from topology, node/affinity slow-card vectors, speed ratios, model/workload boundaries, mapping capabilities and integer feasibility.
+- The merged distributed strategy now preserves its two admitted input patterns with an explicit OR rule; the deep-PP dual-replica strategy uses the asymmetric node-vector and affinity-vector ratios from its reviewed raw source.
+- Added a hard fallback: no hit, multiple conflicting hits or infeasible integer topology goes to simulation and knowledge-base completion instead of nearest-strategy reuse. Raw sources remain unchanged.
+
+## [2026-08-03] lint | Decidable strategy applicability rules
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed all four mature latency-first strategies contain one applicability rule and that the rules do not require pre-existing TP group, PP stage or DP replica information.
+- Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
+
+## [2026-08-03] correction | Restrict applicability rules to scene-input routing
+
+- Removed the repeated latency-first label from every strategy because the containing overview already fixes the optimization objective.
+- Removed raw-boundary matching, model/workload checks, mapping capability and parameter integer feasibility from the visible applicability rules; these remain downstream deployment checks after a strategy is selected.
+- Reduced strategy routing to input heterogeneity: no slow cards, one slow card, cross-affinity two-slow or per-node symmetric four-slow distribution, and the `2:1:1:1` node / `3:2` affinity distribution.
+- Updated schema, maintenance Skill, workflow, template, objective framework and ScoreExpert entry. Raw sources remain unchanged.
+
+## [2026-08-03] lint | Scene-input-only applicability rules
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed the four visible applicability rules contain only input heterogeneity conditions and do not repeat the optimization objective, raw boundaries, model constraints or parameter-feasibility checks.
+- Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.
+
+## [2026-08-03] correction | Remove scoring-strategy language from formal experience
+
+- Removed scoring penalties, score selection and scoring-formula explanations from the latency-first experience summary, objective framework, ScoreExpert entry and index.
+- Rewrote reasons using only deployment mechanisms: full-card compute utilization, communication scope, synchronization waiting, pipeline bubble, replica skew and scheduling.
+- Kept scoring code and candidate-ranking evidence only in immutable raw sources and governance/audit instructions; no raw source was modified.
+- Updated schema, maintenance Skill, workflow and template so future formal experience content follows the same boundary.
+
+## [2026-08-03] lint | Scoring-free formal experience
+
+- Result: `Pages: 3 | Errors: 0 | Review items: 0`; Wiki structural checks and `git diff --check` passed.
+- Confirmed `concepts/`, `entities/` and `index.md` contain no standalone score, scoring, 评分, 打分 or idle-penalty explanation; the ScoreExpert proper name remains unchanged.
+- Confirmed the approved five-slow raw body SHA-256 remains `7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e`.

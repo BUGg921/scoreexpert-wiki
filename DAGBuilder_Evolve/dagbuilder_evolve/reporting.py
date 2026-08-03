@@ -105,6 +105,35 @@ def _load_wiki_experience_coverage(summary_path: Path) -> list[dict[str, Any]]:
     return coverage
 
 
+def _load_campaign_report_coverage(config: ScenarioConfig) -> list[dict[str, Any]]:
+    campaign = config.analysis.get("campaign", {})
+    coverage: list[dict[str, Any]] = []
+    seen: set[Path] = set()
+    for raw_path in campaign.get("completed_report_paths", []):
+        path = Path(str(raw_path)).resolve()
+        if path in seen or not path.is_file():
+            continue
+        seen.add(path)
+        text = path.read_text(encoding="utf-8")
+        slow_count = _slow_count_from_source(path, text)
+        if slow_count is None:
+            continue
+        scene_text = text.split("## 最优解", 1)[0]
+        coverage.append(
+            {
+                "label": path.stem,
+                "slow_count": slow_count,
+                "distribution_variant": (
+                    _distribution_variant(f"{path.name}\n{scene_text}")
+                    if slow_count >= 2
+                    else None
+                ),
+                "source": str(path),
+            }
+        )
+    return coverage
+
+
 def _slow_mapping_evidence(
     config: ScenarioConfig,
     best: dict[str, Any],
@@ -396,6 +425,194 @@ def _automatic_reasoning(
                 "不代表未仿真候选中的全局最优。"
             ),
         ],
+    }
+
+
+def _build_codex_experience_evidence(
+    config: ScenarioConfig,
+    report: dict[str, Any],
+    placement: dict[str, Any],
+    score: dict[str, Any],
+) -> dict[str, Any]:
+    server_ids = sorted(
+        int(server["server_id"])
+        for affinity in config.topology["affinity_groups"]
+        for server in affinity["servers"]
+    )
+    rank_to_server = {
+        int(rank): int(server["server_id"])
+        for affinity in config.topology["affinity_groups"]
+        for server in affinity["servers"]
+        for rank in server["ranks"]
+    }
+    per_server = {server_id: 0 for server_id in server_ids}
+    for rank in config.topology.get("device_overrides", {}):
+        server_id = rank_to_server.get(int(rank))
+        if server_id is not None:
+            per_server[server_id] += 1
+
+    def result_summary(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "strategy": item["strategy"],
+            "latency_s": item["latency_s"],
+            "memory": item.get("memory"),
+            "critical_path_category_s": item.get("critical_path_category_s"),
+        }
+
+    return {
+        "scenario": {
+            "name": config.name,
+            "topology": config.topology,
+            "model": config.model,
+            "workload": config.workload,
+            "memory": config.memory,
+            "network": config.network,
+            "slow_cards_per_server": [
+                per_server[server_id] for server_id in server_ids
+            ],
+        },
+        "winner": result_summary(report["best"]),
+        "top_candidates": [result_summary(item) for item in report["top10"]],
+        "equivalent_best": [
+            result_summary(item) for item in report["equivalent_best"]
+        ],
+        "one_dimension_neighbors": [
+            {
+                "changed_dimension": item["changed_dimension"],
+                **result_summary(item),
+            }
+            for item in report.get("one_dimension_neighbors", [])
+        ],
+        "placement": placement,
+        "score_program": {
+            "program_id": score["program_id"],
+            "island": score["island"],
+            "generation": score["generation"],
+            "attribution": score["attribution"],
+            "candidate_score": score["candidate_score"],
+            "visible_inputs": score["visible_inputs"],
+            "formula_source": score["formula_source"],
+            "ranked_candidate_evidence": score.get(
+                "ranked_candidate_evidence", []
+            ),
+            "boundaries": score.get("boundaries", []),
+        },
+        "search": {
+            "definition_of_best": report["definition_of_best"],
+            "evaluated_strategy_count": report["evaluated_strategy_count"],
+            "passed_strategy_count": report["passed_strategy_count"],
+            "total_strategy_count": report["total_strategy_count"],
+            "coverage": report["coverage"],
+        },
+        "real_training_evaluation": config.analysis.get(
+            "real_training_evaluation"
+        ),
+    }
+
+
+def _validate_codex_experience_summary(
+    value: dict[str, Any], evidence: dict[str, Any]
+) -> dict[str, Any]:
+    required = {
+        "parallel_strategy",
+        "reason_title",
+        "reason_bullets",
+        "conclusion_boundaries",
+    }
+    missing = sorted(required - set(value))
+    if missing:
+        raise ValueError(f"Experience summary is missing fields: {missing}")
+    if not isinstance(value["reason_bullets"], list):
+        raise ValueError("Experience summary reason_bullets must be a list")
+    if not isinstance(value["conclusion_boundaries"], list):
+        raise ValueError("Experience summary conclusion_boundaries must be a list")
+    parallel_strategy = str(value["parallel_strategy"]).strip()
+    reason_title = str(value["reason_title"]).strip()
+    reason_bullets = [
+        str(item).strip() for item in value["reason_bullets"]
+        if str(item).strip()
+    ]
+    boundaries = [
+        str(item).strip() for item in value["conclusion_boundaries"]
+        if str(item).strip()
+    ]
+    if not parallel_strategy or not reason_title:
+        raise ValueError("Experience summary contains an empty strategy or title")
+    if len(reason_bullets) < 3:
+        raise ValueError("Experience summary needs at least three evidence reasons")
+    if len(boundaries) < 2:
+        raise ValueError("Experience summary needs at least two conclusion boundaries")
+    combined = "\n".join(
+        [parallel_strategy, reason_title, *reason_bullets, *boundaries]
+    )
+    prohibited = (
+        "formula candidate rank",
+        "当前实例得到",
+        "具体Rank映射",
+        "全局最优",
+    )
+    found = [text for text in prohibited if text in combined]
+    if found:
+        raise ValueError(f"Experience summary contains prohibited claims: {found}")
+    search = evidence["search"]
+    coverage_text = (
+        f"{search['evaluated_strategy_count']}/{search['total_strategy_count']}"
+    )
+    if coverage_text not in combined:
+        raise ValueError("Experience summary does not state evaluated search coverage")
+    if "当前已仿真候选最优" not in combined:
+        raise ValueError("Experience summary overstates or omits the definition of best")
+    if evidence["real_training_evaluation"] is None and "Evaluation" not in combined:
+        raise ValueError("Experience summary omits the missing real Evaluation boundary")
+    if not any("公式" in item and "仿真" in item for item in reason_bullets):
+        raise ValueError("Experience summary does not separate formula and simulation")
+    winner = evidence["winner"]
+    winner_strategy = winner["strategy"]
+    for key, label in (
+        ("pp", "PP"),
+        ("tp", "TP"),
+        ("dp", "DP"),
+        ("micro_batch_num", "MBN"),
+    ):
+        parameter = f"{label}={int(winner_strategy[key])}"
+        if parameter not in combined:
+            raise ValueError(
+                f"Experience summary omits the concrete winner {label} value"
+            )
+    winner_latency = f"{float(winner['latency_s']):.6f}"
+    if winner_latency not in combined:
+        raise ValueError(
+            "Experience summary omits the concrete simulated winner latency"
+        )
+    winner_memory = winner.get("memory", {}).get("estimated_total_gb")
+    if winner_memory is not None and f"{float(winner_memory):.3f}" not in combined:
+        raise ValueError(
+            "Experience summary omits the concrete winner memory estimate"
+        )
+    placement = evidence.get("placement", {})
+    if placement.get("active_slow_ranks"):
+        for affected_key, total_key, label in (
+            ("affected_tp_group_count", "total_tp_group_count", "TP"),
+            ("affected_pp_stage_count", "total_pp_stage_count", "PP"),
+            ("affected_dp_replica_count", "total_dp_replica_count", "DP"),
+        ):
+            ratio = f"{placement[affected_key]}/{placement[total_key]}"
+            if ratio not in combined:
+                raise ValueError(
+                    f"Experience summary omits the concrete {label} exposure ratio"
+                )
+    neighbors = evidence.get("one_dimension_neighbors", [])
+    if neighbors and not any(
+        f"{float(item['latency_s']):.6f}" in combined for item in neighbors
+    ):
+        raise ValueError(
+            "Experience summary omits concrete one-dimension neighbor latency"
+        )
+    return {
+        "parallel_strategy": parallel_strategy,
+        "reason_title": reason_title,
+        "reason_bullets": reason_bullets,
+        "conclusion_boundaries": boundaries,
     }
 
 
@@ -769,74 +986,6 @@ def _write_raw_article_style_analysis(
     equivalent_text = "、".join(
         f"`{_strategy_label(item['strategy'])}`" for item in equivalent
     )
-    critical = best.get("critical_path_category_s", {})
-    critical_total = sum(critical.values())
-    critical_text = "、".join(
-        f"{key}={value / critical_total:.1%}"
-        for key, value in sorted(
-            critical.items(), key=lambda item: item[1], reverse=True
-        )
-        if critical_total > 0 and value > 0
-    )
-    score_counterexample = next(
-        (
-            item
-            for item in score.get("ranked_candidate_evidence", [])
-            if item["candidate_rank"] < (score["candidate_rank"] or 10**9)
-            and item["simulation_status"] == "pass"
-            and item["simulation_latency_s"] > best["latency_s"]
-            and item["strategy"] is not None
-        ),
-        None,
-    )
-    if score_counterexample is None:
-        counterexample_text = (
-            "当前没有“公式排名更高但仿真更慢”的已评估反例；"
-            "公式只用于提名，最终仍以数值仿真排序。"
-        )
-    else:
-        slower = (
-            float(score_counterexample["simulation_latency_s"])
-            / float(best["latency_s"])
-            - 1.0
-        )
-        counterexample_text = (
-            f"公式更偏好`{_strategy_label(score_counterexample['strategy'])}`；"
-            f"但其仿真时延为"
-            f"`{score_counterexample['simulation_latency_s']:.6f} s`，"
-            f"比最终候选慢`{slower:.2%}`。因此公式负责提名，"
-            "不能直接替代数值仿真结论。"
-        )
-    replica_counts = placement.get("replica_slow_counts", {})
-    replica_text = "、".join(
-        f"副本{key}含{value}张慢卡"
-        for key, value in sorted(replica_counts.items())
-    )
-    schedule_reason = (
-        f"相对误差`1e-6`内存在{len(equivalent)}个等价最优："
-        f"{equivalent_text}。当前数值模型不能据此区分调度和DP通信实现，"
-        "真实部署需用训练Evaluation选择。"
-    )
-    if slow_ranks:
-        tp_reason = (
-            f"`TP={strategy['tp']}`把TP同步范围限制在"
-            f"{'单卡、消除TP集合通信' if int(strategy['tp']) == 1 else f'单节点{cards_per_server}卡边界内'}；"
-            "慢卡不会通过跨节点TP集合通信进一步放大等待。"
-        )
-    else:
-        tp_reason = (
-            f"`TP={strategy['tp']}`不跨单节点{cards_per_server}卡边界，"
-            "保持高频TP通信局部化。"
-        )
-    dp_reason = (
-        f"`DP={strategy['dp']}`与PP、TP共同使用"
-        f"{strategy['active_gpus']}/{config.topology['total_devices']}张卡。"
-    )
-    if replica_text:
-        dp_reason += (
-            f"当前映射中{replica_text}；该不对称结构需要以副本关键路径"
-            "和真实训练尾延迟为护栏，必要时优先重映射慢卡。"
-        )
     affected_affinities = {
         int(item["affinity_group_id"])
         for item in placement.get("slow_rank_mapping", [])
@@ -845,31 +994,7 @@ def _write_raw_article_style_analysis(
         int(item["server_id"])
         for item in placement.get("slow_rank_mapping", [])
     }
-    if not slow_ranks:
-        reusable_condition = (
-            "没有稳定设备快慢差异，且`空闲卡损失 > 增加通信或减少并行规模的收益`"
-        )
-        experience_category = "同构基线"
-    elif len(affected_affinities) == 1 and len(affected_servers) == 1:
-        reusable_condition = (
-            "异常设备能够收敛到一个局部执行单元，且"
-            "`保留异常卡并局部隔离的算力收益 > 深流水线与重映射成本`"
-        )
-        experience_category = "局部异构"
-    else:
-        reusable_condition = (
-            "异常设备跨多个节点或亲和组、无法通过一个局部执行单元完成隔离，且"
-            "`保留满卡与数据并行的收益 > replica等待和DP通信成本`"
-        )
-        experience_category = "分布式异构"
-    parameter_rule = (
-        f"先取能够限制异常同步扩散的最小已验证`TP={strategy['tp']}`；"
-        f"再保留本轮仿真有收益的`DP={strategy['dp']}`；"
-        f"在满卡约束下由`PP=active_gpu/(TP×DP)="
-        f"{strategy['active_gpus']}/({strategy['tp']}×{strategy['dp']})="
-        f"{strategy['pp']}`反推PP；最后取显存、气泡和调度边界内"
-        f"已验证的`MBN={strategy['micro_batch_num']}`"
-    )
+    codex_experience = experience["codex_experience_summary"]
     formula_source = score["formula_source"].rstrip()
     default_summary = (
         Path(__file__).resolve().parents[2]
@@ -880,6 +1005,7 @@ def _write_raw_article_style_analysis(
         config.analysis.get("experience_summary_path", default_summary)
     ).resolve()
     experience_coverage = _load_wiki_experience_coverage(summary_path)
+    campaign_coverage = _load_campaign_report_coverage(config)
     current_slow_count = len(slow_ranks)
     per_server_slow: dict[int, int] = {}
     for rank in slow_ranks:
@@ -912,11 +1038,12 @@ def _write_raw_article_style_analysis(
         for item in experience_coverage
     ]
     covered_counts = {
-        int(item["slow_count"]) for item in experience_coverage
+        int(item["slow_count"])
+        for item in [*experience_coverage, *campaign_coverage]
     } | {current_slow_count}
     count_targets = [3, 4, 6, 7, 8]
     missing_counts = [value for value in count_targets if value not in covered_counts]
-    missing_count_text = "、".join(str(value) for value in missing_counts) or "无"
+    missing_count_text = "、".join(str(value) for value in missing_counts)
     count_explanations = {
         3: "3张观察奇数慢卡造成的副本不对称",
         4: "4张构造每节点1张的对称对照",
@@ -928,12 +1055,12 @@ def _write_raw_article_style_analysis(
         count_explanations[value] for value in missing_counts
     ) or "当前数量梯度没有上述缺口"
     low_density_missing = [value for value in (3, 4) if value in missing_counts]
-    low_density_text = "和".join(str(value) for value in low_density_missing) or "无"
+    low_density_text = "和".join(str(value) for value in low_density_missing)
     high_density_missing = [value for value in (6, 8) if value in missing_counts]
-    high_density_text = "和".join(str(value) for value in high_density_missing) or "无"
+    high_density_text = "和".join(str(value) for value in high_density_missing)
     dual_variants = {
         str(item["distribution_variant"])
-        for item in experience_coverage
+        for item in [*experience_coverage, *campaign_coverage]
         if int(item["slow_count"]) == 2 and item["distribution_variant"]
     }
     if current_slow_count == 2:
@@ -957,7 +1084,24 @@ def _write_raw_article_style_analysis(
         for key, label in dual_variant_labels.items()
         if key not in dual_variants
     ]
-    missing_dual_text = "、".join(missing_dual_variants) or "无"
+    missing_dual_text = "、".join(missing_dual_variants)
+    dual_gap_text = (
+        f"经验库当前仍缺少{missing_dual_text}场景。"
+        if missing_dual_variants
+        else "经验库已经覆盖同一节点、同亲和组不同节点和跨亲和组三类场景。"
+    )
+    count_gap_text = (
+        f"建议补充{missing_count_text}张慢卡。其中{missing_count_reason}。"
+        if missing_counts
+        else "当前目标数量梯度均已覆盖。"
+    )
+    dual_recommendation = (
+        f"1. **P0—补齐双慢卡拓扑对照**：优先仿真{missing_dual_text}；"
+        "保持慢卡数量不变，可以直接识别节点边界、亲和边界和replica映射"
+        "对策略的影响。"
+        if missing_dual_variants
+        else "1. **P0—双慢卡拓扑对照**：三类拓扑均已覆盖，无需重复仿真。"
+    )
     fixed_dimensions = [
         str(item) for item in config.analysis.get("fixed_dimensions", [])
     ]
@@ -1031,89 +1175,51 @@ def _write_raw_article_style_analysis(
         "",
         "## 经验总结",
         "",
-        '### <span style="color:blue;">(1) 并行策略</span>',
+        "### (1) 并行策略",
         "",
-        (
-            f"1. 当{reusable_condition}时，优先采用满卡方案。参数按以下规则求解："
-            f"{parameter_rule}。"
-        ),
+        f"1. {codex_experience['parallel_strategy']}",
         "",
-        '### <span style="color:blue;">(2) 原因</span>',
+        "### (2) 原因",
         "",
-        (
-            f"1. **{experience_category}参数求解与映射原因**："
-        ),
-        (
-            f"   - **TP**：{tp_reason}"
-        ),
-        (
-            f"   - **DP**：{dp_reason}"
-        ),
-        (
-            f"   - **PP/MBN**：32层模型可被{strategy['pp']}个stage整除；"
-            f"当前气泡近似为`{metrics['pipeline_bubble_ratio']:.2%}`，"
-            f"派生micro-batch size为`{metrics['derived_microbatch_size']:.3f}`。"
-            f"`MBN={strategy['micro_batch_num']}`只是在当前显存、气泡和搜索边界内"
-            "与该PP深度配套的已验证值。"
-        ),
-        (
-            f"   - **仿真观测**：关键路径中"
-            f"{critical_text or '缺少分类拆解'}；慢卡影响"
-            f"{placement['affected_tp_group_count']}/{placement['total_tp_group_count']}个TP group、"
-            f"{placement['affected_pp_stage_count']}/{placement['total_pp_stage_count']}个PP stage和"
-            f"{placement['affected_dp_replica_count']}/{placement['total_dp_replica_count']}个DP replica。"
-            if slow_ranks
-            else (
-                f"   - **仿真观测**：关键路径中"
-                f"{critical_text or '缺少分类拆解'}；当前没有慢卡，"
-                "本结果只形成同构基线。"
-            )
-        ),
-        f"   - **公式与仿真分工**：{counterexample_text}",
-        f"   - **等价最优**：{schedule_reason}",
+        f"1. **{codex_experience['reason_title']}**：",
+        *[f"   - {item}" for item in codex_experience["reason_bullets"]],
         "",
-        '### <span style="color:blue;">(3) 结论边界</span>',
+        "### (3) 结论边界",
         "",
-        (
-            f"该经验仅适用于本报告的{config.topology['total_devices']}卡拓扑、"
-            f"{config.model['name']}、GBS={config.workload['global_batch_size']}、"
-            f"Seq={config.workload['sequence_length']}、"
-            f"{config.memory['device_capacity_gb']}GB/卡和当前慢卡Rank/速度。"
-        ),
-        "",
-        (
-            f"本轮只实际评估{report['evaluated_strategy_count']}/"
-            f"{report['total_strategy_count']}个候选；结论是当前已仿真候选最优。"
-            "缺少真实训练P50/P99、吞吐、显存峰值和运行方差，"
-            "因此经验状态保持`KEEP_FOR_VALIDATION`。"
-        ),
-        "",
-        (
-            f"{schedule_reason}若慢卡Rank、速度、模型、batch、显存、网络或"
-            "Rank映射变化，应作为新场景重新仿真。"
-        ),
+        *[
+            line
+            for item in codex_experience["conclusion_boundaries"]
+            for line in (item, "")
+        ],
         "",
         "## 未仿真的场景",
         "",
         (
             "从经验库目标总览读取的已总结场景为："
             + ("、".join(experience_descriptions) if experience_descriptions else "未读取到场景经验")
+            + (
+                "；本次实验链此前已完成"
+                + "、".join(
+                    f"{int(item['slow_count'])}张慢卡"
+                    for item in campaign_coverage
+                )
+                if campaign_coverage
+                else ""
+            )
             + f"。本轮另有待人工审核的{current_distribution}。"
-            "缺口计算以经验库已总结场景和本轮结果为准，不读取用户口头清单，"
+            "缺口计算以经验库已总结场景、本次实验链已完成报告和本轮结果为准，"
+            "不读取用户口头清单，"
             "也不把仅存在的配置文件算作已仿真。"
         ),
         "",
         "尚未形成完整对照的场景包括：",
         "",
         (
-            f"1. **双慢卡拓扑差集**：经验库当前仍缺少{missing_dual_text}场景。"
+            f"1. **双慢卡拓扑差集**：{dual_gap_text}"
             "同一节点还应继续区分同TP group与不同TP group；"
             "已由经验库覆盖的分支不重复建议。"
         ),
-        (
-            f"2. **慢卡数量差集**：建议补充{missing_count_text}张慢卡。"
-            f"其中{missing_count_reason}。"
-        ),
+        f"2. **慢卡数量差集**：{count_gap_text}",
         (
             "3. **同数量不同分布**：对3张及以上慢卡分别比较集中、同亲和组分散、"
             "跨亲和组不对称和跨节点近似对称映射，避免把慢卡数量本身误当成部署经验。"
@@ -1121,13 +1227,13 @@ def _write_raw_article_style_analysis(
         "",
         "## 下一步仿真建议",
         "",
+        dual_recommendation,
         (
-            f"1. **P0—补齐双慢卡拓扑对照**：优先仿真{missing_dual_text}；"
-            "保持慢卡数量不变，可以直接识别节点边界、亲和边界和replica映射"
-            "对策略的影响。"
-        ),
-        (
-            f"2. **P1—补齐{low_density_text}张慢卡**："
+            (
+                f"2. **P1—补齐{low_density_text}张慢卡**："
+                if low_density_missing
+                else "2. **P1—低密度慢卡数量**："
+            )
             + (
                 "3张采用1/1/1/0或2/1/0/0分布，观察奇数不对称场景。"
                 if low_density_missing == [3]
@@ -1144,7 +1250,11 @@ def _write_raw_article_style_analysis(
             )
         ),
         (
-            f"3. **P2—提高慢卡密度到{high_density_text}张**："
+            (
+                f"3. **P2—提高慢卡密度到{high_density_text}张**："
+                if high_density_missing
+                else "3. **P2—高密度慢卡数量**："
+            )
             + (
                 "分别采用2/2/1/1和2/2/2/2分布，"
                 if high_density_missing == [6, 8]
@@ -1261,7 +1371,11 @@ def build_final_report(
         "best_score_program": score_evidence,
         "placement_evidence": placement_evidence,
     }
+    codex_evidence = _build_codex_experience_evidence(
+        config, report, placement_evidence, score_evidence
+    )
     write_json(run_dir / "final_report.json", report)
+    write_json(run_dir / "experience_reasoning_evidence.json", codex_evidence)
     (run_dir / "best_score_program.py").write_text(
         score_evidence["formula_source"].rstrip() + "\n", encoding="utf-8"
     )
@@ -1350,5 +1464,27 @@ def build_final_report(
         *[f"- {item}" for item in experience["boundaries"]],
     ]
     (run_dir / "deployment_experience.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    _write_scenario_analysis(config, run_dir, report, experience)
     return report
+
+
+def write_codex_scenario_analysis(
+    config: ScenarioConfig,
+    run_dir: Path,
+    summary: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate a Codex-authored summary and finish the self-contained report."""
+    report = json.loads((run_dir / "final_report.json").read_text(encoding="utf-8"))
+    experience = json.loads(
+        (run_dir / "deployment_experience.json").read_text(encoding="utf-8")
+    )
+    evidence = json.loads(
+        (run_dir / "experience_reasoning_evidence.json").read_text(encoding="utf-8")
+    )
+    validated = _validate_codex_experience_summary(summary, evidence)
+    report["codex_experience_summary"] = validated
+    experience["codex_experience_summary"] = validated
+    write_json(run_dir / "codex_experience_summary.json", validated)
+    write_json(run_dir / "final_report.json", report)
+    write_json(run_dir / "deployment_experience.json", experience)
+    _write_scenario_analysis(config, run_dir, report, experience)
+    return validated

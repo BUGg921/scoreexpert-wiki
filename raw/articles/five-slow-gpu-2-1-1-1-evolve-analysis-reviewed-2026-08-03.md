@@ -1,11 +1,10 @@
 ---
 source_url:
 source_path: /Users/cookie/Documents/wiki/DAGBuilder_Evolve/outputs/s7-five-slow-2-1-1-1_20260730_144533_scenario_analysis.md
-ingested: 2026-07-30
-sha256: 9bae6f7f494d867a70dc66f242b6e0300d2cfd9391669e88fe524f8ffd8eeef0
-original_sha256: a30208dc9de489eee963bfb99665c8b3a3a7e25264f5d3795e827b78f21d9a9b
+ingested: 2026-08-03
+sha256: 7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e
+original_sha256: 7ef6612afaa9790dd3fa0760d54e3fddda6142b1d1efabd837f37b8e8cef240e
 ---
-
 # s7_five_slow_32g仿真与部署策略分析
 
 
@@ -41,8 +40,6 @@ simulated critical-path latency = 4.146778 s
 formula candidate score = -857.527882
 formula candidate rank = 5
 ```
-
-这里的“最优”仅指已实际仿真的候选中最长路径最低，不代表873个结构候选已经穷举。
 
 | 排名 | 已仿真策略 | 时延 (s) | 显存估算 (GB/卡) |
 | ---: | --- | ---: | ---: |
